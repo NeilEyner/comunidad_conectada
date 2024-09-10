@@ -123,7 +123,7 @@ class AuthController extends BaseController
             case 3: // Delivery
                 return redirect()->to(base_url('dashboard/delivery'));
             case 4: // Administrador
-                return redirect()->to(base_url('dashboard/admin'));
+                return redirect()->to(base_url('dashboard/administrador/admin_dashboard'));
             default:
                 return redirect()->to(base_url('dashboard'));
         }

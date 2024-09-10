@@ -23,3 +23,18 @@ $routes->get('/nosotros', 'Home::nosotros');
 $routes->get('/tienda', 'Home::tienda');
 $routes->get('/contacto', 'Home::contacto');
 $routes->get('/comunidades', 'Home::comunidades');
+
+$routes->get('dashboard/artesano', 'AdministradorController::artesano');
+$routes->get('dashboard/cliente', 'AdministradorController::cliente');
+$routes->get('dashboard/delivery', 'AdministradorController::delivery');
+
+//rutas administrador
+$routes->get('dashboard/administrador/admin_dashboard', 'AdministradorController::admin');
+$routes->get('dashboard/administrador/admin_usuarios', 'AdministradorController::admin_user');
+$routes->get('dashboard/administrador/admin_comunidades', 'AdministradorController::admin_comunidad');
+$routes->get('dashboard/administrador/admin_rol', 'AdministradorController::admin_rol');
+$routes->get('dashboard/administrador/admin_contenidopagina', 'AdministradorController::admin_contenidopagina');
+$routes->get('dashboard/administrador/admin_envio', 'AdministradorController::admin_envio');
+$routes->get('dashboard/administrador/admin_pago', 'AdministradorController::admin_pago');
+$routes->get('dashboard/administrador/admin_producto', 'AdministradorController::admin_producto');
+$routes->get('dashboard/administrador/admin_compra', 'AdministradorController::admin_compra');
