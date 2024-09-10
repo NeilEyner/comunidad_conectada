@@ -1,19 +1,24 @@
 <?php
 
 namespace App\Controllers;
+use App\Models\ContenidoModel;
+
 
 class Home extends BaseController
 {
     public function index(): string
     {
-        $data=['titulo'=>'Artesanias'];
+        $data=['titulo'=>'Inicio'];
         return view('global/header',$data).view('global/homeCarrusel').view('global/homeCategorias') .view('global/homeProducto'). view('global/footer');
     }
 
     public function nosotros(): string
     {
-        $data=['titulo'=>'Nosotros'];
-        return view('global/header',$data).view('global/nosotros').view('global/servicios') .view('global/marcas'). view('global/footer');
+        $contenidoModel = new ContenidoModel();
+        $resultado = $contenidoModel->findAll();
+        
+        $data=['titulo'=>'Nosotros','contenido'=>$resultado];
+        return view('global/header',$data).view('global/nosotros',$data).view('global/servicios') .view('global/marcas'). view('global/footer');
     }
 
     public function tienda(): string

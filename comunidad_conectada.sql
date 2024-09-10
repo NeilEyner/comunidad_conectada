@@ -65,14 +65,24 @@ CREATE TABLE IF NOT EXISTS `contenido_pagina` (
   CONSTRAINT `contenido_pagina_ibfk_1` FOREIGN KEY (`ID_Usuario`) REFERENCES `usuario` (`ID`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+INSERT INTO 'contenido_pagina' ('ID', 'Tipo_contenido', 'Titulo', 'Contenido', 'ID_Usuario', 'Fecha_creacion', 'Fecha_actualizacion') VALUES
+  (1, 'MISION', 'Misión', 'Ofrecer una experiencia única de compra de productos artesanales que reflejen la riqueza cultural y la habilidad de los artesanos locales. Nos dedicamos a apoyar a las comunidades artesanas, promoviendo su trabajo a nivel Nacional, mientras proporcionamos a nuestros clientes productos únicos y auténticos que cuenten historias y fomenten el aprecio por las tradiciones.', 1, '2024-09-03 17:39:31', NULL),
+  (2, 'VISION', 'Visión', 'Nuestra visión es ser la plataforma líder en la promoción y venta de productos artesanales, promoviendo el valor cultural, contribuyendo al desarrollo económico y social de la región a travéz de una oferta diversifidaca y de calidad. Así mismo preservar las tradiciones y tecnicas ancestrales de nuestras comunidades', 1, '2024-09-03 17:39:31', NULL),
+  (3, 'OBJETIVO', 'Promover el Comercio Justo:', 'Asegurando que todos los artesanos reciban una compensación justa por su trabajo y que las condiciones laborales sean dignas y respetadas', 1, '2024-09-03 17:39:31', NULL),
+  (4, 'OBJETIVO', 'Preservar Tradiciones Culturales:', 'Trabajando con artesanos para mantener y revitalizar técnicas y estilos tradicionales en peligro de extinción.', 1, '2024-09-03 17:39:31', NULL),
+  (5, 'OBJETIVO', 'Fomentar la Sostenibilidad:', 'Utilizando prácticas de negocio que minimicen el impacto ambiental y promuevan la utilización de materiales sostenibles en los productos.', 1, '2024-09-03 17:39:31', NULL),
+  (6, 'OBJETIVO', 'Ampliar el Alcance del Mercado:', 'Desarrollando estrategias de marketing y distribución que amplíen la visibilidad y el acceso a productos artesanales a nivel nacional.', 1, '2024-09-03 17:39:31', NULL),
+  (4, 'VALORES', 'Autenticidad:', 'Valoramos la autenticidad en cada producto y nos aseguramos de que cada pieza sea genuina y refleje el trabajo y la cultura del artesano.', 1, '2024-09-03 17:39:31', NULL);
+  (4, 'VALORES', 'Respeto:', 'Respetamos y valoramos las tradiciones culturales y el trabajo de los artesanos, fomentando una relación de colaboración y apoyo mutuo.', 1, '2024-09-03 17:39:31', NULL);
+  (4, 'VALORES', 'Sostenibilidad:', 'Estamos comprometidos con prácticas sostenibles que protejan el medio ambiente y promuevan el uso responsable de los recursos.', 1, '2024-09-03 17:39:31', NULL);
+  (4, 'VALORES', 'Calidad:', 'Priorizamos la calidad en todos nuestros productos, garantizando que cada artículo cumpla con los estándares más altos de artesanía y durabilidad.', 1, '2024-09-03 17:39:31', NULL);
+  (4, 'VALORES', 'Integridad:', 'Operamos con transparencia e integridad en todas nuestras prácticas de negocio, construyendo confianza y credibilidad con nuestros clientes y socios.', 1, '2024-09-03 17:39:31', NULL);
 
 CREATE TABLE IF NOT EXISTS `detalle_compra` (
   `ID_Compra` int NOT NULL,
   `ID_Producto` int NOT NULL,
   `ID_Artesano` int DEFAULT NULL,
   `Cantidad` int NOT NULL,
-  `Precio` decimal(10,2) NOT NULL,
-  `Subtotal` decimal(10,2) GENERATED ALWAYS AS ((`Cantidad` * `Precio`)) STORED,
   KEY `ID_Compra` (`ID_Compra`),
   KEY `ID_Producto` (`ID_Producto`),
   KEY `ID_Artesano` (`ID_Artesano`),

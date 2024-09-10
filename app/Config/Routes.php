@@ -5,7 +5,7 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Inicio::index');
+$routes->get('/', 'Home::index');
 $routes->get('register', 'AuthController::register');
 $routes->post('register', 'AuthController::do_register');
 $routes->get('login', 'AuthController::login');
@@ -18,3 +18,8 @@ $routes->get('dashboard/delivery', 'DashboardController::delivery');
 $routes->get('dashboard/admin', 'DashboardController::admin');
 $routes->get('dashboard/admin_usuarios', 'DashboardController::admin_user');
 $routes->get('dashboard/admin_comunidades', 'DashboardController::admin_comunidad');
+
+$routes->get('/nosotros', 'Home::nosotros');
+$routes->get('/tienda', 'Home::tienda');
+$routes->get('/contacto', 'Home::contacto');
+$routes->get('/comunidades', 'Home::comunidades');

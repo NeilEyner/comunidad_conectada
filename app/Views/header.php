@@ -6,8 +6,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="apple-touch-icon" href="assets/img/apple-icon.png">
-    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <!-- <link rel="apple-touch-icon" href="assets/img/apple-icon.png"> -->
+    <!-- <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico"> -->
 
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/templatemo.css">
@@ -51,8 +51,11 @@ https://templatemo.com/tm-559-zay-shop
     <!-- Header -->
     <nav class="navbar navbar-expand-lg navbar-light shadow">
         <div class="container d-flex justify-content-between align-items-center">
+            
+            <img class="img-fluid" src="./assets/icon/'Recurso 2.png'" alt="">
 
             <a class="navbar-brand text-success logo h1 align-self-center" href="index.html">
+            <img src="./assets/icon/'Recurso 2.png'" alt="">
                 Artesanias
             </a>
 

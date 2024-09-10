@@ -21,19 +21,55 @@
     <section class="bg-success py-5">
         <div class="container">
             <div class="row align-items-center py-5">
-                <div class="col-md-8 text-white">
+                <div class="col-md-8 text-black">
                     <h1>Acerca de nosotros</h1>
-                    <h2>Visión</h2>
-                    <p>
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reprehenderit maxime sapiente voluptates in, est, explicabo inventore sint voluptatibus provident perspiciatis molestiae! Quia voluptatum sed sit minima, quisquam aliquid laudantium recusandae?
-                    </p>
-                    <h2>Misión</h2>
-                    <p>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Asperiores tempore consectetur dolorem facere quae qui deleniti! Incidunt, numquam aliquid debitis fuga odit corrupti magnam placeat esse, quas ab iure eaque.
-                    </p>
+                    <h2 >Visión</h2>
+                    <?php foreach ($contenido as $item): 
+                        if($item['Tipo_contenido'] == 'VISION'){
+                        ?>
+                        <p>
+                            <?= $item['Contenido'] ?>
+                        </p>
+                    <?php }endforeach; ?>
+                    <h2 fontColor='black'>Misión</h2>
+                    <?php foreach ($contenido as $item): 
+                        if($item['Tipo_contenido'] == 'MISION'){
+                        ?>
+                        <p>
+                            <?= $item['Contenido'] ?>
+                        </p>
+                    <?php }endforeach; ?>
+                    <h2>Objetivos</h2>
+                        <p>
+                            <div>
+                                <ul>
+                    <?php foreach ($contenido as $item): 
+                        if($item['Tipo_contenido'] == 'OBJETIVO'){
+                        ?>
+                                    <li><b><?= $item['Titulo'] ?></b></li>
+                                    <?= $item['Contenido'] ?>
+                                
+                    <?php }endforeach; ?>
+                                </ul>
+                            </div>
+                        </p>
+                    <h2>Valores</h2>
+                        <p>
+                            <div>
+                                <ul>
+                        <?php foreach ($contenido as $item): 
+                            if($item['Tipo_contenido'] == 'VALORES'){
+                            ?>
+                                    <li><b><?= $item['Titulo'] ?></b></li>
+                                    <?= $item['Contenido'] ?>
+                                
+                    <?php }endforeach; ?>
+                                </ul>
+                            </div>
+                        </p>
                 </div>
                 <div class="col-md-4">
-                    <img src="../assets/img/about-hero.svg" alt="About Hero">
+                    <img src="./assets/img/about-hero.svg" alt="About Hero">
                 </div>
             </div>
         </div>
