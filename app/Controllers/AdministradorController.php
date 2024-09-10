@@ -41,8 +41,6 @@ class AdministradorController extends Controller
         return view('dashboard/header',$data).view('dashboard/delivery');
     }
 
-
-
     public function admin()
     {
         if (session()->get('ID_Rol') != 4) {
