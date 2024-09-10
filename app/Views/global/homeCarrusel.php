@@ -52,7 +52,7 @@
                         </div>
                         <div class="col-lg-6 mb-0 d-flex align-items-center">
                             <div class="text-align-left align-self-center">
-                                <h1 class="h1 text-success"><b>Hecho con Amor y creatividad</b> </h1>
+                                <h1 class="h1 text-success"><b>Hecho con Esmero y creatividad</b> </h1>
                                 <h3 class="h2">Nos enorgullece ofrecer artesanías únicas que reflejan la esencia de la creatividad y el arte tradicional.</h3>
                                 <p>
                                  Cada pieza está cuidadosamente elaborada con materiales de alta calidad, garantizando no solo un diseño excepcional, sino también una historia detrás de cada creación. Explora nuestra colección y déjate inspirar por la diversidad y originalidad de nuestros productos, todos creados con un toque personal y una gran atención al detalle.
@@ -70,10 +70,10 @@
                         </div>
                         <div class="col-lg-6 mb-0 d-flex align-items-center">
                             <div class="text-align-left align-self-center">
-                                <h1 class="h1 text-success"><b>Tu destino para reagalos especiales</b> </h1>
-                                <h3 class="h2">¿Buscas un regalo inolvidable o simplemente quieres consentirte?.</h3>
+                                <h1 class="h1 text-success"><b>Tu destino para regalos especiales</b> </h1>
+                                <h3 class="h2">¿Buscas un recuerdo inolvidable o simplemente quieres consentirte?.</h3>
                                 <p>
-                                 En nuestra tienda, encontrarás artesanías exquisitas que son perfectas para cualquier ocasión. Desde piezas elegantes hasta detalles únicos, cada artículo está diseñado para destacar y hacer sonreír a quien lo reciba. Navega por nuestras categorías y encuentra ese regalo perfecto que hará que cada momento sea aún más especial. En [Nombre de la Tienda], cada compra es una celebración del arte y la creatividad.
+                                 En nuestra tienda, encontrarás artesanías exquisitas que son perfectas y creativas. Desde piezas elegantes hasta detalles únicos, cada artículo está diseñado para destacar y hacer sonreír a quien lo reciba. Navega por nuestras categorías y encuentra ese regalo perfecto que hará que cada momento sea aún más especial.
                                 </p>
                             </div>
                         </div>

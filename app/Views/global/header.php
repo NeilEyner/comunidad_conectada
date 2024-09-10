@@ -52,8 +52,8 @@ https://templatemo.com/tm-559-zay-shop
     <nav class="navbar navbar-expand-lg navbar-light shadow">
         <div class="container d-flex justify-content-between align-items-center">
             <!-- <img class="img-fluid" src="./assets/icon/Recurso 2.png" alt="" width="100" height="110"> -->
-            <a class="navbar-brand text-success logo h1 align-self-center" href="index.html">
-                <img class="img-fluid" src="./assets/icon/Recurso 2.png" alt="" width="100" height="110">
+            <a class="navbar-brand text-success logo h1 align-self-center" href="<?php echo base_url();?>">
+                <img class="img-fluid" src="./assets/icon/Recurso 2.png" alt="" width="80" height="90">
                 <?php echo ($titulo); ?>
             </a>
 
