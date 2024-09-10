@@ -38,11 +38,11 @@
                 <div class="col-md-4 pt-5">
                     <h2 class="h2 text-light border-bottom pb-3 border-light">Further Info</h2>
                     <ul class="list-unstyled text-light footer-link-list">
-                        <li><a class="text-decoration-none" href="#">Home</a></li>
-                        <li><a class="text-decoration-none" href="#">About Us</a></li>
-                        <li><a class="text-decoration-none" href="#">Shop Locations</a></li>
-                        <li><a class="text-decoration-none" href="#">FAQs</a></li>
-                        <li><a class="text-decoration-none" href="#">Contact</a></li>
+                        <li><a class="text-decoration-none" href="<?php echo base_url();?>">Inicio</a></li>
+                        <li><a class="text-decoration-none" href="<?php echo base_url();?>nosotros">Nosotros</a></li>
+                        <li><a class="text-decoration-none" href="<?php echo base_url();?>tienda">Tienda</a></li>
+                        <li><a class="text-decoration-none" href="<?php echo base_url();?>contacto">Contacto</a></li>
+                        <li><a class="text-decoration-none" href="<?php echo base_url();?>comunidades">Comunidades</a></li>
                     </ul>
                 </div>
 

@@ -20,7 +20,7 @@
     <!-- Start Content Page -->
     <div class="container-fluid bg-light py-5">
         <div class="col-md-6 m-auto text-center">
-            <h1 class="h1">COmunidades </h1>
+            <h1 class="h1">Comunidades </h1>
             <p>
                 comunidades listados y su ubicación en el mapa
             </p>

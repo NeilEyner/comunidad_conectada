@@ -34,14 +34,10 @@
                         </div>
                         <div class="col-lg-6 mb-0 d-flex align-items-center">
                             <div class="text-align-left align-self-center">
-                                <h1 class="h1 text-success"><b>Artesanias</b> eCommerce</h1>
-                                <h3 class="h2">Tiny and Perfect eCommerce Template</h3>
+                                <h1 class="h1 text-success"><b>Celebrando la Artesanía Única</b> </h1>
+                                <h3 class="h2">Descubre la magia de lo hecho a mano en nuestra tienda.</h3>
                                 <p>
-                                    Tienda de Artesanias is an eCommerce HTML5 CSS template with latest version of Bootstrap 5 (beta 1). 
-                                    This template is 100% free provided by <a rel="sponsored" class="text-success" href="https://templatemo.com" target="_blank">TemplateMo</a> website. 
-                                    Image credits go to <a rel="sponsored" class="text-success" href="https://stories.freepik.com/" target="_blank">Freepik Stories</a>,
-                                    <a rel="sponsored" class="text-success" href="https://unsplash.com/" target="_blank">Unsplash</a> and
-                                    <a rel="sponsored" class="text-success" href="https://icons8.com/" target="_blank">Icons 8</a>.
+                                Donde cada pieza cuenta una historia. Desde joyería delicada hasta decoraciones cautivadoras, nuestros productos son elaborados con pasión y dedicación por artesanos talentosos. Cada artículo es una obra de arte que trae consigo la tradición y la creatividad de sus creadores. Sumérgete en un mundo de belleza auténtica y encuentra el detalle perfecto para tu hogar o para regalar.
                                 </p>
                             </div>
                         </div>
@@ -55,12 +51,11 @@
                             <img class="img-fluid" src="./assets/img/imagen2.jpg" alt="">
                         </div>
                         <div class="col-lg-6 mb-0 d-flex align-items-center">
-                            <div class="text-align-left">
-                                <h1 class="h1">Proident occaecat</h1>
-                                <h3 class="h2">Aliquip ex ea commodo consequat</h3>
+                            <div class="text-align-left align-self-center">
+                                <h1 class="h1 text-success"><b>Hecho con Esmero y creatividad</b> </h1>
+                                <h3 class="h2">Nos enorgullece ofrecer artesanías únicas que reflejan la esencia de la creatividad y el arte tradicional.</h3>
                                 <p>
-                                    You are permitted to use this Zay CSS template for your commercial websites. 
-                                    You are <strong>not permitted</strong> to re-distribute the template ZIP file in any kind of template collection websites.
+                                 Cada pieza está cuidadosamente elaborada con materiales de alta calidad, garantizando no solo un diseño excepcional, sino también una historia detrás de cada creación. Explora nuestra colección y déjate inspirar por la diversidad y originalidad de nuestros productos, todos creados con un toque personal y una gran atención al detalle.
                                 </p>
                             </div>
                         </div>
@@ -74,12 +69,11 @@
                             <img class="img-fluid" src="./assets/img/imagen2.jpg" alt="">
                         </div>
                         <div class="col-lg-6 mb-0 d-flex align-items-center">
-                            <div class="text-align-left">
-                                <h1 class="h1">Repr in voluptate</h1>
-                                <h3 class="h2">Ullamco laboris nisi ut </h3>
+                            <div class="text-align-left align-self-center">
+                                <h1 class="h1 text-success"><b>Tu destino para regalos especiales</b> </h1>
+                                <h3 class="h2">¿Buscas un recuerdo inolvidable o simplemente quieres consentirte?.</h3>
                                 <p>
-                                    We bring you 100% free CSS templates for your websites. 
-                                    If you wish to support TemplateMo, please make a small contribution via PayPal or tell your friends about our website. Thank you.
+                                 En nuestra tienda, encontrarás artesanías exquisitas que son perfectas y creativas. Desde piezas elegantes hasta detalles únicos, cada artículo está diseñado para destacar y hacer sonreír a quien lo reciba. Navega por nuestras categorías y encuentra ese regalo perfecto que hará que cada momento sea aún más especial.
                                 </p>
                             </div>
                         </div>
