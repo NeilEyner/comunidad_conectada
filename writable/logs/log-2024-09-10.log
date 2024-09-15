@@ -1,157 +1,3 @@
-<<<<<<< HEAD
-CRITICAL - 2024-09-10 03:20:49 --> ErrorException: Constant expression contains invalid operations
-[Method: GET, Route: nosotros]
-in APPPATH\Models\ContenidoModel.php on line 17.
- 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
-CRITICAL - 2024-09-10 03:28:15 --> Error: Class "App\Models\ContenidoModel" not found
-[Method: GET, Route: nosotros]
-in APPPATH\Controllers\Home.php on line 17.
- 1 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Home->nosotros()
- 2 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
- 3 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
- 4 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
- 5 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
- 6 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
-ERROR - 2024-09-10 03:32:34 --> mysqli_sql_exception: Unknown column 'contenido_pagina.deleted_at' in 'where clause' in C:\laragon\www\comunidad_conectada\system\Database\MySQLi\Connection.php:312
-Stack trace:
-#0 C:\laragon\www\comunidad_conectada\system\Database\MySQLi\Connection.php(312): mysqli->query('SELECT *\nFROM `...', 0)
-#1 C:\laragon\www\comunidad_conectada\system\Database\BaseConnection.php(734): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *\nFROM `...')
-#2 C:\laragon\www\comunidad_conectada\system\Database\BaseConnection.php(648): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *\nFROM `...')
-#3 C:\laragon\www\comunidad_conectada\system\Database\BaseBuilder.php(1644): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
-#4 C:\laragon\www\comunidad_conectada\system\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
-#5 C:\laragon\www\comunidad_conectada\system\BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
-#6 C:\laragon\www\comunidad_conectada\app\Controllers\Home.php(19): CodeIgniter\BaseModel->findAll()
-#7 C:\laragon\www\comunidad_conectada\system\CodeIgniter.php(933): App\Controllers\Home->nosotros()
-#8 C:\laragon\www\comunidad_conectada\system\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
-#9 C:\laragon\www\comunidad_conectada\system\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
-#10 C:\laragon\www\comunidad_conectada\system\Boot.php(325): CodeIgniter\CodeIgniter->run()
-#11 C:\laragon\www\comunidad_conectada\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
-#12 C:\laragon\www\comunidad_conectada\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
-#13 {main}
-CRITICAL - 2024-09-10 03:32:34 --> Error: Call to a member function getResult() on bool
-[Method: GET, Route: nosotros]
-in SYSTEMPATH\Model.php on line 287.
- 1 SYSTEMPATH\BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
- 2 APPPATH\Controllers\Home.php(19): CodeIgniter\BaseModel->findAll()
- 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Home->nosotros()
- 4 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
- 5 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
- 6 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
- 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
- 8 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
-ERROR - 2024-09-10 03:36:23 --> mysqli_sql_exception: Unknown column 'contenido_pagina.deleted_at' in 'where clause' in C:\laragon\www\comunidad_conectada\system\Database\MySQLi\Connection.php:312
-Stack trace:
-#0 C:\laragon\www\comunidad_conectada\system\Database\MySQLi\Connection.php(312): mysqli->query('SELECT *\nFROM `...', 0)
-#1 C:\laragon\www\comunidad_conectada\system\Database\BaseConnection.php(734): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *\nFROM `...')
-#2 C:\laragon\www\comunidad_conectada\system\Database\BaseConnection.php(648): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *\nFROM `...')
-#3 C:\laragon\www\comunidad_conectada\system\Database\BaseBuilder.php(1644): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
-#4 C:\laragon\www\comunidad_conectada\system\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
-#5 C:\laragon\www\comunidad_conectada\system\BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
-#6 C:\laragon\www\comunidad_conectada\app\Controllers\Home.php(19): CodeIgniter\BaseModel->findAll()
-#7 C:\laragon\www\comunidad_conectada\system\CodeIgniter.php(933): App\Controllers\Home->nosotros()
-#8 C:\laragon\www\comunidad_conectada\system\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
-#9 C:\laragon\www\comunidad_conectada\system\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
-#10 C:\laragon\www\comunidad_conectada\system\Boot.php(325): CodeIgniter\CodeIgniter->run()
-#11 C:\laragon\www\comunidad_conectada\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
-#12 C:\laragon\www\comunidad_conectada\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
-#13 {main}
-CRITICAL - 2024-09-10 03:36:23 --> Error: Call to a member function getResult() on bool
-[Method: GET, Route: nosotros]
-in SYSTEMPATH\Model.php on line 287.
- 1 SYSTEMPATH\BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
- 2 APPPATH\Controllers\Home.php(19): CodeIgniter\BaseModel->findAll()
- 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Home->nosotros()
- 4 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
- 5 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
- 6 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
- 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
- 8 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
-ERROR - 2024-09-10 03:37:18 --> mysqli_sql_exception: Unknown column 'contenido_pagina.deleted_at' in 'where clause' in C:\laragon\www\comunidad_conectada\system\Database\MySQLi\Connection.php:312
-Stack trace:
-#0 C:\laragon\www\comunidad_conectada\system\Database\MySQLi\Connection.php(312): mysqli->query('SELECT *\nFROM `...', 0)
-#1 C:\laragon\www\comunidad_conectada\system\Database\BaseConnection.php(734): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *\nFROM `...')
-#2 C:\laragon\www\comunidad_conectada\system\Database\BaseConnection.php(648): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *\nFROM `...')
-#3 C:\laragon\www\comunidad_conectada\system\Database\BaseBuilder.php(1644): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
-#4 C:\laragon\www\comunidad_conectada\system\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
-#5 C:\laragon\www\comunidad_conectada\system\BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
-#6 C:\laragon\www\comunidad_conectada\app\Controllers\Home.php(18): CodeIgniter\BaseModel->findAll()
-#7 C:\laragon\www\comunidad_conectada\system\CodeIgniter.php(933): App\Controllers\Home->nosotros()
-#8 C:\laragon\www\comunidad_conectada\system\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
-#9 C:\laragon\www\comunidad_conectada\system\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
-#10 C:\laragon\www\comunidad_conectada\system\Boot.php(325): CodeIgniter\CodeIgniter->run()
-#11 C:\laragon\www\comunidad_conectada\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
-#12 C:\laragon\www\comunidad_conectada\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
-#13 {main}
-CRITICAL - 2024-09-10 03:37:18 --> Error: Call to a member function getResult() on bool
-[Method: GET, Route: nosotros]
-in SYSTEMPATH\Model.php on line 287.
- 1 SYSTEMPATH\BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
- 2 APPPATH\Controllers\Home.php(18): CodeIgniter\BaseModel->findAll()
- 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Home->nosotros()
- 4 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
- 5 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
- 6 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
- 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
- 8 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
-CRITICAL - 2024-09-10 03:38:36 --> ParseError: syntax error, unexpected token "=>", expecting ")"
-[Method: GET, Route: nosotros]
-in APPPATH\Controllers\Home.php on line 22.
- 1 SYSTEMPATH\Autoloader\Autoloader.php(296): CodeIgniter\Autoloader\Autoloader->includeFile('C:\\laragon\\www\\comunidad_conectada\\app\\Controllers\\Home.php')
- 2 SYSTEMPATH\Autoloader\Autoloader.php(272): CodeIgniter\Autoloader\Autoloader->loadInNamespace('App\\Controllers\\Home')
- 3 [internal function]: CodeIgniter\Autoloader\Autoloader->loadClass('App\\Controllers\\Home')
- 4 SYSTEMPATH\CodeIgniter.php(887): class_exists('\\App\\Controllers\\Home', true)
- 5 SYSTEMPATH\CodeIgniter.php(496): CodeIgniter\CodeIgniter->startController()
- 6 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
- 7 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
- 8 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
- 9 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
-ERROR - 2024-09-10 03:40:22 --> mysqli_sql_exception: Unknown column 'contenido_pagina.deleted_at' in 'where clause' in C:\laragon\www\comunidad_conectada\system\Database\MySQLi\Connection.php:312
-Stack trace:
-#0 C:\laragon\www\comunidad_conectada\system\Database\MySQLi\Connection.php(312): mysqli->query('SELECT *\nFROM `...', 0)
-#1 C:\laragon\www\comunidad_conectada\system\Database\BaseConnection.php(734): CodeIgniter\Database\MySQLi\Connection->execute('SELECT *\nFROM `...')
-#2 C:\laragon\www\comunidad_conectada\system\Database\BaseConnection.php(648): CodeIgniter\Database\BaseConnection->simpleQuery('SELECT *\nFROM `...')
-#3 C:\laragon\www\comunidad_conectada\system\Database\BaseBuilder.php(1644): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
-#4 C:\laragon\www\comunidad_conectada\system\Model.php(286): CodeIgniter\Database\BaseBuilder->get()
-#5 C:\laragon\www\comunidad_conectada\system\BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
-#6 C:\laragon\www\comunidad_conectada\app\Controllers\Home.php(18): CodeIgniter\BaseModel->findAll()
-#7 C:\laragon\www\comunidad_conectada\system\CodeIgniter.php(933): App\Controllers\Home->nosotros()
-#8 C:\laragon\www\comunidad_conectada\system\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
-#9 C:\laragon\www\comunidad_conectada\system\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
-#10 C:\laragon\www\comunidad_conectada\system\Boot.php(325): CodeIgniter\CodeIgniter->run()
-#11 C:\laragon\www\comunidad_conectada\system\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
-#12 C:\laragon\www\comunidad_conectada\public\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
-#13 {main}
-CRITICAL - 2024-09-10 03:40:22 --> Error: Call to a member function getResult() on bool
-[Method: GET, Route: nosotros]
-in SYSTEMPATH\Model.php on line 287.
- 1 SYSTEMPATH\BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
- 2 APPPATH\Controllers\Home.php(18): CodeIgniter\BaseModel->findAll()
- 3 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Home->nosotros()
- 4 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
- 5 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
- 6 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
- 7 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
- 8 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
-CRITICAL - 2024-09-10 04:22:46 --> ErrorException: Undefined array key "titulo"
-[Method: GET, Route: nosotros]
-in APPPATH\Views\global\nosotros.php on line 49.
- 1 APPPATH\Views\global\nosotros.php(49): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined array key "titulo"', 'C:\\laragon\\www\\comunidad_conectada\\app\\Views\\global\\nosotros.php', 49)
- 2 SYSTEMPATH\View\View.php(234): include('C:\\laragon\\www\\comunidad_conectada\\app\\Views\\global\\nosotros.php')
- 3 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
- 4 SYSTEMPATH\Common.php(1169): CodeIgniter\View\View->render('global/nosotros', [], true)
- 5 APPPATH\Controllers\Home.php(21): view('global/nosotros', [...])
- 6 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Home->nosotros()
- 7 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
- 8 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
- 9 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
-10 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
-11 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
-CRITICAL - 2024-09-10 04:40:46 --> CodeIgniter\HTTP\Exceptions\BadRequestException: The URI you submitted has disallowed characters: "href="
-[Method: GET, Route: href=]
-in SYSTEMPATH\Router\Router.php on line 737.
- 1 SYSTEMPATH\Router\Router.php(204): CodeIgniter\Router\Router->checkDisallowedChars('href=')
- 2 SYSTEMPATH\CodeIgniter.php(834): CodeIgniter\Router\Router->handle('href=')
-=======
 INFO - 2024-09-10 03:40:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 INFO - 2024-09-10 03:40:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 INFO - 2024-09-10 03:40:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
@@ -198,7 +44,6 @@ CRITICAL - 2024-09-10 06:17:53 --> CodeIgniter\HTTP\Exceptions\BadRequestExcepti
 in SYSTEMPATH\Router\Router.php on line 737.
  1 SYSTEMPATH\Router\Router.php(204): CodeIgniter\Router\Router->checkDisallowedChars('assets_dash/img/logos/Logo_03.png              alt=')
  2 SYSTEMPATH\CodeIgniter.php(834): CodeIgniter\Router\Router->handle('assets_dash/img/logos/Logo_03.png              alt=')
->>>>>>> 026edbbad8ee37abcb224d77a8e7b40e5853ceb1
  3 SYSTEMPATH\CodeIgniter.php(457): CodeIgniter\CodeIgniter->tryToRouteIt(Object(CodeIgniter\Router\RouteCollection))
  4 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
  5 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
@@ -259,5 +104,82 @@ INFO - 2024-09-10 06:20:39 --> Session: Class initialized using 'CodeIgniter\Ses
 INFO - 2024-09-10 06:20:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 INFO - 2024-09-10 06:23:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 INFO - 2024-09-10 06:23:38 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+<<<<<<< HEAD
 >>>>>>> 026edbbad8ee37abcb224d77a8e7b40e5853ceb1
 INFO - 2024-09-10 13:20:41 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+=======
+INFO - 2024-09-10 06:35:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-09-10 06:35:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-09-10 06:36:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-09-10 12:33:55 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-09-10 12:36:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-09-10 12:36:32 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-09-10 12:41:04 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-09-10 12:41:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-09-10 12:57:44 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-09-10 13:03:11 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "inicio.php"
+[Method: GET, Route: /]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 41.
+ 1 SYSTEMPATH\View\View.php(222): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('inicio.php')
+ 2 SYSTEMPATH\Common.php(1169): CodeIgniter\View\View->render('inicio', [], true)
+ 3 APPPATH\Controllers\Inicio.php(12): view('inicio')
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Inicio->index()
+ 5 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Inicio))
+ 6 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2024-09-10 13:03:12 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "inicio.php"
+[Method: GET, Route: /]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 41.
+ 1 SYSTEMPATH\View\View.php(222): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('inicio.php')
+ 2 SYSTEMPATH\Common.php(1169): CodeIgniter\View\View->render('inicio', [], true)
+ 3 APPPATH\Controllers\Inicio.php(12): view('inicio')
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Inicio->index()
+ 5 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Inicio))
+ 6 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2024-09-10 13:03:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-09-10 13:03:20 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "inicio.php"
+[Method: GET, Route: /]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 41.
+ 1 SYSTEMPATH\View\View.php(222): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('inicio.php')
+ 2 SYSTEMPATH\Common.php(1169): CodeIgniter\View\View->render('inicio', [], true)
+ 3 APPPATH\Controllers\Inicio.php(12): view('inicio')
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Inicio->index()
+ 5 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Inicio))
+ 6 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+INFO - 2024-09-10 13:03:22 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2024-09-10 13:03:48 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "inicio.php"
+[Method: GET, Route: /]
+in SYSTEMPATH\Exceptions\FrameworkException.php on line 41.
+ 1 SYSTEMPATH\View\View.php(222): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('inicio.php')
+ 2 SYSTEMPATH\Common.php(1169): CodeIgniter\View\View->render('inicio', [], true)
+ 3 APPPATH\Controllers\Inicio.php(12): view('inicio')
+ 4 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Inicio->index()
+ 5 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Inicio))
+ 6 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+CRITICAL - 2024-09-10 13:04:21 --> ErrorException: include(header.php): Failed to open stream: No such file or directory
+[Method: GET, Route: /]
+in APPPATH\Views\inicio.php on line 2.
+ 1 APPPATH\Views\inicio.php(2): CodeIgniter\Debug\Exceptions->errorHandler(2, 'include(header.php): Failed to open stream: No such file or directory', 'C:\\laragon\\www\\comunidad_conectada\\app\\Views\\inicio.php', 2)
+ 2 APPPATH\Views\inicio.php(2): include()
+ 3 SYSTEMPATH\View\View.php(234): include('C:\\laragon\\www\\comunidad_conectada\\app\\Views\\inicio.php')
+ 4 SYSTEMPATH\View\View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 5 SYSTEMPATH\Common.php(1169): CodeIgniter\View\View->render('inicio', [], true)
+ 6 APPPATH\Controllers\Inicio.php(12): view('inicio')
+ 7 SYSTEMPATH\CodeIgniter.php(933): App\Controllers\Inicio->index()
+ 8 SYSTEMPATH\CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Inicio))
+ 9 SYSTEMPATH\CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+>>>>>>> 8dd4cfa6e17df26315f70dcc6b16ed029e689d7d
