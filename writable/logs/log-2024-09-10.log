@@ -182,4 +182,10 @@ in APPPATH\Views\inicio.php on line 2.
 10 SYSTEMPATH\Boot.php(325): CodeIgniter\CodeIgniter->run()
 11 SYSTEMPATH\Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
 12 FCPATH\index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+<<<<<<< HEAD
+INFO - 2024-09-10 17:46:10 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-09-10 17:46:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+INFO - 2024-09-10 17:46:14 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+=======
 >>>>>>> 8dd4cfa6e17df26315f70dcc6b16ed029e689d7d
+>>>>>>> 36495b5bbf770303a8ed6e73d1ee65923f71622d

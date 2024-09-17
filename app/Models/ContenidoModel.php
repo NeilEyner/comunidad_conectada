@@ -18,7 +18,7 @@ class ContenidoModel extends Model
 
 
     // Dates
-    protected $useTimestamps = true;
+    protected $useTimestamps = false;   
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'Fecha_creacion';
     protected $updatedField  = 'Fecha_actualizacion';
