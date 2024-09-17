@@ -9,5 +9,5 @@ class ProductoModel extends Model
     protected $table = 'producto';
     protected $primaryKey = 'ID';
     protected $allowedFields = ['Nombre', 'Descripcion', 'Fecha_creacion', 'Fecha_actualizacion'];
-    protected $useTimestamps = true;
+    protected $useTimestamps = false;   
 }

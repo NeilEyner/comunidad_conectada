@@ -6,9 +6,10 @@ use CodeIgniter\Model;
 
 class ComunidadModel extends Model
 {
-    protected $table = 'comunidad';
-    protected $primaryKey = 'ID';
+    protected $table = 'comunidad';          // Nombre de la tabla en la base de datos
+    protected $primaryKey = 'ID';            // Llave primaria de la tabla
     
+    // Campos que se permiten insertar o actualizar mediante el modelo
     protected $allowedFields = [
         'Nombre',
         'Descripcion',
@@ -18,26 +19,9 @@ class ComunidadModel extends Model
         'Fecha_registro'
     ];
     
-    protected $useTimestamps = true; // Si usas created_at y updated_at
-    protected $createdField  = 'Fecha_registro';
-    // Opcional: Puedes definir un campo `updated_at` si necesitas rastrear actualizaciones
-    // protected $updatedField  = 'updated_at'; 
-
-    protected $dateFormat    = 'datetime';
-    
-    // Si no necesitas campos `created_at` y `updated_at`, puedes omitir los siguientes
-    // protected $useTimestamps = false; 
-    // protected $createdField  = '';
-    // protected $updatedField  = '';
-
-    // Si necesitas alguna lógica antes de insertar o actualizar, puedes definirlo aquí
-    // protected $beforeInsert = ['someMethod'];
-    // protected $beforeUpdate = ['someMethod'];
-
-    // Ejemplo de un método de transformación
-    // protected function someMethod(array $data)
-    // {
-    //     // Transformaciones o lógica antes de insertar/actualizar
-    //     return $data;
-    // }
+    // Habilita los timestamps automáticos para created_at y updated_at
+    protected $useTimestamps = false;          // Activar timestamps para created_at
+    protected $createdField  = 'Fecha_registro'; // Campo para la fecha de creación
+    protected $updatedField  = null;           // Desactiva el campo de actualización
+    protected $dateFormat    = 'datetime';    // Formato de las fechas
 }

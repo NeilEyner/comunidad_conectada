@@ -40,10 +40,23 @@ class AuthController extends BaseController
                 'Contrasena' => 'required|min_length[3]',
                 'ID_Rol' => 'required|integer',
                 'Direccion' => 'required',
-                'ID_Comunidad' => 'required|integer'
+                'ID_Comunidad' => 'required|integer',
+    
             ];
 
             if ($this->validate($rules)) {
+                $imagen = $this->request->getFile('imagen');
+                if ($imagen && $imagen->isValid() && !$imagen->hasMoved()) {
+                    // Generar un nombre único para la imagen
+                    $nombreImagen = $imagen->getRandomName();
+                    // Mover la imagen a la carpeta 'uploads'
+                    $imagen->move(FCPATH . 'images/avatar/', $nombreImagen);
+                    // Guardar la URL de la imagen
+                    $imagenURL = base_url('images/avatar/' . $nombreImagen);
+                } else {
+                    $imagenURL = base_url('images/avatar/ava.png');;  
+                }
+
                 $hasheadoContrasena = $this->request->getPost('Contrasena');
 
                 $data = [
@@ -54,6 +67,7 @@ class AuthController extends BaseController
                     'ID_Rol' => $this->request->getPost('ID_Rol'),
                     'Direccion' => $this->request->getPost('Direccion'),
                     'ID_Comunidad' => $this->request->getPost('ID_Comunidad'),
+                    'Imagen_URL' => $imagenURL,
                     'Estado' => 'INACTIVO'
                 ];
 
@@ -74,31 +88,48 @@ class AuthController extends BaseController
         return view('auth/login');
     }
     public function do_login()
-    {
-        helper(['form']);
-        if ($this->request->getMethod() == 'POST') {
-            $rules = [
-                'Correo_electronico' => 'required|valid_email',
-                'Contrasena' => 'required'
-            ];
-            if ($this->validate($rules)) {
-                $correo = $this->request->getPost('Correo_electronico');
-                $contrasena = $this->request->getPost('Contrasena');
-                $usuario = $this->usuarioModel->where('Correo_electronico', $correo)->first();
+{
+    helper(['form']);
+
+    if ($this->request->getMethod() == 'POST') {
+        $rules = [
+            'Correo_electronico' => 'required|valid_email',
+            'Contrasena' => 'required'
+        ];
+
+        if ($this->validate($rules)) {
+            $correo = $this->request->getPost('Correo_electronico');
+            $contrasena = $this->request->getPost('Contrasena');
+
+            // Buscar el usuario por correo electrónico
+            $usuario = $this->usuarioModel->where('Correo_electronico', $correo)->first();
+
+            if ($usuario) {
+                // Verificar la contraseña si el usuario existe
                 if (password_verify($contrasena, $usuario['Contrasena'])) {
+                    // Verificar el estado del usuario
                     if ($usuario['Estado'] !== 'ACTIVO') {
                         return redirect()->back()->with('error', 'Tu cuenta no está activa. Por favor, contacta al administrador.');
                     }
+
+                    // Establecer sesión del usuario y redirigir según su rol
                     $this->setUserSession($usuario);
                     return $this->redirectBasedOnRole($usuario['ID_Rol']);
                 } else {
-                    return redirect()->back()->withInput()->with('error', 'Correo electrónico o contraseña incorrectos');
+                    // Contraseña incorrecta
+                    return redirect()->back()->withInput()->with('error', 'contraseña incorrectos');
                 }
             } else {
-                return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+                // Correo electrónico no registrado
+                return redirect()->back()->withInput()->with('error', 'Correo electrónico');
             }
+        } else {
+            // Error en la validación
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
     }
+}
+
     
     protected function setUserSession($usuario)
     {

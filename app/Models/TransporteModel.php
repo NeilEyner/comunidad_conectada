@@ -9,5 +9,5 @@ class TransporteModel extends Model
     protected $table = 'transporte';
     protected $primaryKey = 'ID';
     protected $allowedFields = ['Tipo', 'Descripcion', 'Costo_por_km', 'Capacidad', 'Estado'];
-    protected $useTimestamps = true;
+    protected $useTimestamps = false;   
 }

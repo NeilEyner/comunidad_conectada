@@ -24,14 +24,14 @@
           <div class="h-32 md:h-auto md:w-1/2">
             <img
               aria-hidden="true"
-              class="w-full h-full dark:hidden"
-              src="<?=base_url()?>assets_dash/img/logos/Logo_03.png"
+              class="w-full object-cover h-full dark:hidden"
+              src="<?=base_url()?>assets_dash/img/portadaimagen.png"
               alt="Office"
             />
             <img
               aria-hidden="true"
               class="hidden object-cover w-full h-full dark:block"
-              src="<?=base_url()?>assets_dash/img/logos/Logo_03.png"
+              src="<?=base_url()?>assets_dash/img/portadaimagen.png"
               alt="Office"
             />
           </div>
