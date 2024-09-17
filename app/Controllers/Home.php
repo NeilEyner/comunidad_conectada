@@ -2,10 +2,12 @@
 
 namespace App\Controllers;
 use App\Models\ContenidoModel;
+use App\Models\ComunidadModel;
+use App\Models\TieneProductoModel;
 
 
-class Home extends BaseController
-{
+class Home extends BaseController{
+
     public function index(): string
     {
         $data=['titulo'=>'Inicio'];
@@ -23,8 +25,10 @@ class Home extends BaseController
 
     public function tienda(): string
     {
-        $data=['titulo'=>'Tienda'];
-        return view('global/header',$data).view('global/tienda') .view('global/marcas'). view('global/footer');
+        $tieneProductoModel = new TieneProductoModel();
+        $resultado = $tieneProductoModel->findAll();
+        $data=['titulo'=>'Comunidades','productos'=>$resultado];
+        return view('global/header',$data).view('global/tienda',$data) .view('global/marcas'). view('global/footer');
     }
 
     public function contacto(): string
@@ -34,8 +38,10 @@ class Home extends BaseController
     }
 
     public function comunidades(): string
-    {
-        $data=['titulo'=>'Comunidades'];
+    {   
+        $comunidadModel = new ComunidadModel();
+        $resultado = $comunidadModel->findAll();
+        $data=['titulo'=>'Comunidades','comunidad'=>$resultado];
         return view('global/header',$data).view('global/comunidades') .view('global/footer');
     }
 }

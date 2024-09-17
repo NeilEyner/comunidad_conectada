@@ -21,46 +21,69 @@
     <div class="container-fluid bg-light py-5">
         <div class="col-md-6 m-auto text-center">
             <h1 class="h1">Comunidades </h1>
-            <p>
-                comunidades listados y su ubicación en el mapa
-            </p>
         </div>
     </div>
 
-    <!-- Start Map -->
 
-
-    
-    <!-- Ena Map -->
-
-    <!-- Start Contact -->
     <div class="container py-5">
-        <div class="row py-5">
-            <form class="col-md-9 m-auto" method="post" role="form">
-                <div class="row">
-                    <div class="form-group col-md-6 mb-3">
-                        <label for="inputname">Name</label>
-                        <input type="text" class="form-control mt-1" id="name" name="name" placeholder="Name">
-                    </div>
-                    <div class="form-group col-md-6 mb-3">
-                        <label for="inputemail">Email</label>
-                        <input type="email" class="form-control mt-1" id="email" name="email" placeholder="Email">
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="inputsubject">Subject</label>
-                    <input type="text" class="form-control mt-1" id="subject" name="subject" placeholder="Subject">
-                </div>
-                <div class="mb-3">
-                    <label for="inputmessage">Message</label>
-                    <textarea class="form-control mt-1" id="message" name="message" placeholder="Message" rows="8"></textarea>
-                </div>
-                <div class="row">
-                    <div class="col text-end mt-2">
-                        <button type="submit" class="btn btn-success btn-lg px-3">Let’s Talk</button>
+        <div class="row">
+
+            <div class="col-lg-3">
+                
+                <div class=" flex-sm-fill mt-3 mb-4 col-7 col-sm-auto pr-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="Search" placeholder="Search ...">
+                        <div class="input-group-text">
+                            <i class="fa fa-fw fa-search"></i>
+                        </div>
                     </div>
                 </div>
-            </form>
+            
+                <ul class="list">
+                    <?php foreach ($comunidad as $item): 
+                        ?>
+                        
+                        <li class="list-group" onClick="editData('<?= $item['Nombre'] ?>','<?= $item['Descripcion'] ?>','<?= $item['Imagen'] ?>')">
+                            <a href="https://maps.google.com/?q=<?= $item['Latitud'] ?>,<?= $item['Longitud'] ?>&output=embed"  target="mapa" style="color: green;text-decoration:none"><?= $item['Nombre'] ?></a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+                <script>
+                    function editData(nombre,resena,img)
+                    {
+                        $("#nombre-comunidad").text(nombre);
+                        $("#resena-comunidad").text(resena);
+                        $("#img").attr('src',img);
+                          
+                    }
+                </script>
+                
+                
+            </div>
+            <div class="col-lg-9">
+                <div class="row " >
+                    <div  >
+                        <h1 class="h1 text-success" style="text-align:center;"><b id= nombre-comunidad> Mallasa </b> </h1>
+                    </div>
+                </div>
+                <div class="row" >
+                    <div class="col-6 h2" id="resena-comunidad">
+                    Mallasa es una comunidad residencial y turística, ubicada en las afueras de La Paz. Aquí se encuentra el famoso Valle de la Luna, una formación geológica única. Mallasa también alberga el Bioparque Vesty Pakos.
+                    
+                    </div>
+                    <div class="col-6">
+                        <img class="img-fluid" id="img" src="./assets\img\comunidades\mallasa.jpg" alt="">
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 20px;">
+                    <iframe name="mapa" src="https://maps.google.com/?q=-16.57527,-68.089897&output=embed"
+                    width="100%" height="500" style="border:0;" allowfullscreen="" loading="lazy" >
+                    </iframe>
+                </div>
+                    
+            </div>
+
         </div>
     </div>
-    <!-- End Contact -->
+    
+ 

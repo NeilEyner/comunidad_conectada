@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS `comunidad` (
   `Latitud` decimal(9,6) DEFAULT NULL,
   `Longitud` decimal(9,6) DEFAULT NULL,
   `Fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Imagen` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 

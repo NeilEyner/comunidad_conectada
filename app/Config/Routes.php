@@ -24,27 +24,6 @@ $routes->get('/tienda', 'Home::tienda');
 $routes->get('/contacto', 'Home::contacto');
 $routes->get('/comunidades', 'Home::comunidades');
 
-<?php
-
-use CodeIgniter\Router\RouteCollection;
-
-/**
- * @var RouteCollection $routes
- */
-$routes->get('/', 'Inicio::index');
-
-//login and register
-$routes->get('register', 'AuthController::register');
-$routes->post('register', 'AuthController::do_register');
-$routes->get('login', 'AuthController::login');
-$routes->post('login', 'AuthController::do_login');
-$routes->get('logout', 'AuthController::logout');
-
-
-$routes->get('dashboard/artesano', 'AdministradorController::artesano');
-$routes->get('dashboard/cliente', 'AdministradorController::cliente');
-$routes->get('dashboard/delivery', 'AdministradorController::delivery');
-
 //rutas administrador
 $routes->get('dashboard/administrador/admin_dashboard', 'AdministradorController::admin');
 $routes->get('dashboard/administrador/admin_usuarios', 'AdministradorController::admin_user');
