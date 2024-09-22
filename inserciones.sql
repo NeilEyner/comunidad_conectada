@@ -162,3 +162,33 @@ VALUES
 (10, 8, 120.00, 20, 1, 'https://example.com/images/textil_camelidos.jpg'),
 (11, 9, 200.00, 18, 1, 'https://example.com/images/manta_llama.jpg');
 
+INSERT INTO `producto_categoria` (`ID_Producto`, `ID_Categoria`)
+VALUES
+(1,4),
+(1,6),
+(2,1),
+(2,8),
+(2,22),
+(2,25),
+(3,2),
+(3,18),
+(3,19),
+(4,1),
+(4,17),
+(4,23),
+(5,3),
+(5,14),
+(5,19),
+(6,1),
+(6,8),
+(6,23),
+(6,24),
+(7,5),
+(7,19),
+(8,1),
+(8,8),
+(8,22),
+(8,26),
+(9,8),
+(9,17),
+(9,25);

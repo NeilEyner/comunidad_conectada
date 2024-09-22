@@ -4,13 +4,16 @@ namespace App\Controllers;
 use App\Models\ContenidoModel;
 use App\Models\ComunidadModel;
 use App\Models\TieneProductoModel;
+use App\Models\CategoriaModel;
 
 
 class Home extends BaseController{
 
     public function index(): string
     {
-        $data=['titulo'=>'Inicio'];
+        $tieneProductoModel = new TieneProductoModel();
+        $resultado = $tieneProductoModel->findAll();
+        $data=['titulo'=>'Comunidades','productos'=>$resultado];
         return view('global/header',$data).view('global/homeCarrusel').view('global/homeCategorias') .view('global/homeProducto'). view('global/footer');
     }
 
@@ -27,8 +30,10 @@ class Home extends BaseController{
     {
         $tieneProductoModel = new TieneProductoModel();
         $resultado = $tieneProductoModel->findAll();
-        $data=['titulo'=>'Comunidades','productos'=>$resultado];
-        return view('global/header',$data).view('global/tienda',$data) .view('global/marcas'). view('global/footer');
+        $categoriaModel = new CategoriaModel();
+        $resultado2 = $categoriaModel->findAll();
+        $data=['titulo'=>'Comunidades','productos'=>$resultado,'categorias'=>$resultado2];
+        return view('global/header',$data).view('global/tienda',$data) . view('global/footer');
     }
 
     public function contacto(): string

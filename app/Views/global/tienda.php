@@ -1,4 +1,5 @@
 
+    <script src="./assets/js/scripts/categoria.js"></script>
     <!-- Modal -->
     <div class="modal fade bg-white" id="templatemo_search" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -22,80 +23,57 @@
     <div class="container py-5">
         <div class="row">
 
-            <div class="col-lg-3">
+            <div class="col-lg-3 " id="templatemo_main_nav">
                 <h1 class="h2 pb-4">Categorias</h1>
-                <ul class="list-unstyled templatemo-accordion">
-                    <li class="pb-3">
-                        <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
-                            Tejidos
-                            <i class="fa fa-fw fa-chevron-circle-down mt-1"></i>
+                <ul class="list-unstyled nav navbar-nav ">
+                    
+                    <li class="p-0 nav-item" style="cursor: pointer" >
+                        <a class=" d-flex nav-link justify-content-between p-0 " onclick="catTodos()">
+                        &nbsp &nbsp Todo
+                            <i id='cat-00' name='cat' class="pull-right fa fa-fw fa-check-circle mt-1"></i>
                         </a>
-                        <ul class="collapse show list-unstyled pl-3">
-                            <li><a class="text-decoration-none" href="#">chompa</a></li>
-                            <li><a class="text-decoration-none" href="#">manta</a></li>
-                        </ul>
                     </li>
-                    <li class="pb-3">
-                        <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
-                            Ceramica
-                            <i class="pull-right fa fa-fw fa-chevron-circle-down mt-1"></i>
+
+                    <?php usort($categorias, function($a, $b) {
+                        return $a['Nombre'] <=> $b['Nombre'];
+                    });
+                    
+                    foreach($categorias as $categoria): 
+                           
+                    ?>
+                        
+                    <li class="p-0 nav-item" style="cursor: pointer" onclick="cambiarCat('<?= $categoria['ID'] ?>')">
+                        <a class=" d-flex nav-link justify-content-between p-0"  >
+                        &nbsp &nbsp <?= $categoria['Nombre'] ?>
+                            <i id='cat-<?= $categoria['ID'] ?>' name='cat' class="pull-right fa fa-fw fa-check-circle mt-1" hidden></i>
                         </a>
-                        <ul id="collapseTwo" class="collapse list-unstyled pl-3">
-                            <li><a class="text-decoration-none" href="#">Jarrones</a></li>
-                            <li><a class="text-decoration-none" href="#">Ollas</a></li>
-                        </ul>
                     </li>
-                    <li class="pb-3">
-                        <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
-                            productos
-                            <i class="pull-right fa fa-fw fa-chevron-circle-down mt-1"></i>
-                        </a>
-                        <ul id="collapseThree" class="collapse list-unstyled pl-3">
-                            <li><a class="text-decoration-none" href="#">Bolsas</a></li>
-                            <li><a class="text-decoration-none" href="#">Jarrones</a></li>
-                            <li><a class="text-decoration-none" href="#">Sombreros</a></li>
-                        </ul>
-                    </li>
+                    <?php endforeach; ?>
+                    
                 </ul>
             </div>
 
             <div class="col-lg-9">
                 <div class="row">
-                    <div class="col-md-6">
-                        <ul class="list-inline shop-top-menu pb-3 pt-1">
-                            <li class="list-inline-item">
-                                <a class="h3 text-dark text-decoration-none mr-3" href="#">Todo</a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a class="h3 text-dark text-decoration-none mr-3" href="#">Tejidos</a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a class="h3 text-dark text-decoration-none" href="#">Ceramica</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6 pb-4">
-                        <div class="d-flex">
-                            <select class="form-control">
-                                <option>Featured</option>
-                                <option>A to Z</option>
-                                <option>Item</option>
-                            </select>
-                        </div>
-                    </div>
+                    <h1 class="h1" style="text-align: center;"> Nuestros Productos</h1>
                 </div>
                 <div class="row">
                     <?php 
                     use App\Models\ProductoModel;
                     use App\Models\UsuarioModel;
+                    use App\Models\ProductoCategoriaModel;
                     foreach($productos as $producto): 
                         $productoModel = new ProductoModel();
                         $usuarioModel = new UsuarioModel();
                         $prod=$productoModel->find($producto['ID_Producto']);
                         $artesano=$usuarioModel->find($producto['ID_Artesano']);
+                        $productoCategoriaModel = new ProductoCategoriaModel();
+                        $categorias = $productoCategoriaModel->where('ID_Producto', $producto['ID_Producto'])->findAll();
                         
                         ?>
-                        <div class="col-md-4">
+                        <div class="col-md-4 <?php foreach($categorias as $categoria): 
+                                echo 'cat-'.$categoria['ID_Categoria'].' ';
+                            endforeach; ?>" name="prod">
                             <div class="card mb-4 product-wap rounded-0">
                                 <div class="card rounded-0">
                                     <img class="card-img rounded-0 " src="<?= $producto['Imagen_URL']?>" height="400px">
