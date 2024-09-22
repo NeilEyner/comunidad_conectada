@@ -31,7 +31,7 @@ class AuthController extends BaseController
     public function do_register()
     {
         helper(['form']);
-        
+
         if ($this->request->getMethod() == 'POST') {
             $rules = [
                 'Nombre' => 'required|min_length[3]|max_length[50]',
@@ -41,7 +41,7 @@ class AuthController extends BaseController
                 'ID_Rol' => 'required|integer',
                 'Direccion' => 'required',
                 'ID_Comunidad' => 'required|integer',
-    
+
             ];
 
             if ($this->validate($rules)) {
@@ -54,7 +54,8 @@ class AuthController extends BaseController
                     // Guardar la URL de la imagen
                     $imagenURL = base_url('images/avatar/' . $nombreImagen);
                 } else {
-                    $imagenURL = base_url('images/avatar/ava.png');;  
+                    $imagenURL = base_url('images/avatar/ava.png');
+                    ;
                 }
 
                 $hasheadoContrasena = $this->request->getPost('Contrasena');
@@ -88,49 +89,48 @@ class AuthController extends BaseController
         return view('auth/login');
     }
     public function do_login()
-{
-    helper(['form']);
+    {
+        helper(['form']);
 
-    if ($this->request->getMethod() == 'POST') {
-        $rules = [
-            'Correo_electronico' => 'required|valid_email',
-            'Contrasena' => 'required'
-        ];
+        if ($this->request->getMethod() == 'POST') {
+            $rules = [
+                'Correo_electronico' => 'required|valid_email',
+                'Contrasena' => 'required'
+            ];
 
-        if ($this->validate($rules)) {
-            $correo = $this->request->getPost('Correo_electronico');
-            $contrasena = $this->request->getPost('Contrasena');
+            if ($this->validate($rules)) {
+                $correo = $this->request->getPost('Correo_electronico');
+                $contrasena = $this->request->getPost('Contrasena');
 
-            // Buscar el usuario por correo electrónico
-            $usuario = $this->usuarioModel->where('Correo_electronico', $correo)->first();
+                // Buscar el usuario por correo electrónico
+                $usuario = $this->usuarioModel->where('Correo_electronico', $correo)->first();
 
-            if ($usuario) {
-                // Verificar la contraseña si el usuario existe
-                if (password_verify($contrasena, $usuario['Contrasena'])) {
-                    // Verificar el estado del usuario
-                    if ($usuario['Estado'] !== 'ACTIVO') {
-                        return redirect()->back()->with('error', 'Tu cuenta no está activa. Por favor, contacta al administrador.');
+                if ($usuario) {
+                    // Verificar la contraseña si el usuario existe
+                    if (password_verify($contrasena, $usuario['Contrasena'])) {
+                        // Verificar el estado del usuario
+                        if ($usuario['Estado'] !== 'ACTIVO') {
+                            return redirect()->back()->with('error', 'Tu cuenta no está activa. Por favor, contacta al administrador.');
+                        }
+
+                        // Establecer sesión del usuario y redirigir según su rol
+                        $this->setUserSession($usuario);
+                        return $this->redirectBasedOnRole($usuario['ID_Rol']);
+                    } else {
+                        // Contraseña incorrecta
+                        return redirect()->back()->withInput()->with('error', 'contraseña incorrectos');
                     }
-
-                    // Establecer sesión del usuario y redirigir según su rol
-                    $this->setUserSession($usuario);
-                    return $this->redirectBasedOnRole($usuario['ID_Rol']);
                 } else {
-                    // Contraseña incorrecta
-                    return redirect()->back()->withInput()->with('error', 'contraseña incorrectos');
+                    // Correo electrónico no registrado
+                    return redirect()->back()->withInput()->with('error', 'Correo electrónico');
                 }
             } else {
-                // Correo electrónico no registrado
-                return redirect()->back()->withInput()->with('error', 'Correo electrónico');
+                // Error en la validación
+                return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
             }
-        } else {
-            // Error en la validación
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
     }
-}
 
-    
     protected function setUserSession($usuario)
     {
         $data = [
@@ -143,7 +143,6 @@ class AuthController extends BaseController
         session()->set($data);
         return true;
     }
-
     protected function redirectBasedOnRole($rolId)
     {
         switch ($rolId) {
