@@ -73,33 +73,58 @@ https://templatemo.com/tm-559-zay-shop
                         <li class="nav-item">
                             <a class="nav-link" href="<?php echo base_url();?>tienda">Tienda</a>
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link" href="<?php echo base_url();?>contacto">Contacto</a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <a class="nav-link" href="<?php echo base_url();?>comunidades">Comunidades</a>
                         </li>
 
+                        <p>
+                            <?php if(!session()->get('isLoggedIn')){ ?>
+                                <li class="nav-item">
+                                <a class="nav-link" href="<?php echo base_url();?>login">Login</a>
+                            </li>
+                            <?php }else{ ?>
+                                <li class="nav-item">
+                                <a class="nav-link" href="<?php echo base_url();?>logout">Logout</a>
+                            </li>
+                            <?php } ?>
+                            
+                        </p>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?php echo base_url();?>login">Login</a>
-                        </li>
-
-                        
                     </ul>
                 </div>
                 <div class="navbar align-self-center d-flex">
-                    <div class="d-lg-none flex-sm-fill mt-3 mb-4 col-7 col-sm-auto pr-3">
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="inputMobileSearch" placeholder="Search ...">
-                            <div class="input-group-text">
-                                <i class="fa fa-fw fa-search"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <a class="nav-icon d-none d-lg-inline" href="#" data-bs-toggle="modal" data-bs-target="#templatemo_search">
-                        <i class="fa fa-fw fa-search text-dark mr-2"></i>
+
+                    <?php if(session()->get('isLoggedIn')){ ?>
+                        <a class="nav-icon position-relative text-decoration-none" href="<?php echo base_url();?>tienda">
+                        <i class="fa fa-fw fa-cart-arrow-down text-dark mr-1"></i>
+                        <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">7</span>
                     </a>
+                    <?= $ruta='';
+                        if (session()->get('ID_Rol') == 4) {
+                            $ruta = base_url().'dashboard/administrador/admin_dashboard';
+                            }
+                        if (session()->get('ID_Rol') == 1) {
+                            $ruta = base_url().'dashboard/artesano';
+                            }
+                        if (session()->get('ID_Rol') == 2) {
+                            $ruta = base_url().'dashboard/cliente';
+                        }
+                        if (session()->get('ID_Rol') == 3) {
+                            $ruta = base_url().'dashboard/delivery';
+                        }
+                    ?>
+
+
+                    <a class="nav-icon position-relative text-decoration-none" href="<?= $ruta?>" >
+                        <i class="fa fa-fw fa-user text-dark mr-3"></i>
+                        <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark"> +99> </span>
+                    </a>
+                    <?php } ?>
+
+
                 
                 </div>
             </div>
