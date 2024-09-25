@@ -14,6 +14,7 @@ class Home extends BaseController{
         $tieneProductoModel = new TieneProductoModel();
         $resultado = $tieneProductoModel->findAll();
         $data=['titulo'=>'Comunidades','productos'=>$resultado];
+        
         return view('global/header',$data).view('global/homeCarrusel').view('global/homeCategorias') .view('global/homeProducto'). view('global/footer');
     }
 

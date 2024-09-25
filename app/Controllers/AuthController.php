@@ -147,7 +147,7 @@ class AuthController extends BaseController
     {
         switch ($rolId) {
             case 1: // Artesano
-                return redirect()->to(base_url('dashboard/artesano'));
+                return redirect()->to(base_url('dashboard/artesano/arte_dashboard'));
             case 2: // Cliente
                 return redirect()->to(base_url('dashboard/cliente'));
             case 3: // Delivery
