@@ -152,15 +152,24 @@ VALUES
 
 INSERT INTO `tiene_producto` (`ID_Artesano`, `ID_Producto`, `Precio`, `Stock`, `Disponibilidad`, `Imagen_URL`)
 VALUES
-(8, 1, 150.00, 20, 1, 'https://example.com/images/sombrero_cholita.jpg'),
-(9, 2, 250.00, 10, 1, 'https://example.com/images/poncho_alpaca.jpg'),
-(10, 3, 100.00, 15, 1, 'https://example.com/images/ceramica_taraco.jpg'),
-(11, 4, 75.00, 30, 1, 'https://example.com/images/tejido_aguayo.jpg'),
-(12, 5, 350.00, 8, 1, 'https://example.com/images/joyeria_plata.jpg'),
-(8, 6, 60.00, 25, 1, 'https://example.com/images/chuspa_coca.jpg'),
-(9, 7, 500.00, 12, 1, 'https://example.com/images/mascara_diablada.jpg'),
-(10, 8, 120.00, 20, 1, 'https://example.com/images/textil_camelidos.jpg'),
-(11, 9, 200.00, 18, 1, 'https://example.com/images/manta_llama.jpg');
+(8, 1, 150.00, 20, 1, './assets/img/productos/sombrero1.jpg'),
+(9, 2, 250.00, 10, 1, './assets/img/productos/poncho1.jpg'),
+(10, 3, 100.00, 15, 1, './assets/img/productos/ceramica1.jpg'),
+(11, 4, 75.00, 30, 1, './assets/img/productos/aguayo1.png'),
+(12, 5, 350.00, 8, 1, './assets/img/productos/arete1.jpg'),
+(8, 6, 60.00, 25, 1, './assets/img/productos/chuspa1.jpg'),
+(9, 7, 500.00, 12, 1, './assets/img/productos/mascara1.jpg'),
+(10, 8, 120.00, 20, 1, './assets/img/productos/chompa1.jpg'),
+(11, 9, 200.00, 18, 1, './assets/img/productos/manta1.jpg')
+(9, 1, 130.00, 20, 1, './assets/img/productos/sombrero2.jpeg'),
+(11, 2, 150.00, 10, 1, './assets/img/productos/poncho2.jpeg'),
+(8, 3, 120.00, 15, 1, './assets/img/productos/ceramica2.jpg'),
+(12, 4, 80.00, 30, 1, './assets/img/productos/aguayo2.jpg'),
+(9, 5, 5000.00, 8, 1, './assets/img/productos/joyeria2.jpg'),
+(10, 6, 80.00, 25, 1, './assets/img/productos/bolsa2.jpg'),
+(9, 7, 700.00, 12, 1, './assets/img/productos/mascara2.jpg'),
+(10, 8, 170.00, 20, 1, './assets/img/productos/chompa2.jpg'),
+(12, 9, 700.00, 18, 1, './assets/img/productos/manta2.jpg');
 
 INSERT INTO `producto_categoria` (`ID_Producto`, `ID_Categoria`)
 VALUES

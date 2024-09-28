@@ -26,7 +26,35 @@
             <li data-bs-target="#template-mo-zay-hero-carousel" data-bs-slide-to="2"></li>
         </ol>
         <div class="carousel-inner">
-            <div class="carousel-item active">
+
+        <?php $count=0; 
+        foreach ($contenido as $item): 
+            if($item['Tipo_contenido'] == 'CARROUSEL'){
+                if($count==0){
+                    $active='active';
+                }else{
+                    $active='';
+                }
+            ?>
+            <div class="carousel-item <?=  $active ?>">
+                <div class="container">
+                    <div class="row p-5">
+                        <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
+                            <img class="img-fluid" src="./assets/img/imagen2.jpg" alt="">
+                        </div>
+                        <div class="col-lg-6 mb-0 d-flex align-items-center">
+                            <div class="text-align-left align-self-center">
+                                <h1 class="h1 text-success"><b><?=  $item['Titulo'] ?></b> </h1>
+                                <h3 class="h2"><?=  $item['Subtitulo'] ?></h3>
+                                <p><?=  $item['Contenido'] ?></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                                
+            <?php $count++; }endforeach; ?>
+            <!-- <div class="carousel-item active">
                 <div class="container">
                     <div class="row p-5">
                         <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
@@ -79,7 +107,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
         <a class="carousel-control-prev text-decoration-none w-auto ps-3" href="#template-mo-zay-hero-carousel" role="button" data-bs-slide="prev">
             <i class="fas fa-chevron-left"></i>

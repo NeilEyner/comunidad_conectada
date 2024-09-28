@@ -1,5 +1,19 @@
-
-    <script src="./assets/js/scripts/categoria.js"></script>
+<?php
+ $numProd=6;
+ $prodMostrados=0;
+?>
+    
+    
+    <!-- <script  type="module" src="./assets/js/scripts/categoria.js" >
+        import {cambiarCat,catTodos} from './assets/js/scripts/categoria.js';
+        import {mostraProdCat,mostrarTodos} from './assets/js/scripts/producto.js';
+    </script> -->
+    <script   src="./assets/js/scripts/categoria.js" ></script>
+        
+    <script   src="./assets/js/scripts/producto.js" >
+        // import {cambiarCat,catTodos} from './assets/js/scripts/categoria.js';
+    </script>
+    <script src="./assets/js/scripts/tienda.js"></script>
     <!-- Modal -->
     <div class="modal fade bg-white" id="templatemo_search" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -57,23 +71,30 @@
                 <div class="row">
                     <h1 class="h1" style="text-align: center;"> Nuestros Productos</h1>
                 </div>
-                <div class="row">
+                <div class="row" id="div-prod">
                     <?php 
                     use App\Models\ProductoModel;
-                    use App\Models\UsuarioModel;
+                   // use App\Models\UsuarioModel;
                     use App\Models\ProductoCategoriaModel;
+                    $count=0;
+                    $prodMostrados=0;	
                     foreach($productos as $producto): 
                         $productoModel = new ProductoModel();
-                        $usuarioModel = new UsuarioModel();
+                        //$usuarioModel = new UsuarioModel();
                         $prod=$productoModel->find($producto['ID_Producto']);
-                        $artesano=$usuarioModel->find($producto['ID_Artesano']);
+                        //$artesano=$usuarioModel->find($producto['ID_Artesano']);
                         $productoCategoriaModel = new ProductoCategoriaModel();
                         $categorias = $productoCategoriaModel->where('ID_Producto', $producto['ID_Producto'])->findAll();
-                        
+
+                        $hidden="";
+                        if($count>=$numProd){
+                            $hidden="hidden";
+                        }
+                        $count++;
                         ?>
                         <div class="col-md-4 <?php foreach($categorias as $categoria): 
                                 echo 'cat-'.$categoria['ID_Categoria'].' ';
-                            endforeach; ?>" name="prod">
+                            endforeach; ?>" <?php echo $hidden?> name="prod">
                             <div class="card mb-4 product-wap rounded-0">
                                 <div class="card rounded-0">
                                     <img class="card-img rounded-0 " src="<?= $producto['Imagen_URL']?>" height="400px">
@@ -110,21 +131,19 @@
                                 </div>
                             </div>
                         </div>
-                    <?php endforeach; ?>
+
+                        <?php 
+                        $prodMostrados++;
+                    endforeach; ?>
+                        
                 </div>
+                <div class="row" id='prod-Message'></div>
                 <div div="row">
-                    <ul class="pagination pagination-lg justify-content-end">
-                        <li class="page-item disabled">
-                            <a class="page-link active rounded-0 mr-3 shadow-sm border-top-0 border-left-0" href="#" tabindex="-1">1</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link rounded-0 mr-3 shadow-sm border-top-0 border-left-0 text-dark" href="#">2</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link rounded-0 shadow-sm border-top-0 border-left-0 text-dark" href="#">3</a>
-                        </li>
+                    <ul  id="pag-t" class="pagination pagination-lg justify-content-end" >
+                        
                     </ul>
                 </div>
+                <script >paginarTienda(<?php echo ($prodMostrados / $numProd)?>) </script>
             </div>
 
         </div>

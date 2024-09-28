@@ -25,13 +25,20 @@
                 <div class="col-md-4 pt-5">
                     <h2 class="h2 text-light border-bottom pb-3 border-light">Productos</h2>
                     <ul class="list-unstyled text-light footer-link-list">
-                        <li><a class="text-decoration-none" href="#">Luxury</a></li>
-                        <li><a class="text-decoration-none" href="#">Sport Wear</a></li>
-                        <li><a class="text-decoration-none" href="#">Men's Shoes</a></li>
-                        <li><a class="text-decoration-none" href="#">Women's Shoes</a></li>
-                        <li><a class="text-decoration-none" href="#">Popular Dress</a></li>
-                        <li><a class="text-decoration-none" href="#">Gym Accessories</a></li>
-                        <li><a class="text-decoration-none" href="#">Sport Shoes</a></li>
+                    <?php 
+                    use 
+                    App\Models\CategoriaModel;
+                    $categoriaModel = new CategoriaModel();
+                    $categorias = $categoriaModel->findAll();
+                    $count =0;
+                    foreach($categorias as $categoria): 
+                           if($count>4)
+                                 break;
+                            $count++;
+                    ?>
+                        <li><a class="text-decoration-none" href="<?php echo base_url();?>tienda"><?= $categoria['Nombre'] ?></a></li>
+                    <?php endforeach; ?>
+                        
                     </ul>
                 </div>
 
@@ -68,13 +75,13 @@
                         </li>
                     </ul>
                 </div>
-                <div class="col-auto">
+                <!-- <div class="col-auto">
                     <label class="sr-only" for="subscribeEmail">Email address</label>
                     <div class="input-group mb-2">
                         <input type="text" class="form-control bg-dark border-light" id="subscribeEmail" placeholder="Email address">
                         <div class="input-group-text btn-success text-light">Subscribe</div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
 

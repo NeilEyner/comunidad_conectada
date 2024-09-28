@@ -55,10 +55,12 @@ INSERT IGNORE INTO `comunidad` (`ID`, `Nombre`, `Descripcion`, `Ubicacion`, `Lat
 
 CREATE TABLE IF NOT EXISTS `contenido_pagina` (
   `ID` int NOT NULL AUTO_INCREMENT,
-  `Tipo_contenido` enum('MISION','VISION','OBJETIVO','VALORES','HISTORIA','OTRO') NOT NULL,
+  `Tipo_contenido` enum('MISION','VISION','OBJETIVO','VALORES','HISTORIA','OTRO','CARROUSEL') NOT NULL,
   `Titulo` varchar(255) DEFAULT NULL,
   `Contenido` text NOT NULL,
   `ID_Usuario` int DEFAULT NULL,
+  `Subtitulo` varchar(255) DEFAULT NULL,
+  `Imagen` varchar(255) DEFAULT NULL,
   `Fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Fecha_actualizacion` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID`),
@@ -66,18 +68,22 @@ CREATE TABLE IF NOT EXISTS `contenido_pagina` (
   CONSTRAINT `contenido_pagina_ibfk_1` FOREIGN KEY (`ID_Usuario`) REFERENCES `usuario` (`ID`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO `contenido_pagina` (`ID`, `Tipo_contenido`, `Titulo`, `Contenido`, `ID_Usuario`, `Fecha_creacion`, `Fecha_actualizacion`) VALUES
-  (1, 'MISION', 'Misión', 'Ofrecer una experiencia única de compra de productos artesanales que reflejen la riqueza cultural y la habilidad de los artesanos locales. Nos dedicamos a apoyar a las comunidades artesanas, promoviendo su trabajo a nivel Nacional, mientras proporcionamos a nuestros clientes productos únicos y auténticos que cuenten historias y fomenten el aprecio por las tradiciones.', 1, '2024-09-03 17:39:31', NULL),
-  (2, 'VISION', 'Visión', 'Nuestra visión es ser la plataforma líder en la promoción y venta de productos artesanales, promoviendo el valor cultural, contribuyendo al desarrollo económico y social de la región a travéz de una oferta diversifidaca y de calidad. Así mismo preservar las tradiciones y tecnicas ancestrales de nuestras comunidades', 1, '2024-09-03 17:39:31', NULL),
-  (3, 'OBJETIVO', 'Promover el Comercio Justo:', 'Asegurando que todos los artesanos reciban una compensación justa por su trabajo y que las condiciones laborales sean dignas y respetadas', 1, '2024-09-03 17:39:31', NULL),
-  (4, 'OBJETIVO', 'Preservar Tradiciones Culturales:', 'Trabajando con artesanos para mantener y revitalizar técnicas y estilos tradicionales en peligro de extinción.', 1, '2024-09-03 17:39:31', NULL),
-  (5, 'OBJETIVO', 'Fomentar la Sostenibilidad:', 'Utilizando prácticas de negocio que minimicen el impacto ambiental y promuevan la utilización de materiales sostenibles en los productos.', 1, '2024-09-03 17:39:31', NULL),
-  (6, 'OBJETIVO', 'Ampliar el Alcance del Mercado:', 'Desarrollando estrategias de marketing y distribución que amplíen la visibilidad y el acceso a productos artesanales a nivel nacional.', 1, '2024-09-03 17:39:31', NULL),
-  (7, 'VALORES', 'Autenticidad:', 'Valoramos la autenticidad en cada producto y nos aseguramos de que cada pieza sea genuina y refleje el trabajo y la cultura del artesano.', 1, '2024-09-03 17:39:31', NULL),
-  (8, 'VALORES', 'Respeto:', 'Respetamos y valoramos las tradiciones culturales y el trabajo de los artesanos, fomentando una relación de colaboración y apoyo mutuo.', 1, '2024-09-03 17:39:31', NULL),
-  (9, 'VALORES', 'Sostenibilidad:', 'Estamos comprometidos con prácticas sostenibles que protejan el medio ambiente y promuevan el uso responsable de los recursos.', 1, '2024-09-03 17:39:31', NULL),
-  (10, 'VALORES', 'Calidad:', 'Priorizamos la calidad en todos nuestros productos, garantizando que cada artículo cumpla con los estándares más altos de artesanía y durabilidad.', 1, '2024-09-03 17:39:31', NULL),
-  (11, 'VALORES', 'Integridad:', 'Operamos con transparencia e integridad en todas nuestras prácticas de negocio, construyendo confianza y credibilidad con nuestros clientes y socios.', 1, '2024-09-03 17:39:31', NULL);
+INSERT INTO `contenido_pagina` (`ID`, `Tipo_contenido`, `Titulo`, `Contenido`, `ID_Usuario`,`SUbtitulo`,`Imagen`, `Fecha_creacion`, `Fecha_actualizacion`) VALUES
+  (1, 'MISION', 'Misión', 'Ofrecer una experiencia única de compra de productos artesanales que reflejen la riqueza cultural y la habilidad de los artesanos locales. Nos dedicamos a apoyar a las comunidades artesanas, promoviendo su trabajo a nivel Nacional, mientras proporcionamos a nuestros clientes productos únicos y auténticos que cuenten historias y fomenten el aprecio por las tradiciones.', 1, NULL, NULL, '2024-09-03 17:39:31', NULL),
+  (2, 'VISION', 'Visión', 'Nuestra visión es ser la plataforma líder en la promoción y venta de productos artesanales, promoviendo el valor cultural, contribuyendo al desarrollo económico y social de la región a travéz de una oferta diversifidaca y de calidad. Así mismo preservar las tradiciones y tecnicas ancestrales de nuestras comunidades', 1,NULL, NULL, '2024-09-03 17:39:31', NULL),
+  (3, 'OBJETIVO', 'Promover el Comercio Justo:', 'Asegurando que todos los artesanos reciban una compensación justa por su trabajo y que las condiciones laborales sean dignas y respetadas', 1,NULL, NULL, '2024-09-03 17:39:31', NULL),
+  (4, 'OBJETIVO', 'Preservar Tradiciones Culturales:', 'Trabajando con artesanos para mantener y revitalizar técnicas y estilos tradicionales en peligro de extinción.', 1,NULL, NULL, '2024-09-03 17:39:31', NULL),
+  (5, 'OBJETIVO', 'Fomentar la Sostenibilidad:', 'Utilizando prácticas de negocio que minimicen el impacto ambiental y promuevan la utilización de materiales sostenibles en los productos.', 1,NULL, NULL, '2024-09-03 17:39:31', NULL),
+  (6, 'OBJETIVO', 'Ampliar el Alcance del Mercado:', 'Desarrollando estrategias de marketing y distribución que amplíen la visibilidad y el acceso a productos artesanales a nivel nacional.', 1,NULL, NULL, '2024-09-03 17:39:31', NULL),
+  (7, 'VALORES', 'Autenticidad:', 'Valoramos la autenticidad en cada producto y nos aseguramos de que cada pieza sea genuina y refleje el trabajo y la cultura del artesano.', 1,NULL, NULL, '2024-09-03 17:39:31', NULL),
+  (8, 'VALORES', 'Respeto:', 'Respetamos y valoramos las tradiciones culturales y el trabajo de los artesanos, fomentando una relación de colaboración y apoyo mutuo.', 1, NULL, NULL,'2024-09-03 17:39:31', NULL),
+  (9, 'VALORES', 'Sostenibilidad:', 'Estamos comprometidos con prácticas sostenibles que protejan el medio ambiente y promuevan el uso responsable de los recursos.', 1, NULL, NULL,'2024-09-03 17:39:31', NULL),
+  (10, 'VALORES', 'Calidad:', 'Priorizamos la calidad en todos nuestros productos, garantizando que cada artículo cumpla con los estándares más altos de artesanía y durabilidad.', 1,NULL, NULL, '2024-09-03 17:39:31', NULL),
+  (11, 'VALORES', 'Integridad:', 'Operamos con transparencia e integridad en todas nuestras prácticas de negocio, construyendo confianza y credibilidad con nuestros clientes y socios.', 1,NULL, NULL, '2024-09-03 17:39:31', NULL),
+  (12, 'CARROUSEL', 'Celebrando la Artesanía Única', 'Donde cada pieza cuenta una historia. Desde joyería delicada hasta decoraciones cautivadoras, nuestros productos son elaborados con pasión y dedicación por artesanos talentosos. Cada artículo es una obra de arte que trae consigo la tradición y la creatividad de sus creadores. Sumérgete en un mundo de belleza auténtica y encuentra el detalle perfecto para tu hogar o para regalar.', 1, 'Descubre la magia de lo hecho a mano en nuestra tienda.','./assets/img/imagen2.jpg','2024-09-03 17:39:31', NULL),  
+  (13, 'CARROUSEL', 'Hecho con Esmero y creatividad', 'Cada pieza está cuidadosamente elaborada con materiales de alta calidad, garantizando no solo un diseño excepcional, sino también una historia detrás de cada creación. Explora nuestra colección y déjate inspirar por la diversidad y originalidad de nuestros productos, todos creados con un toque personal y una gran atención al detalle.', 1, 'Nos enorgullece ofrecer artesanías únicas que reflejan la esencia de la creatividad y el arte tradicional.','./assets/img/imagen2.jpg','2024-09-03 17:39:31', NULL), 
+  (14, 'CARROUSEL', 'Tu destino para regalos especiales', 'En nuestra tienda, encontrarás artesanías exquisitas que son perfectas y creativas. Desde piezas elegantes hasta detalles únicos, cada artículo está diseñado para destacar y hacer sonreír a quien lo reciba. Navega por nuestras categorías y encuentra ese regalo perfecto que hará que cada momento sea aún más especial.', 1, '¿Buscas un recuerdo inolvidable o simplemente quieres consentirte?.','./assets/img/imagen2.jpg','2024-09-03 17:39:31', NULL); 
+ 
 
 CREATE TABLE IF NOT EXISTS `detalle_compra` (
   `ID_Compra` int NOT NULL,

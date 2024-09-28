@@ -13,7 +13,9 @@ class Home extends BaseController{
     {
         $tieneProductoModel = new TieneProductoModel();
         $resultado = $tieneProductoModel->findAll();
-        $data=['titulo'=>'Comunidades','productos'=>$resultado];
+        $contenidoModel = new ContenidoModel();
+        $resultado2 = $contenidoModel->findAll();
+        $data=['titulo'=>'Comunidades','productos'=>$resultado,'contenido'=>$resultado2];
         return view('global/header',$data).view('global/homeCarrusel').view('global/homeCategorias') .view('global/homeProducto'). view('global/footer');
     }
 
@@ -23,7 +25,7 @@ class Home extends BaseController{
         $resultado = $contenidoModel->findAll();
         
         $data=['titulo'=>'Nosotros','contenido'=>$resultado];
-        return view('global/header',$data).view('global/nosotros',$data).view('global/servicios') .view('global/marcas'). view('global/footer');
+        return view('global/header',$data).view('global/nosotros',$data).view('global/servicios') . view('global/footer');
     }
 
     public function tienda(): string
