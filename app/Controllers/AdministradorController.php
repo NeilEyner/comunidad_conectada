@@ -11,6 +11,8 @@ use App\Models\EnvioModel;
 use App\Models\PagoModel;
 use App\Models\ProductoModel;
 use App\Models\CompraModel;
+use App\Models\TieneProductoModel;
+
 
 class AdministradorController extends Controller
 {
@@ -383,7 +385,7 @@ class AdministradorController extends Controller
                 $data = [
                     'Titulo' => $this->request->getPost('Titulo'),
                     'Contenido' => $this->request->getPost('Contenido'),
-                    'Fecha_actualizacion' => date('Y-m-d H:i:s') 
+                    'Fecha_actualizacion' => date('Y-m-d H:i:s')
                 ];
                 $model->update($id, $data);
                 return redirect()->to(base_url('dashboard/administrador/admin_contenidopagina'));
@@ -591,32 +593,31 @@ class AdministradorController extends Controller
         helper(['form']);
         $model = new ProductoModel();
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->getMethod() == 'POST') {
             $rules = [
                 'Nombre' => 'required|max_length[255]',
-                'Descripcion' => 'required',
-                'Precio' => 'required|numeric',
             ];
 
             if ($this->validate($rules)) {
                 $data = [
                     'Nombre' => $this->request->getPost('Nombre'),
                     'Descripcion' => $this->request->getPost('Descripcion'),
-                    'Precio' => $this->request->getPost('Precio'),
-                    'ID_Categoria' => $this->request->getPost('ID_Categoria'),
                 ];
 
                 if ($model->insert($data)) {
-                    return redirect()->back();
+                    return redirect()->to(base_url('dashboard/administrador/admin_producto'))->with('message', 'prod agregado correctamente.');
+
                 } else {
-                    return redirect()->back();
+                    return redirect()->to(base_url('dashboard/administrador/admin_producto'))->with('message', 'prod agregado correctamente.');
+
                 }
             } else {
-                return redirect()->back();
+                return redirect()->to(base_url('dashboard/administrador/admin_producto'))->with('message', 'prod agregado correctamente.');
+
             }
         }
 
-        return view('dashboard/administrador/admin_agregar_producto');
+        return redirect()->to(base_url('dashboard/administrador/admin_producto'))->with('message', 'prod agregado correctamente.');
     }
 
     public function admin_editar_producto($id)
@@ -629,30 +630,28 @@ class AdministradorController extends Controller
             return redirect()->back();
         }
 
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->getMethod() == 'POST') {
             $rules = [
                 'Nombre' => 'required|max_length[255]',
                 'Descripcion' => 'required',
-                'Precio' => 'required|numeric',
             ];
 
             if ($this->validate($rules)) {
                 $data = [
                     'Nombre' => $this->request->getPost('Nombre'),
-                    'Descripcion' => $this->request->getPost('Descripcion'),
-                    'Precio' => $this->request->getPost('Precio'),
-                    'ID_Categoria' => $this->request->getPost('ID_Categoria'),
+                    'Descripcion' => $this->request->getPost('Descripcion')
                 ];
 
                 $model->update($id, $data);
-                return redirect()->back();
+                return redirect()->to(base_url('dashboard/administrador/admin_producto'))->with('message', 'prod agregado correctamente.');
+
             } else {
-                return redirect()->back();
+                return redirect()->to(base_url('dashboard/administrador/admin_producto'))->with('message', 'prod agregado correctamente.');
+
             }
         }
 
-        $data['producto'] = $producto;
-        return view('dashboard/administrador/admin_editar_producto', $data);
+        return redirect()->to(base_url('dashboard/administrador/admin_producto'))->with('message', 'prod actualizado correctamente.');
     }
 
     public function admin_eliminar_producto($id)
@@ -660,10 +659,9 @@ class AdministradorController extends Controller
         $model = new ProductoModel();
         if ($model->find($id)) {
             $model->delete($id);
-            return redirect()->back();
-        } else {
-            return redirect()->back();
-        }
+        } 
+        return redirect()->to(base_url('dashboard/administrador/admin_producto'))->with('message', 'prod agregado correctamente.');
+
     }
 
     // ADMINISTRADOR COMPRA
@@ -752,5 +750,113 @@ class AdministradorController extends Controller
             return redirect()->back();
         }
     }
+    //tiene_productos
+    public function admin_tproductos()
+    {
+        $model = new TieneProductoModel();
+        $usuarioModel = new UsuarioModel();  // Modelo de artesanos
+        $productoModel = new ProductoModel();
+
+        $data['productos'] = $model->findAll();
+        $data['artesanos'] = $usuarioModel->findAll();
+        $data['productos_list'] = $productoModel->findAll();
+
+        return view('dashboard/administrador/admin_productos', $data);
+    }
+
+    public function admin_editar_tproducto($idArtesano, $idProducto)
+    {
+        $model = new TieneProductoModel();
+        helper(['form']);
+        $producto = $model->where('ID_Artesano', $idArtesano)->where('ID_Producto', $idProducto)->first();
+
+        if (!$producto) {
+            return redirect()->back()->with('message', 'Producto no encontrado.');
+        }
+
+        $rules = [
+            'Precio' => 'required|decimal',
+            'Stock' => 'required|integer',
+            'Disponibilidad' => 'required|integer',
+        ];
+
+        $imagen = $this->request->getFile('Imagen_URL');
+
+        if ($imagen && $imagen->isValid() && !$imagen->hasMoved()) {
+            $nombreImagen = $imagen->getRandomName();
+            $imagen->move(FCPATH . 'images/productos/', $nombreImagen);
+            $imagenURL = base_url('images/productos/' . $nombreImagen);
+        }
+
+        $data = [
+            'Precio' => $this->request->getPost('Precio'),
+            'Stock' => $this->request->getPost('Stock'),
+            'Disponibilidad' => $this->request->getPost('Disponibilidad'),
+        ];
+
+        if (isset($imagenURL)) {
+            $data['Imagen_URL'] = $imagenURL;
+        }
+
+        $model->where('ID_Artesano', $idArtesano)->where('ID_Producto', $idProducto)->update(null, $data);
+
+        return redirect()->to(base_url('dashboard/administrador/admin_productos'))->with('message', 'Producto actualizado correctamente.');
+    }
+
+    public function admin_agregar_tproducto()
+    {
+        helper(['form']);
+        $model = new TieneProductoModel();
+
+        if ($this->request->getMethod() == 'POST') {
+            $rules = [
+                'ID_Artesano' => 'required|integer',
+                'ID_Producto' => 'required|integer',
+                'Precio' => 'required|decimal',
+                'Stock' => 'required|integer',
+                'Disponibilidad' => 'required|integer',
+            ];
+
+            if ($this->validate($rules)) {
+                $imagen = $this->request->getFile('imagen');
+                if ($imagen && $imagen->isValid() && !$imagen->hasMoved()) {
+                    $nombreImagen = $imagen->getRandomName();
+                    $imagen->move(FCPATH . 'images/productos/', $nombreImagen);
+                    $imagenURL = base_url('images/productos/' . $nombreImagen);
+                } else {
+                    $imagenURL = base_url('images/productos/default.png');
+                }
+
+                $data = [
+                    'ID_Artesano' => $this->request->getPost('ID_Artesano'),
+                    'ID_Producto' => $this->request->getPost('ID_Producto'),
+                    'Precio' => $this->request->getPost('Precio'),
+                    'Stock' => $this->request->getPost('Stock'),
+                    'Disponibilidad' => $this->request->getPost('Disponibilidad'),
+                    'Imagen_URL' => $imagenURL,
+                ];
+
+                if ($model->insert($data)) {
+                    return redirect()->to(base_url('dashboard/administrador/admin_productos'))->with('success', 'Producto agregado exitosamente');
+                } else {
+                    return redirect()->back()->withInput()->with('error', 'Ocurrió un error al agregar el producto');
+                }
+            } else {
+                return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            }
+        }
+    }
+    public function admin_eliminar_tproducto($idArtesano, $idProducto)
+    {
+        $model = new TieneProductoModel();
+
+        if ($model->where('ID_Artesano', $idArtesano)->where('ID_Producto', $idProducto)->first()) {
+            $model->where('ID_Artesano', $idArtesano)->where('ID_Producto', $idProducto)->delete();
+            return redirect()->back()->with('message', 'Producto eliminado correctamente.');
+        } else {
+            return redirect()->back()->with('error', 'Producto no encontrado.');
+        }
+    }
+
 
 }

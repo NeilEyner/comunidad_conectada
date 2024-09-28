@@ -1,26 +1,24 @@
-<?php include 'header_admin.php'; ?>
+<?php include 'header.php'; ?>
 <main class="h-full overflow-y-auto">
   <div class="container px-6 mx-auto grid">
-    <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">PRODUCTOS</h2>
+    <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">PRODUCTOS DE ARTESANOS</h2>
     <div>
       <button @click="openModal"
         class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
         Agregar </button>
     </div>
-
     <h4 class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">LISTA</h4>
 
     <div class="w-full overflow-hidden rounded-lg shadow-xs">
       <div class="w-full overflow-x-auto">
-        <table class="w-full ">
+        <table class="w-full">
           <thead>
             <tr
               class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
-
               <th class="px-4 py-3">Nombre</th>
-              <th class="px-4 py-3">Descripción</th>
-              <th class="px-4 py-3">Fecha de Creación</th>
-              <th class="px-4 py-3">Fecha de Actualización</th>
+              <th class="px-4 py-3">Precio</th>
+              <th class="px-4 py-3">Stock</th>
+              <th class="px-4 py-3">Disponibilidad</th>
               <th class="px-4 py-3">Acciones</th>
             </tr>
           </thead>
@@ -29,24 +27,35 @@
               <?php foreach ($productos as $producto): ?>
                 <tr class="text-gray-700 dark:text-gray-400">
                   <td class="px-4 py-3 text-sm">
-
-                    <?php echo esc($producto['Nombre']); ?>
+                    <div class="flex items-center text-sm">
+                      <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
+                        <img class="object-cover w-full h-full " src="<?php echo esc($producto['Imagen_URL']); ?>"
+                          alt="<?php echo esc($producto['Nombre']); ?>" />
+                        <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
+                      </div>
+                      <div>
+                        <p class="font-semibold"><?php echo esc($producto['Nombre']); ?></p>
+                        <p class="text-xs text-gray-600 dark:text-gray-400"><?php echo esc($producto['ID_Producto']); ?></p>
+                      </div>
+                    </div>
                   </td>
-                  <td class="px-4 py-3 text-sm"><?php echo esc($producto['Descripcion']); ?></td>
-                  <td class="px-4 py-3 text-sm"><?php echo esc($producto['Fecha_creacion']); ?></td>
-                  <td class="px-4 py-3 text-sm"><?php echo esc($producto['Fecha_actualizacion']); ?></td>
+                  <td class="px-4 py-3 text-sm"><?php echo esc($producto['Precio']); ?></td>
+                  <td class="px-4 py-3 text-sm"><?php echo esc($producto['Stock']); ?></td>
+                  <td class="px-4 py-3 text-sm">
+                    <?php echo $producto['Disponibilidad'] ? 'Disponible' : 'No disponible'; ?>
+                  </td>
                   <td class="px-4 py-3">
                     <div class="flex items-center space-x-4 text-sm">
                       <button
                         class="openModalButton flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
-                        aria-label="Edit" data-producto-id="<?php echo $producto['ID']; ?>">
+                        aria-label="Edit" data-producto-id="<?php echo $producto['ID_Producto']; ?>">
                         <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
                           <path
                             d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z">
                           </path>
                         </svg>
                       </button>
-                      <form action="<?= base_url('admin/eliminar_producto/' .  $producto['ID'])?>" method="post">
+                      <form action="<?= base_url('artesano/eliminar_producto/' .  $producto['ID_Artesano'] . '/' . $producto['ID_Producto']) ?>" method="post">
                         <button type="submit"
                           class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-red-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
                           aria-label="Delete">
@@ -60,18 +69,17 @@
                     </div>
                   </td>
                 </tr>
-
                 <!-- Modal para cada producto -->
                 <div
                   class="modal hidden fixed inset-0 z-30 flex items-end bg-black bg-opacity-50 sm:items-center sm:justify-center"
-                  id="modal-<?php echo $producto['ID']; ?>">
+                  id="modal-<?php echo $producto['ID_Producto']; ?>">
                   <div
                     class="modal-content w-full px-6 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-xl"
                     role="dialog">
                     <header class="flex justify-end">
                       <button
                         class="closeModalButton inline-flex items-center justify-center w-6 h-6 text-gray-400 transition-colors duration-150 rounded dark:hover:text-gray-200 hover:text-gray-700"
-                        aria-label="close" data-producto-id="<?php echo $producto['ID']; ?>">
+                        aria-label="close" data-producto-id="<?php echo $producto['ID_Producto']; ?>">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" role="img" aria-hidden="true">
                           <path
                             d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -82,29 +90,61 @@
                     <div class="mt-4 mb-6">
                       <p class="mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300">Editar Producto</p>
                       <p class="text-sm text-gray-700 dark:text-gray-400">Producto ID:
-                        <?php echo $producto['ID']; ?>
+                        <?php echo $producto['ID_Producto']; ?>
                       </p>
 
                       <!-- Formulario para editar producto -->
-                      <form action="<?= base_url('admin/editar_producto/'.  $producto['ID']) ?>" method="post">
-                        <!-- ID del producto (oculto) -->
-                        <input type="hidden" name="ID" value="<?php echo isset($producto['ID']) ? $producto['ID'] : ''; ?>">
+                      <form
+                        action="<?= base_url('artesano/editar_productos/' . $producto['ID_Artesano'] . '/' . $producto['ID_Producto']) ?>"
+                        method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="ID_Producto" value="<?php echo $producto['ID_Producto']; ?>">
 
                         <div class="mb-4">
-                          <label for="Nombre"
-                            class="block text-sm font-medium text-gray-700 dark:text-gray-400">Nombre</label>
-                          <input type="text" name="Nombre" id="Nombre"
+                          <label for="ID_Producto" class="block text-sm font-medium text-gray-700 dark:text-gray-400">ID
+                            Producto</label>
+                          <select id="ID_Producto" name="ID_Producto" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 
+              focus:outline-none focus:shadow-outline-purple dark:text-gray-300 form-select" required>
+                            <?php foreach ($productos_list as $prod): ?>
+                              <option value="<?= esc($prod['ID']); ?>" <?= ($prod['ID'] == $producto['ID_Producto']) ? 'selected' : ''; ?>>
+                                <?= esc($prod['Nombre']); ?>
+                              </option>
+                            <?php endforeach; ?>
+                          </select>
+                        </div>
+
+
+                        <div class="mb-4">
+                          <label for="Precio"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-400">Precio</label>
+                          <input type="text" name="Precio" id="Precio"
                             class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-input"
-                            value="<?php echo isset($producto['Nombre']) ? $producto['Nombre'] : ''; ?>"
-                            placeholder="Ingrese el nombre del producto" required>
+                            placeholder="Ingrese el precio" value="<?php echo $producto['Precio']; ?>">
                         </div>
 
                         <div class="mb-4">
-                          <label for="Descripcion"
-                            class="block text-sm font-medium text-gray-700 dark:text-gray-400">Descripción</label>
-                          <textarea name="Descripcion" id="Descripcion"
-                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-textarea"
-                            placeholder="Ingrese la descripción del producto"><?php echo isset($producto['Descripcion']) ? $producto['Descripcion'] : ''; ?></textarea>
+                          <label for="Stock"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-400">Stock</label>
+                          <input type="number" name="Stock" id="Stock"
+                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-input"
+                            placeholder="Ingrese el stock" value="<?php echo $producto['Stock']; ?>">
+                        </div>
+
+                        <div class="mb-4">
+                          <label for="Disponibilidad"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-400">Disponibilidad</label>
+                          <select name="Disponibilidad" id="Disponibilidad"
+                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-select">
+                            <option value="1" <?= ($producto['Disponibilidad'] == 1) ? 'selected' : ''; ?>>Disponible</option>
+                            <option value="0" <?= ($producto['Disponibilidad'] == 0) ? 'selected' : ''; ?>>No Disponible
+                            </option>
+                          </select>
+                        </div>
+
+                        <div class="mb-4">
+                          <label for="Imagen_URL"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-400">Imagen</label>
+                          <input type="file" name="Imagen_URL" id="Imagen_URL"
+                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-input">
                         </div>
 
                         <!-- Botones del formulario -->
@@ -112,27 +152,27 @@
                           class="flex flex-col items-center justify-end px-6 py-3 -mx-6 -mb-4 space-y-4 sm:space-y-0 sm:space-x-6 sm:flex-row bg-gray-50 dark:bg-gray-800">
                           <button type="button"
                             class="closeModalButton w-full px-5 py-3 text-sm font-medium leading-5 text-gray-700 transition-colors duration-150 border border-gray-300 rounded-lg dark:text-gray-400 sm:px-4 sm:py-2 sm:w-auto hover:border-gray-500 focus:outline-none focus:shadow-outline-gray"
-                            data-producto-id="<?php echo isset($producto['ID']) ? $producto['ID'] : ''; ?>">Cancelar</button>
+                            data-producto-id="<?php echo $producto['ID_Producto']; ?>">Cancelar</button>
                           <button type="submit"
                             class="w-full px-5 py-3 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg sm:w-auto sm:px-4 sm:py-2 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">Aceptar</button>
                         </footer>
                       </form>
-
                     </div>
                   </div>
                 </div>
 
-              <?php endforeach; ?>
-            <?php else: ?>
+              <?php endforeach; ?> <?php else: ?>
               <tr>
-                <td colspan="5">No se encontraron productos.</td>
-              </tr>
-            <?php endif; ?>
+                <td colspan="7" class="text-center py-4">No se encontraron productos de artesanos.</td>
+              </tr> <?php endif; ?>
           </tbody>
         </table>
       </div>
     </div>
+
   </div>
+
+
 
   <!-- Modal backdrop. This what you want to place close to the closing body tag -->
   <div x-show="isModalOpen" x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0"
@@ -160,29 +200,55 @@
         </button>
       </header>
       <!-- Modal body -->
-      <form action="<?= base_url('admin/agregar_producto') ?>" method="post">
-        <!-- ID del producto (oculto) -->
-        <input type="hidden" name="ID" >
+      <form action="<?= base_url('artesano/agregar_producto') ?>" method="post" enctype="multipart/form-data">
+        <div class="mb-4">
+          <label for="ID_Producto" class="block text-sm font-medium text-gray-700 dark:text-gray-400">
+            Producto</label>
+          <select id="ID_Producto" name="ID_Producto" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 
+              focus:outline-none focus:shadow-outline-purple dark:text-gray-300 form-select" required>
+            <?php foreach ($productos_list as $prod): ?>
+              <option value="<?= esc($prod['ID']); ?>" >
+                <?= esc($prod['Nombre']); ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+        </div>
 
         <div class="mb-4">
-          <label for="Nombre" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Nombre</label>
-          <input type="text" name="Nombre" id="Nombre"
+          <label for="Precio" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Precio</label>
+          <input type="text" name="Precio" id="Precio"
             class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-input"
-            placeholder="Ingrese el nombre del producto" required>
+            placeholder="Ingrese el precio">
         </div>
+
         <div class="mb-4">
-          <label for="Descripcion"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-400">Descripción</label>
-          <textarea name="Descripcion" id="Descripcion"
-            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-textarea"
-            placeholder="Ingrese la descripción del producto"></textarea>
+          <label for="Stock" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Stock</label>
+          <input type="number" name="Stock" id="Stock"
+            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-input"
+            placeholder="Ingrese el stock">
         </div>
-        <!-- Botones del formulario -->
-        <footer
-          class="flex flex-col items-center justify-end px-6 py-3 -mx-6 -mb-4 space-y-4 sm:space-y-0 sm:space-x-6 sm:flex-row bg-gray-50 dark:bg-gray-800">
-          <button type="submit"
-            class="w-full px-5 py-3 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg sm:w-auto sm:px-4 sm:py-2 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">Aceptar</button>
-        </footer>
+
+        <div class="mb-4">
+          <label for="Disponibilidad"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-400">Disponibilidad</label>
+          <select name="Disponibilidad" id="Disponibilidad"
+            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-select">
+            <option value="1" selected>Disponible</option>
+            <option value="0">No Disponible</option>
+          </select>
+        </div>
+
+        <div class="mb-4">
+          <label for="Imagen_URL" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Imagen</label>
+          <input type="file" name="Imagen_URL" id="Imagen_URL"
+            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-input">
+        </div>
+
+
+        <button type="submit"
+          class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+          Registrarse
+        </button>
       </form>
       <footer
         class="flex flex-col items-center justify-end px-6 py-3 -mx-6 -mb-4 space-y-4 sm:space-y-0 sm:space-x-6 sm:flex-row bg-gray-50 dark:bg-gray-800">
@@ -199,23 +265,7 @@
 
 
 </main>
-
-<script>
-  document.querySelectorAll('.openModalButton').forEach(button => {
-    button.addEventListener('click', () => {
-      const productoId = button.getAttribute('data-producto-id');
-      document.getElementById(`modal-${productoId}`).classList.remove('hidden');
-    });
-  });
-
-  document.querySelectorAll('.closeModalButton').forEach(button => {
-    button.addEventListener('click', () => {
-      const productoId = button.getAttribute('data-producto-id');
-      document.getElementById(`modal-${productoId}`).classList.add('hidden');
-    });
-  });
-</script>
-
+<script> document.querySelectorAll('.openModalButton').forEach(button => { button.addEventListener('click', () => { const productoId = button.getAttribute('data-producto-id'); document.getElementById(`modal-${productoId}`).classList.remove('hidden'); }); }); document.querySelectorAll('.closeModalButton').forEach(button => { button.addEventListener('click', () => { const productoId = button.getAttribute('data-producto-id'); document.getElementById(`modal-${productoId}`).classList.add('hidden'); }); }); </script>
 </body>
 
 </html>

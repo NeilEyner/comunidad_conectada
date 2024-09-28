@@ -23,8 +23,13 @@ $routes->get('/nosotros', 'Home::nosotros');
 $routes->get('/tienda', 'Home::tienda');
 $routes->get('/contacto', 'Home::contacto');
 $routes->get('/comunidades', 'Home::comunidades');
+//rutas artesano
+$routes->get('dashboard/artesano/arte_dashboard', 'ArtesanoController::artesano');
+$routes->get('dashboard/artesano/arte_productos', 'ArtesanoController::artesano_productos');
+$routes->post('artesano/editar_productos/(:num)/(:any)', 'ArtesanoController::artesano_editar_producto/$1/$2');
+$routes->post('artesano/agregar_producto', 'ArtesanoController::artesano_agregar_producto');
+$routes->post('artesano/eliminar_producto/(:num)/(:any)', 'ArtesanoController::artesano_eliminar_producto/$1/$2');
 
-$routes->get('dashboard/artesano', 'AdministradorController::artesano');
 $routes->get('dashboard/cliente', 'AdministradorController::cliente');
 $routes->get('dashboard/delivery', 'AdministradorController::delivery');
 
@@ -54,5 +59,15 @@ $routes->get('dashboard/administrador/admin_rol', 'AdministradorController::admi
 $routes->get('dashboard/administrador/admin_contenidopagina', 'AdministradorController::admin_contenidopagina');
 $routes->get('dashboard/administrador/admin_envio', 'AdministradorController::admin_envio');
 $routes->get('dashboard/administrador/admin_pago', 'AdministradorController::admin_pago');
+//PRODCUTOS
 $routes->get('dashboard/administrador/admin_producto', 'AdministradorController::admin_producto');
+$routes->post('admin/agregar_producto', 'AdministradorController::admin_agregar_producto');
+$routes->post( 'admin/editar_producto/(:num)', 'AdministradorController::admin_editar_producto/$1');
+$routes->post('admin/eliminar_producto/(:num)', 'AdministradorController::admin_eliminar_producto/$1');
+
+
+
+
+
+
 $routes->get('dashboard/administrador/admin_compra', 'AdministradorController::admin_compra');
