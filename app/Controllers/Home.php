@@ -5,7 +5,7 @@ use App\Models\ContenidoModel;
 use App\Models\ComunidadModel;
 use App\Models\TieneProductoModel;
 use App\Models\CategoriaModel;
-
+use App\Models\ProductoModel;
 
 class Home extends BaseController{
 
@@ -50,5 +50,15 @@ class Home extends BaseController{
         $resultado = $comunidadModel->findAll();
         $data=['titulo'=>'Comunidades','comunidad'=>$resultado];
         return view('global/header',$data).view('global/comunidades') .view('global/footer');
+    }
+    public function producto($idA,$idP): string
+    {   
+        $tieneProductoModel = new TieneProductoModel();
+        $producto = $tieneProductoModel->getProducto($idA,$idP);
+        $productoModel = new ProductoModel();
+        $prod = $productoModel->find($idP);
+        $prodR=$tieneProductoModel->prodRelacionados($idP);
+        $data=['titulo'=>'Producto','producto'=>$producto,'prod'=>$prod,'prodR'=>$prodR];
+        return view('global/header',$data).view('global/producto') .view('global/footer');
     }
 }

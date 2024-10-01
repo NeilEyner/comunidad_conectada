@@ -2,20 +2,24 @@
 <html lang="en">
 
 <head>
-    <title> comercio artesanal HTML CSS Template</title>
+    <title> comercio artesanal</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="apple-touch-icon" href="./assets/img/apple-icon.png">
-    <link rel="shortcut icon" type="image/x-icon" href="./assets/img/favicon.ico">
+    <link rel="apple-touch-icon" href="<?php echo base_url();?>assets/img/apple-icon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="<?php echo base_url();?>assets/img/favicon.ico">
 
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/templatemo.css">
-    <link rel="stylesheet" href="assets/css/custom.css">
+    <link rel="stylesheet" href="<?php echo base_url();?>assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo base_url();?>assets/css/templatemo.css">
+    <link rel="stylesheet" href="<?php echo base_url();?>assets/css/custom.css">
 
     <!-- Load fonts style after rendering the layout styles -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
-    <link rel="stylesheet" href="assets/css/fontawesome.min.css">
+    <link rel="stylesheet" href="<?php echo base_url();?>assets/css/fontawesome.min.css">
+
+    <!-- Slick -->
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/css/slick.min.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/css/slick-theme.css">
 <!--
     
 TemplateMo 559 Zay Shop
@@ -51,9 +55,9 @@ https://templatemo.com/tm-559-zay-shop
     <!-- Header -->
     <nav class="navbar navbar-expand-lg navbar-light shadow">
         <div class="container d-flex justify-content-between align-items-center">
-            <!-- <img class="img-fluid" src="./assets/icon/Recurso 2.png" alt="" width="100" height="110"> -->
+            <!-- <img class="img-fluid" src="<?php echo base_url();?>assets/icon/Recurso 2.png" alt="" width="100" height="110"> -->
             <a class="navbar-brand text-success logo h1 align-self-center" href="<?php echo base_url();?>">
-                <img class="img-fluid" src="./assets/icon/Recurso 2.png" alt="" width="80" height="90">
+                <img class="img-fluid" src="<?php echo base_url();?>assets/icon/Recurso 2.png" alt="" width="80" height="90">
                 <?php echo ($titulo); ?>
             </a>
 
@@ -97,11 +101,17 @@ https://templatemo.com/tm-559-zay-shop
                 </div>
                 <div class="navbar align-self-center d-flex">
 
-                    <?php if(session()->get('isLoggedIn')){ ?>
+                    <?php if(session()->get('isLoggedIn')){ 
+                        if (session()->get('ID_Rol') == 2) {
+                            
+                        
+                        ?>
+                        
                         <a class="nav-icon position-relative text-decoration-none" href="<?php echo base_url();?>tienda">
                         <i class="fa fa-fw fa-cart-arrow-down text-dark mr-1"></i>
                         <!-- <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">7</span> -->
                     </a>
+                    <?php } ?>
                     <?= $ruta='';
                         if (session()->get('ID_Rol') == 4) {
                             $ruta = base_url().'dashboard/administrador/admin_dashboard';

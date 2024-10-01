@@ -59,3 +59,25 @@
 
 // export  {mostrarProdCat, mostrarTodos};
 // export default {mostrarProdCat, mostrarTodos};
+
+function mas1(){
+    var cant=document.getElementById('var-val');
+    var val=parseInt(cant.innerHTML);
+    var prod=document.getElementById('product-quanity');
+    var max=prod.max;
+    if(val<max){
+        cant.innerHTML=val+1;
+        prod.value=val+1;
+    }
+}
+
+function menos1(){
+    var cant=document.getElementById('var-val');
+    var val=parseInt(cant.innerHTML);
+    var prod=document.getElementById('product-quanity');
+    var min=prod.min;
+    if(val>1){
+        cant.innerHTML=val-1;
+        prod.value=val-1;
+    }
+}

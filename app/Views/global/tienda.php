@@ -100,14 +100,14 @@
                                     <img class="card-img rounded-0 " src="<?= $producto['Imagen_URL']?>" height="400px">
                                     <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
                                         <ul class="list-unstyled">
-                                            <li><a class="btn btn-success text-white" href="shop-single.html"><i class="far fa-heart"></i></a></li>
-                                            <li><a class="btn btn-success text-white mt-2" href="shop-single.html"><i class="far fa-eye"></i></a></li>
-                                            <li><a class="btn btn-success text-white mt-2" href="shop-single.html"><i class="fas fa-cart-plus"></i></a></li>
+                                            <li><a class="btn btn-success text-white" href=""><i class="far fa-heart"></i></a></li>
+                                            <li><a class="btn btn-success text-white mt-2" href="<?= base_url().'producto'.'/'. $producto['ID_Artesano'].'/'.$producto['ID_Producto'];  ?>"><i class="far fa-eye"></i></a></li>
+                                            <li><a class="btn btn-success text-white mt-2" href=""><i class="fas fa-cart-plus"></i></a></li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="card-body" style="text-align: center;"><b></b>
-                                    <a href="shop-single.html" class="h3 text-decoration-none"><b><?= $prod['Nombre'] ?></b></a>
+                                    <a href="<?= base_url().'producto'.'/'. $producto['ID_Artesano'].'/'.$producto['ID_Producto'];  ?>" class="h3 text-decoration-none"><b><?= $prod['Nombre'] ?></b></a>
                                     <ul class="w-100 list-unstyled d-flex justify-content-between mb-0">
                                         <li><?= $prod['Descripcion']?></li>
                                         <li class="pt-2">
@@ -127,7 +127,7 @@
                                             <i class="text-muted fa fa-star"></i>
                                         </li>
                                     </ul>
-                                    <p class="text-center mb-0"><?= $producto['Precio'] ?></p>
+                                    <p class="text-center mb-0"><?= $producto['Precio'] ?> Bs.</p>
                                 </div>
                             </div>
                         </div>

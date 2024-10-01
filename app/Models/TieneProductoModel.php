@@ -19,4 +19,26 @@ class TieneProductoModel extends Model
             ->where('tiene_producto.ID_Artesano', $idArtesano)
             ->findAll();
     }
+
+    public function getProducto($idArtesano, $idProducto)
+    {
+        return $this->where('ID_Artesano', $idArtesano)
+            ->where('ID_Producto', $idProducto)
+            ->first();
+    }
+
+    function prodRelacionados($id){
+        $db      = \Config\Database::connect();
+        // return $this->join('producto_categoria', 'producto_categoria.ID_Producto = tiene_producto.ID_Producto')
+        //     // ->whereIn($db->table('producto_categoria')->from('producto_categoria')->select('ID_Categoria')
+        //     ->whereIn('producto_categoria.ID_Categoria', $db->table('producto_categoria')->select('ID_Categoria')->where('ID_Producto', $id))
+        //     ->findAll();
+        return $this->distinct()-> select('tiene_producto.ID_Artesano, tiene_producto.ID_Producto,tiene_producto.Precio,tiene_producto.Stock,tiene_producto.Imagen_URL')
+            ->join('producto_categoria', 'producto_categoria.ID_Producto = tiene_producto.ID_Producto')
+            ->whereIn('producto_categoria.ID_Categoria', $db->table('producto_categoria')
+                                                           ->select('ID_Categoria')
+                                                           ->where('ID_Producto', $id))
+            ->findAll();
+    }
 }
+
