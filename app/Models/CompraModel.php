@@ -10,4 +10,11 @@ class CompraModel extends Model
     protected $primaryKey = 'ID';
     protected $allowedFields = ['Fecha', 'Estado', 'ID_Cliente', 'Total'];
     protected $useTimestamps = false;   
+
+
+    function verifCompra($idC){
+        $db      = \Config\Database::connect();
+        return $this->where('ID_Cliente',$idC)->where('Estado','PENDIENTE')->first();
+    }
 }
+

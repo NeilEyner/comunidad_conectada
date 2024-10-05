@@ -40,5 +40,22 @@ class TieneProductoModel extends Model
                                                            ->where('ID_Producto', $id))
             ->findAll();
     }
+
+    public function ProductosDet($idArtesano,$idProducto)
+    {
+        return $this->select('producto.Nombre as Nombre, producto.Descripcion, tiene_producto.*')
+            ->join('producto', 'producto.ID = tiene_producto.ID_Producto')
+            ->where('tiene_producto.ID_Artesano', $idArtesano)
+            ->where('tiene_producto.ID_Producto', $idProducto)
+            ->first();
+    }
+
+    public function actualizarProd($idArtesano, $idProducto, $data)
+    {
+        return $this->db->table($this->table)
+            ->where('ID_Artesano', $idArtesano)
+            ->where('ID_Producto', $idProducto)
+            ->update($data);
+    }
 }
 

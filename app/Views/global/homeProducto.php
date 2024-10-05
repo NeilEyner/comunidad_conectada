@@ -4,10 +4,10 @@
         <div class="row text-center py-3">
             <div class="col-lg-6 m-auto">
                 <h1 class="h1">Productos</h1>
-                <p>
+                <!-- <p>
                     Reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
                     Excepteur sint occaecat cupidatat non proident.
-                </p>
+                </p> -->
             </div>
         </div>
         <div class="row">
