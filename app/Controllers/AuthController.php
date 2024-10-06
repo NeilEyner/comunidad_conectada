@@ -28,7 +28,7 @@ class AuthController extends BaseController
 
         return view('auth/register', $data);
     }
-    public function do_register()
+    public function do_registerR()
     {
         helper(['form']);
 
@@ -82,6 +82,41 @@ class AuthController extends BaseController
             }
         }
 
+    }
+    public function do_register()
+    {
+        helper(['form']);
+        if ($this->request->getMethod() == 'POST') {
+            $rules = [
+                'Nombre' => 'required|min_length[3]|max_length[50]',
+                'Correo_electronico' => 'required|valid_email|is_unique[USUARIO.Correo_electronico]',
+                'Contrasena' => 'required|min_length[3]',
+                'Confirmar_Contrasena' => 'required|matches[Contrasena]',
+                'ID_Rol' => 'permit_empty|integer',
+                'ID_Comunidad' => 'permit_empty|integer'
+            ];
+
+            if ($this->validate($rules)) {
+                $imagenURL = base_url('images/avatar/ava.png');
+                $data = [
+                    'Nombre' => $this->request->getPost('Nombre'),
+                    'Correo_electronico' => $this->request->getPost('Correo_electronico'),
+                    'Contrasena' => $this->request->getPost('Contrasena'),
+                    'ID_Rol' => $this->request->getPost('ID_Rol') ?: null,
+                    'ID_Comunidad' => $this->request->getPost('ID_Comunidad') ?: null,
+                    'Imagen_URL' => $imagenURL,
+                    'Estado' => 'INACTIVO'
+                ];
+                if ($this->usuarioModel->insert($data)) {
+                    return redirect()->to(base_url('login'))->with('success', 'Usuario registrado exitosamente');
+                } else {
+                    return redirect()->back()->withInput()->with('error', 'Ocurrió un error al registrar el usuario');
+                }
+            } else {
+
+                return redirect()->back()->withInput()->with('error', $this->validator->getErrors());
+            }
+        }
     }
 
     public function login()
@@ -137,6 +172,7 @@ class AuthController extends BaseController
             'ID' => $usuario['ID'],
             'Nombre' => $usuario['Nombre'],
             'ID_Rol' => $usuario['ID_Rol'],
+            'Imagen_URL' => $usuario['Imagen_URL'],
             'isLoggedIn' => true,
         ];
 
@@ -149,9 +185,9 @@ class AuthController extends BaseController
             case 1: // Artesano
                 return redirect()->to(base_url('dashboard/artesano/arte_dashboard'));
             case 2: // Cliente
-                return redirect()->to(base_url('dashboard/cliente'));
+                return redirect()->to(base_url('dashboard/cliente/cli_dashboard'));
             case 3: // Delivery
-                return redirect()->to(base_url('dashboard/delivery'));
+                return redirect()->to(base_url('dashboard/delivery/deli_dashboard'));
             case 4: // Administrador
                 return redirect()->to(base_url('dashboard/administrador/admin_dashboard'));
             default:
@@ -163,4 +199,74 @@ class AuthController extends BaseController
         session()->destroy();
         return redirect()->to(base_url())->with('success', 'Has cerrado sesión exitosamente');
     }
+    public function perfil($ID){
+        $usuarioModel = new UsuarioModel();
+        $usuario = $usuarioModel->find($ID);
+        return view('auth/perfil', ['usuario' => $usuario]);
+
+    }
+    public function do_update($id)
+    {
+        $model = new UsuarioModel();
+        helper(['form', 'url']); // Agregado 'url' helper para usar base_url()
+    
+        // Buscar el usuario
+        $usuario = $model->find($id);
+        if (!$usuario) {
+            return redirect()->back()->with('message', 'Usuario no encontrado.')->withInput();
+        }
+    
+        // Reglas de validación
+        $rules = [
+            'Nombre' => 'required|min_length[3]',
+            'Correo_electronico' => 'required|valid_email',
+            'Telefono' => 'permit_empty'
+        ];
+    
+        // Validar la entrada
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+    
+        // Manejo de la imagen
+        $imagen = $this->request->getFile('Imagen_URL');
+        $imagenURL = null;
+    
+        if ($imagen && $imagen->isValid() && !$imagen->hasMoved()) {
+            $nombreImagen = $imagen->getRandomName();
+            $imagen->move(FCPATH . 'images/avatar/', $nombreImagen);
+            $imagenURL = base_url('images/avatar/' . $nombreImagen);
+        }
+    
+        // Construir los datos para actualizar
+        $data = [
+            'Nombre' => $this->request->getPost('Nombre'),
+            'Correo_electronico' => $this->request->getPost('Correo_electronico'),
+            'Telefono' => $this->request->getPost('Telefono') ?: null,
+            'Direccion' => $this->request->getPost('Direccion') ?: null,
+            'ID_Comunidad' => $this->request->getPost('ID_Comunidad') ?: null,
+        ];
+    
+        // Si se subió una imagen, actualizar la URL de la imagen
+        if ($imagenURL) {
+            $data['Imagen_URL'] = $imagenURL;
+        }
+    
+        // Si se proporcionó una contraseña, encriptarla antes de guardar
+        if ($this->request->getPost('Contrasena')) {
+            $data['Contrasena'] = $this->request->getPost('Contrasena');
+        }
+    
+        // Actualizar el usuario
+        if ($model->update($id, $data)) {
+            return redirect()->back()->with('message', 'Usuario actualizado correctamente.');
+        } else {
+            return redirect()->back()->with('message', 'Ocurrió un error al actualizar el usuario.')->withInput();
+        }
+    }
+    
+    
+    
+
+
 }

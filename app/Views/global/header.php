@@ -107,17 +107,15 @@ https://templatemo.com/tm-559-zay-shop
                             $ruta = base_url().'dashboard/administrador/admin_dashboard';
                             }
                         if (session()->get('ID_Rol') == 1) {
-                            $ruta = base_url().'dashboard/artesano';
+                            $ruta = base_url().'dashboard/artesano/arte_dashboard';
                             }
                         if (session()->get('ID_Rol') == 2) {
-                            $ruta = base_url().'dashboard/cliente';
+                            $ruta = base_url().'dashboard/cliente/cli_dashboard';
                         }
                         if (session()->get('ID_Rol') == 3) {
-                            $ruta = base_url().'dashboard/delivery';
+                            $ruta = base_url().'dashboard/delivery/deli_dashboard';
                         }
                     ?>
-
-
                     <a class="nav-icon position-relative text-decoration-none" href="<?= $ruta?>" >
                         <i class="fa fa-fw fa-user text-dark mr-3"></i>
                         <!-- <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark"> +99> </span> -->
