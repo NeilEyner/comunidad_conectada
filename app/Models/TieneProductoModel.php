@@ -19,4 +19,43 @@ class TieneProductoModel extends Model
             ->where('tiene_producto.ID_Artesano', $idArtesano)
             ->findAll();
     }
+
+    public function getProducto($idArtesano, $idProducto)
+    {
+        return $this->where('ID_Artesano', $idArtesano)
+            ->where('ID_Producto', $idProducto)
+            ->first();
+    }
+
+    function prodRelacionados($id){
+        $db      = \Config\Database::connect();
+        // return $this->join('producto_categoria', 'producto_categoria.ID_Producto = tiene_producto.ID_Producto')
+        //     // ->whereIn($db->table('producto_categoria')->from('producto_categoria')->select('ID_Categoria')
+        //     ->whereIn('producto_categoria.ID_Categoria', $db->table('producto_categoria')->select('ID_Categoria')->where('ID_Producto', $id))
+        //     ->findAll();
+        return $this->distinct()-> select('tiene_producto.ID_Artesano, tiene_producto.ID_Producto,tiene_producto.Precio,tiene_producto.Stock,tiene_producto.Imagen_URL')
+            ->join('producto_categoria', 'producto_categoria.ID_Producto = tiene_producto.ID_Producto')
+            ->whereIn('producto_categoria.ID_Categoria', $db->table('producto_categoria')
+                                                           ->select('ID_Categoria')
+                                                           ->where('ID_Producto', $id))
+            ->findAll();
+    }
+
+    public function ProductosDet($idArtesano,$idProducto)
+    {
+        return $this->select('producto.Nombre as Nombre, producto.Descripcion, tiene_producto.*')
+            ->join('producto', 'producto.ID = tiene_producto.ID_Producto')
+            ->where('tiene_producto.ID_Artesano', $idArtesano)
+            ->where('tiene_producto.ID_Producto', $idProducto)
+            ->first();
+    }
+
+    public function actualizarProd($idArtesano, $idProducto, $data)
+    {
+        return $this->db->table($this->table)
+            ->where('ID_Artesano', $idArtesano)
+            ->where('ID_Producto', $idProducto)
+            ->update($data);
+    }
 }
+

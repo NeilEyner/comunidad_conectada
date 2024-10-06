@@ -4,10 +4,10 @@
         <div class="row text-center pt-3">
             <div class="col-lg-6 m-auto">
                 <h1 class="h1">Categorias del Mes</h1>
-                <p>
+                <!-- <p>
                     Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
                     deserunt mollit anim id est laborum.
-                </p>
+                </p> -->
             </div>
         </div>
         <div class="row">

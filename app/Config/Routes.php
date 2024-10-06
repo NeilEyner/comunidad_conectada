@@ -26,6 +26,9 @@ $routes->get('/nosotros', 'Home::nosotros');
 $routes->get('/tienda', 'Home::tienda');
 $routes->get('/contacto', 'Home::contacto');
 $routes->get('/comunidades', 'Home::comunidades');
+$routes->get('/producto/(:num)/(:num)', 'Home::producto/$1/$2');
+$routes->Post('/anadirprod/(:num)/(:num)/(:num)/(:num)', 'Home::anadirProd/$1/$2/$3/$4');
+
 //rutas artesano
 $routes->get('dashboard/artesano/arte_dashboard', 'ArtesanoController::artesano');
 $routes->get('dashboard/artesano/arte_producto', 'ArtesanoController::artesano_producto');

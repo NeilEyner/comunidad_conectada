@@ -10,4 +10,9 @@ class ProductoModel extends Model
     protected $primaryKey = 'ID';
     protected $allowedFields = ['Nombre', 'Descripcion', 'Fecha_creacion', 'Fecha_actualizacion'];
     protected $useTimestamps = false;   
+
+
+    
 }
+
+
