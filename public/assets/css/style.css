@@ -218,8 +218,8 @@
 
 .cart_sum_pros button {
     width: 100%;
-    border: 1px solid #fd3d57;
-    background: #fd3d57;
+    border: 1px solid #56ae6c;
+    background: #56ae6c;
     text-align: center;
     color: #fff;
     padding: 8px 10px;
@@ -238,7 +238,7 @@
 
 .cart_sum_pros button:hover {
     background: transparent;
-    color: #fd3d57;
+    color: #56ae6c;
 }
 
 .wishlist .cart_cont h5 {
@@ -422,6 +422,7 @@ p.checkorder_price {
 
 .shopcart_dropdown {
     position: absolute;
+    border: 1px solid #56ae6c;
     background: #fff;
     right: 0;
     top: 100%;

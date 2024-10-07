@@ -23,6 +23,7 @@ $routes->get('/nosotros', 'Home::nosotros');
 $routes->get('/tienda', 'Home::tienda');
 $routes->get('/contacto', 'Home::contacto');
 $routes->get('/comunidades', 'Home::comunidades');
+$routes->get('/carrito', 'Home::carrito');
 $routes->get('/producto/(:num)/(:num)', 'Home::producto/$1/$2');
 $routes->Post('/anadirprod/(:num)/(:num)/(:num)/(:num)', 'Home::anadirProd/$1/$2/$3/$4');
 
