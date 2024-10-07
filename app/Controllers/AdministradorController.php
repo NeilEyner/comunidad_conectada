@@ -77,7 +77,7 @@ class AdministradorController extends Controller
         $rules = [
             'Nombre' => 'required|min_length[3]',
             'Correo_electronico' => 'required|valid_email',
-            'Telefono' => 'required',
+            'Telefono' => 'permit_empty|required',
             'ID_Rol' => 'required',
             'Estado' => 'required'
         ];
@@ -91,11 +91,11 @@ class AdministradorController extends Controller
         $data = [
             'Nombre' => $this->request->getPost('Nombre'),
             'Correo_electronico' => $this->request->getPost('Correo_electronico'),
-            'Telefono' => $this->request->getPost('Telefono'),
+            'Telefono' => $this->request->getPost('Telefono')?: null,
             'ID_Rol' => $this->request->getPost('ID_Rol'),
-            'Direccion' => $this->request->getPost('Direccion'),
+            'Direccion' => $this->request->getPost('Direccion')?: null,
             'Estado' => $this->request->getPost('Estado'),
-            'ID_Comunidad' => $this->request->getPost('ID_Comunidad'),
+            'ID_Comunidad' => $this->request->getPost('ID_Comunidad')?: null,
         ];
         if (isset($imagenURL)) {
             $data['Imagen_URL'] = $imagenURL;

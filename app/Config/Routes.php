@@ -11,6 +11,9 @@ $routes->post('register', 'AuthController::do_register');
 $routes->get('login', 'AuthController::login');
 $routes->post('login', 'AuthController::do_login');
 $routes->get('logout', 'AuthController::logout');
+$routes->get('perfil/(:num)', 'AuthController::perfil/$1');
+$routes->post('update_perfil/(:num)', 'AuthController::do_update/$1');
+
 
 $routes->get('dashboard/artesano', 'DashboardController::artesano');
 $routes->get('dashboard/cliente', 'DashboardController::cliente');
@@ -29,13 +32,24 @@ $routes->Post('/anadirprod/(:num)/(:num)/(:num)/(:num)', 'Home::anadirProd/$1/$2
 
 //rutas artesano
 $routes->get('dashboard/artesano/arte_dashboard', 'ArtesanoController::artesano');
-$routes->get('dashboard/artesano/arte_productos', 'ArtesanoController::artesano_productos');
+$routes->get('dashboard/artesano/arte_producto', 'ArtesanoController::artesano_producto');
 $routes->post('artesano/editar_productos/(:num)/(:any)', 'ArtesanoController::artesano_editar_producto/$1/$2');
 $routes->post('artesano/agregar_producto', 'ArtesanoController::artesano_agregar_producto');
 $routes->post('artesano/eliminar_producto/(:num)/(:any)', 'ArtesanoController::artesano_eliminar_producto/$1/$2');
 
-$routes->get('dashboard/cliente', 'AdministradorController::cliente');
-$routes->get('dashboard/delivery', 'AdministradorController::delivery');
+$routes->get('dashboard/artesano/pedido_producto', 'ArtesanoController::pedido_producto');
+$routes->get('dashboard/artesano/valoracion_producto', 'ArtesanoController::valoracion_producto');
+
+//rutas cliente
+$routes->get('dashboard/cliente/cli_dashboard', 'ClienteController::cliente');
+$routes->get('dashboard/cliente/compra', 'ClienteController::compra');
+$routes->get('dashboard/cliente/recibido', 'ClienteController::recibido');
+
+//rutas delivery
+$routes->get('dashboard/delivery/deli_dashboard', 'DeliveryController::delivery');
+$routes->get('dashboard/delivery/envio', 'DeliveryController::envio');
+$routes->get('dashboard/delivery/entregado', 'DeliveryController::entregado');
+
 
 //rutas administrador
 $routes->get('dashboard/administrador/admin_dashboard', 'AdministradorController::admin');

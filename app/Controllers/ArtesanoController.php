@@ -40,7 +40,7 @@ class ArtesanoController extends Controller
         return view('dashboard/artesano/arte_dashboard', $data);
     }
     
-    public function artesano_productos()
+    public function artesano_producto()
     {
         if (session()->get('ID_Rol') != 1) {
             return redirect()->to(base_url('login'));
@@ -99,7 +99,7 @@ class ArtesanoController extends Controller
 
         $model->where('ID_Artesano', $idArtesano)->where('ID_Producto', $idProducto)->update(null, $data);
 
-        return redirect()->to(base_url('dashboard/artesano/arte_productos'))->with('message', 'Producto actualizado correctamente.');
+        return redirect()->to(base_url('dashboard/artesano/arte_producto'))->with('message', 'Producto actualizado correctamente.');
     }
 
     public function artesano_agregar_producto()
@@ -136,7 +136,7 @@ class ArtesanoController extends Controller
                 ];
 
                 if ($model->insert($data)) {
-                    return redirect()->to(base_url('dashboard/artesano/arte_productos'))->with('success', 'Producto agregado exitosamente');
+                    return redirect()->to(base_url('dashboard/artesano/arte_producto'))->with('success', 'Producto agregado exitosamente');
                 } else {
                     return redirect()->back()->withInput()->with('error', 'Ocurrió un error al agregar el producto');
                 }
@@ -156,6 +156,14 @@ class ArtesanoController extends Controller
         }
     }
 
+    public function pedido_producto()
+    {
+        return view('dashboard/artesano/pedido_producto');
+    }
 
+    public function valoracion_producto()
+    {
+        return view('dashboard/artesano/valoracion_producto');
+    }
    
 }
