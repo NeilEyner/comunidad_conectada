@@ -40,7 +40,7 @@ https://templatemo.com/tm-559-zay-shop
                     <i class="fa fa-envelope mx-2"></i>
                     <a class="navbar-sm-brand text-light text-decoration-none" href="mailto:info@company.com">info@company.com</a>
                     <i class="fa fa-phone mx-2"></i>
-                    <a class="navbar-sm-brand text-light text-decoration-none" href="tel:010-020-0340">010-020-0340</a>
+                    <a class="navbar-sm-brand text-light text-decoration-none" href="tel:010-020-0340">73686875</a>
                 </div>
                 <div>
                     <a class="text-light" href="https://fb.com/templatemo" target="_blank" rel="sponsored"><i class="fab fa-facebook-f fa-sm fa-fw me-2"></i></a>
@@ -93,7 +93,7 @@ https://templatemo.com/tm-559-zay-shop
                             </li>
                             <?php }else{ ?>
                                 <li class="nav-item">
-                                <a class="nav-link" href="<?php echo base_url();?>logout">Logout</a>
+                                <a class="nav-link" href="<?php echo base_url();?>logout">Salir</a>
                             </li>
                             <?php } ?>
                             
@@ -116,7 +116,7 @@ https://templatemo.com/tm-559-zay-shop
                     <i class="fa fa-fw fa-cart-arrow-down text-dark mr-1"></i>
                     <!-- <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">7</span> -->
                 </a>
-                <div class="shopcart_dropdown">
+                <div class="shopcart_dropdown" id='carrito-m'>
                     <?php 
                     
                     $size=0;
@@ -155,8 +155,8 @@ https://templatemo.com/tm-559-zay-shop
                             <h5 class=" mb-0 ms-2"><?= $total?></h5>
                         </div>
                         <div class=" d-flex mt-3">
-                            <a href="shopping-cart.html" class="default_btn w-50  px-1"  style="text-decoration:none;">Ver Carrito</a>
-                            <a href="<?php base_url('pagos/metodo_pago/9') ?>" class="default_btn second ms-3 w-50  px-1" style="text-decoration:none;">Pagar</a>
+                            <a href="<?= base_url('carrito')?>" class="default_btn w-50  px-1"  style="text-decoration:none;">Ver Carrito</a>
+                            <a href="<?php echo base_url('pagos/metodo_pago/9'); ?>" class="default_btn second ms-3 w-50  px-1" style="text-decoration:none;">Pagar</a>
                         </div>
                         <?php
                         }else{

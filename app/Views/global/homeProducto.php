@@ -46,8 +46,6 @@
                             <p class="card-text">
                                 <?= isset($prod['Descripcion']) ? $prod['Descripcion'] : 'Descripción no disponible'; ?>
                             </p>
-
-                            <p class="text-muted">Reviews (24)</p>
                         </div>
                     </div>
                 </div>

@@ -27,9 +27,18 @@ class DetalleCompraModel extends Model
     public function carritoProd($idCliente)
     {
 
-        return $this->select('compra.ID, compra.Total, detalle_compra.*')
+        // return $this->select('compra.ID, compra.Total, detalle_compra.*')
+        //     ->join('compra', 'compra.ID = detalle_compra.ID_Compra')
+        //     ->where('compra.ID_Cliente', $idCliente)
+        //     ->where('compra.Estado', 'PENDIENTE')
+        //     ->findAll();
+        
+        return $this->select('compra.ID, compra.Total, detalle_compra.*,tiene_producto.*,producto.Nombre')
             ->join('compra', 'compra.ID = detalle_compra.ID_Compra')
+            ->join('tiene_producto', 'tiene_producto.ID_Producto = detalle_compra.ID_Producto and tiene_producto.ID_Artesano =detalle_compra.ID_Artesano')
+            ->join('producto', 'producto.ID = detalle_compra.ID_Producto')
             ->where('compra.ID_Cliente', $idCliente)
+            // ->where('tiene_producto.ID_Artesano', 'detalle_compra.ID_Artesano')
             ->where('compra.Estado', 'PENDIENTE')
             ->findAll();
     }

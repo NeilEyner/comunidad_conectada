@@ -110,6 +110,21 @@ class Home extends BaseController{
         $data=['titulo'=>'Producto','producto'=>$producto,'prod'=>$prod,'prodR'=>$prodR,'carrito'=>$carrito];
         return view('global/header',$data).view('global/producto') .view('global/footer');
     }
+    public function carrito(): string
+    {   
+        $comunidadModel = new ComunidadModel();
+        $resultado = $comunidadModel->findAll();
+        $detalleCompraModel= new DetalleCompraModel();
+        $carrito='';
+        if (session()->get('ID_Rol') == null) {
+            $usuario=0;
+        }else{
+            $usuario=session()->get('ID_Rol');
+            $carrito=$detalleCompraModel->carritoProd(session()->get('ID'));
+        }
+        $data=['titulo'=>'Mi Carrito','comunidad'=>$resultado,'carrito'=>$carrito];
+        return view('global/header',$data).view('global/carrito') .view('global/footer');
+    }
 
     function anadirProd($idA,$idP,$cant,$precio){
         $tieneProductoModel = new TieneProductoModel();
@@ -173,8 +188,9 @@ class Home extends BaseController{
              
              
             $idDet='det';
+            $carrito=$detalleCompraModel->carritoProd(session()->get('ID'));
         }
-        return $this->response->setJSON(['status' => 1,$dataC,'det'=>$idDet]);
+        return $this->response->setJSON(['status' => 1,$dataC,'det'=>$idDet,'carrito'=>$carrito]);
             
     }
 
