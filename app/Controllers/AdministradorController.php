@@ -12,6 +12,7 @@ use App\Models\PagoModel;
 use App\Models\ProductoModel;
 use App\Models\CompraModel;
 use App\Models\TieneProductoModel;
+use App\Models\DetalleCompraModel;
 
 
 class AdministradorController extends Controller
@@ -495,9 +496,42 @@ class AdministradorController extends Controller
     // ADMINISTRADOR PAGO
     public function admin_pago()
     {
-        $model = new PagoModel();
-        $data['pagos'] = $model->findAll();
-        return view('dashboard/administrador/admin_pago', $data);
+        $pagoModel = new PagoModel();
+        $compraModel = new CompraModel();
+        $detalleCompraModel = new DetalleCompraModel();
+        $usuarioModel = new UsuarioModel();
+        $productoModel = new ProductoModel();
+
+        // Obtener la lista de todos los pagos
+        $pagos = $pagoModel->findAll();
+
+        // Recorrer los pagos para obtener detalles adicionales (compra, cliente y detalle de productos)
+        foreach ($pagos as &$pago) {
+            // Obtener datos de la compra relacionada
+            $compra = $compraModel->where('ID', $pago['ID_Compra'])->first();
+            $pago['compra'] = $compra;
+
+            // Obtener los detalles de la compra
+            $detalleCompra = $detalleCompraModel->where('ID_Compra', $pago['ID_Compra'])->findAll();
+            $pago['detalle_compra'] = [];
+
+            // Obtener los detalles de productos y artesanos para cada detalle de compra
+            foreach ($detalleCompra as $detalle) {
+                $producto = $productoModel->where('ID', $detalle['ID_Producto'])->first();
+                $artesano = $usuarioModel->where('ID', $detalle['ID_Artesano'])->first();
+                
+                $detalle['producto'] = $producto;
+                $detalle['artesano'] = $artesano;
+
+                $pago['detalle_compra'][] = $detalle;
+            }
+
+            // Obtener el cliente que realizó la compra
+            $cliente = $usuarioModel->where('ID', $pago['ID_Cliente'])->first();
+            $pago['cliente'] = $cliente;
+        }
+
+        return view('dashboard/administrador/admin_pago',  ['pagos' => $pagos]);
     }
 
     public function admin_agregar_pago()
@@ -579,7 +613,20 @@ class AdministradorController extends Controller
             return redirect()->back();
         }
     }
-
+    public function verificar_pago($id_pago) {
+        $pagoModel = new PagoModel();
+        $pago = $pagoModel->find($id_pago);
+    
+        // Aquí el administrador puede cambiar el estado del pago a "COMPLETADO" o "FALLIDO"
+        if ($this->request->getMethod() === 'post') {
+            $estado = $this->request->getPost('estado');
+            $pagoModel->update($id_pago, ['Estado' => $estado]);
+            return redirect()->to('/admin/pagos')->with('success', 'Pago actualizado');
+        }
+    
+        return view('admin/verificar_pago', ['pago' => $pago]);
+    }
+    
     // ADMINISTRADOR PRODUCTO
     public function admin_producto()
     {
@@ -856,6 +903,17 @@ class AdministradorController extends Controller
         } else {
             return redirect()->back()->with('error', 'Producto no encontrado.');
         }
+    }
+
+    public function pago_completado($id){
+        $model = new PagoModel();
+        $model->update(['Estado' => 'COMPLETADO'], $id);
+        return redirect()->back()->with('message', 'pago completada.');
+    }
+    public function pago_fallido($id){
+        $model = new PagoModel();
+        $model->update(['Estado' => 'FALLIDO'], $id);
+        return redirect()->back()->with('message', 'Pago fallido.');
     }
 
 

@@ -239,3 +239,9 @@ CREATE TABLE IF NOT EXISTS `valoracion` (
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
+
+
+
+-- Modificar la tabla de pago para incluir el campo IMG_Comprobante
+ALTER TABLE `pago` 
+ADD COLUMN `IMG_Comprobante` varchar(255) DEFAULT NULL AFTER `Estado`;

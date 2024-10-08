@@ -82,9 +82,16 @@ $routes->post('admin/agregar_producto', 'AdministradorController::admin_agregar_
 $routes->post( 'admin/editar_producto/(:num)', 'AdministradorController::admin_editar_producto/$1');
 $routes->post('admin/eliminar_producto/(:num)', 'AdministradorController::admin_eliminar_producto/$1');
 
+//PAGOS
+
+$routes->get('pagos/metodo_pago/(:num)', 'PagoController::mostrar_metodos_pago/$1');
+$routes->post('pago/procesar/', 'PagoController::procesar_pago');
+
+$routes->get('verifica_comprobante_completado/(:num)', 'AdministradorController::pago_completado/$1');
+$routes->get('verifica_comprobante_fallido/(:num)', 'AdministradorController::pago_fallido/$1');
+//
 
 
 
 
-
-$routes->get('dashboard/administrador/admin_compra', 'AdministradorController::admin_compra');
+$routes->post('', 'AdministradorController::admin_compra');
