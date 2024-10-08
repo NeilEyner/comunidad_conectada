@@ -188,8 +188,9 @@ class Home extends BaseController{
              
              
             $idDet='det';
+            $carrito=$detalleCompraModel->carritoProd(session()->get('ID'));
         }
-        return $this->response->setJSON(['status' => 1,$dataC,'det'=>$idDet]);
+        return $this->response->setJSON(['status' => 1,$dataC,'det'=>$idDet,'carrito'=>$carrito]);
             
     }
 

@@ -86,7 +86,7 @@
                             </div>
                             <div class="cart_sum_total d-flex justify-content-between">
                                 <p>Total</p>
-                                <p>Bs.45.00</p>
+                                <p>Bs.<?= $prod['Total']?></p>
                             </div>
                             <div class="cart_sum_pros">
                                 <button>pagar</button>
