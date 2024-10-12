@@ -48,7 +48,9 @@ class Home extends BaseController{
     public function tienda(): string
     {
         $tieneProductoModel = new TieneProductoModel();
-        $resultado = $tieneProductoModel->findAll();
+        // $resultado = $tieneProductoModel->findAll();
+        // $resultado = $tieneProductoModel->where('Disponibilidad','1')->where('Stock>1')->findAll();
+        $resultado= $tieneProductoModel->prodTienda();
         $categoriaModel = new CategoriaModel();
         $resultado2 = $categoriaModel->findAll();
         $detalleCompraModel= new DetalleCompraModel();
@@ -59,7 +61,7 @@ class Home extends BaseController{
             $usuario=session()->get('ID_Rol');
             $carrito=$detalleCompraModel->carritoProd(session()->get('ID'));
         }
-        $data=['titulo'=>'Comunidades','productos'=>$resultado,'categorias'=>$resultado2,'usuario'=>$usuario,'carrito'=>$carrito];
+        $data=['titulo'=>'Tienda','productos'=>$resultado,'categorias'=>$resultado2,'usuario'=>$usuario,'carrito'=>$carrito];
         return view('global/header',$data).view('global/tienda',$data) . view('global/footer');
     }
 
@@ -193,5 +195,9 @@ class Home extends BaseController{
         return $this->response->setJSON(['status' => 1,$dataC,'det'=>$idDet,'carrito'=>$carrito]);
             
     }
+
+    
+
+
 
 }

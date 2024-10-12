@@ -1,4 +1,7 @@
 
+
+<script   src="<?php echo base_url() ?>assets/js/scripts/producto.js" >
+    </script>
     <!-- Modal -->
     <div class="modal fade bg-white" id="templatemo_search" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -37,56 +40,66 @@
                             foreach($carrito as $prod): 
                                 $producto=$tieneProductoModel->ProductosDet($prod['ID_Artesano'],$prod['ID_Producto']);
                             ?>
-                            <div class="single_shop_cart d-flex align-items-center flex-wrap">
+                            <div id="prod-carr-<?=$prod['ID'].'-'.$prod['ID_Producto'].'-'.$prod['ID_Artesano']?>" class="single_shop_cart d-flex align-items-center flex-wrap">
                                 <div class="cart_img mb-4 mb-md-0">
-                                    <img loading="lazy"  src="<?= base_url($producto['Imagen_URL'])?>" alt="product" style="width:150px">
+                                    <img loading="lazy"  src="<?= base_url($prod['Imagen_URL'])?>" alt="product" style="width:150px">
                                 </div>
                                 <div class="cart_cont">
                                     <a href="product-view.html" style="text-decoration:none;">
-                                        <h5><?= $producto['Nombre']?></h5>
+                                        <h5><?= $prod['Nombre']?></h5>
                                     </a>
-                                    <p >Bs.<?= $producto['Precio']?></p>
+                                    <p ><?= $prod['Precio']?> Bs.</p>
                                     
                                 </div>
                                 <div class="cart_qnty d-flex align-items-center ms-md-auto">
-                                <ul class="list-inline pb-3">
+                                <ul id="carr-edit" class="list-inline pb-3">
                                             <li class="list-inline-item text-right">
-                                                <input  type="hidden" name="product-quanity" id="product-quanity" max="<?=  $producto['Stock']  ?>" value="<?= $prod['Cantidad']?>" >
+                                                <input  type="hidden" name="product-quanity" id="product-quanity" max="<?=  $prod['Stock']  ?>" value="<?= $prod['Cantidad']?>" >
                                             </li>
-                                            <li class="list-inline-item"><span class="btn btn-success" id="btn-menos" onclick="menos1()">-</span></li>
-                                            <li class="list-inline-item" ><span class="badge bg-secondary" id="var-val"><?= $prod['Cantidad']?></span></li>
-                                            <li class="list-inline-item" ><span class="btn btn-success" id="btn-mas" onclick="mas1()">+</span></li>
+                                            <li class="list-inline-item"><span class="btn btn-success" id="<?= 'carr-btn-menos-'.$prod['ID_Producto'].'-'.$prod['ID_Artesano'];?>" onclick="editCarr('<?=base_url()?>',<?=$prod['ID'].','.$prod['ID_Producto'].','.$prod['ID_Artesano'].','.$prod['Stock'].','.$prod['Cantidad'].','.$prod['Precio']?>,-1)">-</span></li>
+                                            <li class="list-inline-item" ><span class="badge bg-secondary" id="<?= 'var-val-'.$prod['ID_Producto'].'-'.$prod['ID_Artesano'];?>"><?= $prod['Cantidad']?></span></li>
+                                            <li class="list-inline-item" ><span class="btn btn-success" id="<?= 'carr-btn-mas-'.$prod['ID_Producto'].'-'.$prod['ID_Artesano'];?>" onclick="editCarr('<?=base_url()?>',<?=$prod['ID'].','.$prod['ID_Producto'].','.$prod['ID_Artesano'].','.$prod['Stock'].','.$prod['Cantidad'].','.$prod['Precio']?>,1)">+</span></li>
                                         </ul>
                                 </div>
                                 <div class=" ms-auto">
-                                    <p>Bs.<?= $producto['Precio']*$prod['Cantidad']?></p>
+                                    <p id="<?= 'pre-'.$prod['ID_Producto'].'-'.$prod['ID_Artesano'];?>"><?= $prod['Precio']*$prod['Cantidad']?> Bs.</p>
+                                    
                                 </div>
-                                <div class="cart_remove ms-auto">
-                                    <i class="icon-trash"></i>
+                                <div class=" align-items-center ms-md-auto ms-auto">
+                                    <ul class="list-inline pb-3">
+                                        
+                                        <li class="list-inline-item btn p-0 m-0 " onclick="eliminar('<?=base_url()?>',<?=$prod['ID'].','.$prod['ID_Producto'].','.$prod['ID_Artesano']?>)"><span class=""><i class="bi bi-trash "  data-bs-toggle="tooltip" data-bs-placement="right" title="eliminar"></i></span></li>
+                                        
+                                    </ul>
                                 </div>
                             </div>
                             
                             <?php endforeach; ?>
                         </div>
                     </div>
+                    
                     <div class="col-lg-3 mt-4 mt-lg-0">
                         <div class="cart_summary">
                             <h4>Resumen del Pedido</h4>
-                            <div class="cartsum_text d-flex justify-content-between">
-                                <p class="text-semibold">Subtotal</p>
-                                <p class="text-semibold">Bs.<?= $prod['Total']?></p>
+                            <?php
+                            $total=0;
+                            foreach($carrito as $prod): 
+                                // $producto=$tieneProductoModel->ProductosDet($prod['ID_Artesano'],$prod['ID_Producto']);
+                                // $total+=$producto['Precio']*$prod['Cantidad'];
+
+                            ?>
+                            <div id="res-<?=$prod['ID'].'-'.$prod['ID_Producto'].'-'.$prod['ID_Artesano']?>" class="cartsum_text d-flex justify-content-between">
+                                <p><?= $prod['Nombre']?></p>
+                                <p id="<?= 'pre2-'.$prod['ID_Producto'].'-'.$prod['ID_Artesano'];?>"><?= $prod['Precio']*$prod['Cantidad']?> Bs.</p>
                             </div>
-                            <div class="cartsum_text d-flex justify-content-between">
-                                <p>Delivery</p>
-                                <p>Free</p>
-                            </div>
-                            <div class="cartsum_text d-flex justify-content-between">
-                                <p>Tax</p>
-                                <p>Free</p>
-                            </div>
+                            <?php
+                            endforeach;
+                            ?>
+                            
+                           
                             <div class="cart_sum_total d-flex justify-content-between">
-                                <p>Total</p>
-                                <p>Bs.<?= $prod['Total']?></p>
+                                <p ><b>Total</b></p>
+                                <p ><b id="total"><?= $prod['Total']?> Bs.</b></p>
                             </div>
                             <div class="cart_sum_pros">
                                 <button>pagar</button>
@@ -97,6 +110,15 @@
             </div>
         </div>
      </div>
+
+
+<script src="<?= base_url('assets/js/bootstrap.bundle.min.js')?>"></script>
+<script>
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+return new bootstrap.Tooltip(tooltipTriggerEl)
+})
+</script>
     
 
 

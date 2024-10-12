@@ -15,7 +15,8 @@
 
     <!-- Load fonts style after rendering the layout styles -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
-    <link rel="stylesheet" href="<?php echo base_url();?>assets/css/fontawesome.min.css">
+    <link rel="stylesheet" href="<?php echo base_url('assets/css/fontawesome.min.css');?>">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- Slick -->
     <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/css/slick.min.css">
@@ -113,7 +114,7 @@ https://templatemo.com/tm-559-zay-shop
                     <div class="shopcart">
                     <a class="nav-icon position-relative text-decoration-none" href="<?php echo base_url();?>tienda">
                     <i class="fa fa-fw fa-cart-arrow-down text-dark mr-1"></i>
-                    <!-- <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">7</span> -->
+                    <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark"><?=sizeof($carrito)?> </span>
                 </a>
                 <div class="shopcart_dropdown" id='carrito-m'>
                     <?php 

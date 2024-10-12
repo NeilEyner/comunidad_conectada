@@ -112,3 +112,89 @@ function obtenervalor(){
     var cant=document.getElementById('product-quanity');
     console.log(cant.value);
 }
+
+
+function editCarr(ruta,idC,idP,idA,stock,cantidad,precio,diferencia){
+
+    if(cantidad+diferencia<=0){
+        alert('seguro que desea eliminar el producto del carrito?');
+        return;
+    }
+    if(diferencia>stock){
+        alert('No hay suficiente stock');
+        return;
+    }else{
+    cantidad=cantidad+diferencia;
+    var rutac=ruta+'carritoedit/'+idC+'/'+idP+'/'+idA+'/'+precio+'/'+cantidad;
+    var bodyData = 'idC=' + encodeURIComponent(idC) +
+                    '&idP=' + encodeURIComponent(idP)+
+                    '&idA=' + encodeURIComponent(idA) +
+                    '&precio=' + encodeURIComponent(precio)+
+                    '&cantidad=' + encodeURIComponent(cantidad);
+    console.log(rutac)
+    fetch(rutac, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: ruta // Enviar el ID del producto como POST
+    })
+    .then(response => response.json()) // Parsear la respuesta JSON
+    .then(data => {
+          console.log(JSON.stringify(data))
+        //  carrito=JSON.stringify(data.carrito);
+        // console.log(data.carrito.Total);
+        ruta='\''+ruta+'\'';
+        console.log(ruta);
+        document.getElementById('total').innerHTML=data.carrito.Total+' Bs.';
+        document.getElementById('pre-'+idP+'-'+idA).innerHTML=data.carrito.Cantidad*data.carrito.Precio+' Bs.';
+        document.getElementById('pre2-'+idP+'-'+idA).innerHTML=data.carrito.Cantidad*data.carrito.Precio+' Bs.';
+        document.getElementById('var-val-'+idP+'-'+idA).innerHTML=data.carrito.Cantidad;
+        document.getElementById('carr-btn-menos-'+idP+'-'+idA).setAttribute('onclick','editCarr('+ruta+','+idC+','+idP+ ','+idA+','+stock+','+data.carrito.Cantidad+','+data.carrito.Precio+',-1)');
+        document.getElementById('carr-btn-mas-'+idP+'-'+idA).setAttribute('onclick','editCarr('+ruta+','+idC+','+idP+ ','+idA+','+stock+','+data.carrito.Cantidad+','+data.carrito.Precio+',1)');
+    })
+    .catch(error => {
+        console.error('Error:', error); // Manejar errores
+    });
+}
+    
+}
+
+function eliminar(ruta, idC, idP, idA){
+    // alert('seguro que desea eliminar el producto del carrito?');
+
+       var res= confirm("Quieres eliminar el producto del carrito?");
+    if (res == true) {
+        var rutac=ruta+'carreliminarprod';
+        var bodyData = 'idC=' + encodeURIComponent(idC) +
+                        '&idP=' + encodeURIComponent(idP)+
+                        '&idA=' + encodeURIComponent(idA);
+        console.log(rutac)
+        fetch(rutac, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: bodyData // Enviar el ID del producto como POST
+        })
+        .then(response => response.json()) // Parsear la respuesta JSON
+        .then(data => {
+            console.log(JSON.stringify(data))
+            //  carrito=JSON.stringify(data.carrito);
+            // console.log(data.carrito.Total);
+            ruta='\''+ruta+'\'';
+            console.log(ruta);
+            
+            document.getElementById('total').innerHTML=data.total+' Bs.';
+            document.getElementById('prod-carr-'+idC+'-'+idP+'-'+idA).remove();
+            document.getElementById('res-'+idC+'-'+idP+'-'+idA).innerHTML='';
+            // document.getElementById('pre2-'+idP+'-'+idA).innerHTML=data.carrito.Cantidad*data.carrito.Precio+' Bs.';
+            // document.getElementById('var-val-'+idP+'-'+idA).innerHTML=data.carrito.Cantidad;
+            // document.getElementById('carr-btn-menos-'+idP+'-'+idA).setAttribute('onclick','editCarr('+ruta+','+idC+','+idP+ ','+idA+','+stock+','+data.carrito.Cantidad+','+data.carrito.Precio+',-1)');
+            // document.getElementById('carr-btn-mas-'+idP+'-'+idA).setAttribute('onclick','editCarr('+ruta+','+idC+','+idP+ ','+idA+','+stock+','+data.carrito.Cantidad+','+data.carrito.Precio+',1)');
+        })
+        .catch(error => {
+            console.error('Error:', error); // Manejar errores
+        });
+    }
+}
