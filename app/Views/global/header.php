@@ -31,6 +31,7 @@ https://templatemo.com/tm-559-zay-shop
 -->
 </head>
 
+
 <body>
     <!-- Start Top Nav -->
     <nav class="navbar navbar-expand-lg bg-dark navbar-light d-none d-lg-block" id="templatemo_nav_top">
@@ -156,7 +157,7 @@ https://templatemo.com/tm-559-zay-shop
                         </div>
                         <div class=" d-flex mt-3">
                             <a href="<?= base_url('carrito')?>" class="default_btn w-50  px-1"  style="text-decoration:none;">Ver Carrito</a>
-                                <a href="checkout.html" class="default_btn second ms-3 w-50  px-1" style="text-decoration:none;">Pagar</a>
+                            <a href="<?php echo base_url('pagos/metodo_pago/9'); ?>" class="default_btn second ms-3 w-50  px-1" style="text-decoration:none;">Pagar</a>
                         </div>
                         <?php
                         }else{
