@@ -21,25 +21,39 @@ class DeliveryController extends Controller
         if (session()->get('ID_Rol') != 3) {
             return redirect()->to(base_url('login'));
         }
-        $tieneProductoModel = new TieneProductoModel();
-        $productoModel = new ProductoModel();
-        $categoriaModel = new CategoriaModel();
-    
-        $data['productos_list'] = $productoModel->findAll();
-        $data['categorias'] = $categoriaModel->findAll();
+        
+
+        $db = \Config\Database::connect();
+        $query = $db->query("SELECT c.ID, p.Nombre, tp.Imagen_URL, dc.Cantidad, c.Total  
+                         FROM compra c 
+                         JOIN detalle_compra dc ON dc.ID_Compra = c.ID 
+                         JOIN producto p ON p.ID = dc.ID_Producto 
+                         JOIN tiene_producto tp ON p.ID = tp.ID_Producto 
+                         WHERE c.Estado = 'PENDIENTE' AND dc.ID_Artesano = tp.ID_Artesano");
+
+        $data['compras'] = $query->getResult();
 
         return view('dashboard/delivery/dely_dashboard', $data);
     }
     public function envio()
     {
-        
-        return view('dashboard/delivery/envio');
+        $db = \Config\Database::connect();
+        $query = $db->query("SELECT c.ID, p.Nombre, tp.Imagen_URL, dc.Cantidad, c.Total  
+                         FROM compra c 
+                         JOIN detalle_compra dc ON dc.ID_Compra = c.ID 
+                         JOIN producto p ON p.ID = dc.ID_Producto 
+                         JOIN tiene_producto tp ON p.ID = tp.ID_Producto 
+                         WHERE c.Estado = 'PENDIENTE' AND dc.ID_Artesano = tp.ID_Artesano");
+
+        $data['compras'] = $query->getResult();
+
+        return view('dashboard/delivery/envio', $data);
     }
 
     public function entregado()
     {
-        
+
         return view('dashboard/delivery/entregado');
     }
-    
+
 }

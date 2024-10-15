@@ -40,15 +40,18 @@ class PagoController extends BaseController
 
         $tieneProductoModel = new TieneProductoModel();
         $resultado = $tieneProductoModel->findAll();
+
+
         $categoriaModel = new CategoriaModel();
         $resultado2 = $categoriaModel->findAll();
         $detalleCompraModel = new DetalleCompraModel();
+        
         $carrito = '';
         if (session()->get('ID_Rol') == null) {
             $usuario = 0;
         } else {
             $usuario = session()->get('ID_Rol');
-            $carrito = $detalleCompraModel->carritoProd(session()->get('ID'));
+            $carrito = $detalleCompraModel->where('ID_Compra', $id_compra)->carritoProd(session()->get('ID'));
         }
         $data = [
             'ID' => $id_compra,
@@ -59,7 +62,8 @@ class PagoController extends BaseController
             'usuario' => $usuario,
             'carrito' => $carrito,
             'transferencia' => $transferencia,
-            'qr' => $qr
+            'qr' => $qr,
+            'tieneProductoModel' => $tieneProductoModel
         ];
         // return view('pagos/metodos_pagos', $data);
         return view('global/header', $data) . view('pagos/metodos_pagos', $data) . view('global/footer');
@@ -89,8 +93,6 @@ class PagoController extends BaseController
                 return redirect()->back()->withInput()->with('error', 'Error al subir el comprobante: ' . $e->getMessage());
             }
         }
-
-        // Guardar los datos de pago
         $pagoData = [
             'ID_Cliente' => session()->get('ID'),
             'ID_Compra' => $this->request->getPost('id_compra'),
@@ -99,6 +101,16 @@ class PagoController extends BaseController
             'IMG_Comprobante' => $comprobanteURL
         ];
 
+        $compraModel = new CompraModel();
+        $compra = $compraModel->find($this->request->getPost('id_compra'));
+        
+        if ($compra) {
+            $compra->Estado = 'PROCESADO';
+            $compraModel->save($compra);
+        } else {
+            return redirect()->back()->with('error', 'Compra no encontrada.');
+        }
+        
         if ($pagoModel->insert($pagoData)) {
             return redirect()->to(base_url())->with('success', 'Pago procesado. En espera de verificación.');
         } else {
