@@ -16,5 +16,11 @@ class CompraModel extends Model
         $db      = \Config\Database::connect();
         return $this->where('ID_Cliente',$idC)->where('Estado','PENDIENTE')->first();
     }
+
+    function ActualizarCompra($idC,$data){
+        return $this->db->table($this->table)
+                        ->where('ID', $idC)
+                        ->update($data); // Actualizar datos
+    }
 }
 

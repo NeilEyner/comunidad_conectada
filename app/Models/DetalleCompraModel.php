@@ -26,12 +26,6 @@ class DetalleCompraModel extends Model
     }
     public function carritoProd($idCliente)
     {
-
-        // return $this->select('compra.ID, compra.Total, detalle_compra.*')
-        //     ->join('compra', 'compra.ID = detalle_compra.ID_Compra')
-        //     ->where('compra.ID_Cliente', $idCliente)
-        //     ->where('compra.Estado', 'PENDIENTE')
-        //     ->findAll();
         
         return $this->select('compra.ID, compra.Total, detalle_compra.*,tiene_producto.*,producto.Nombre')
             ->join('compra', 'compra.ID = detalle_compra.ID_Compra')
@@ -41,6 +35,33 @@ class DetalleCompraModel extends Model
             // ->where('tiene_producto.ID_Artesano', 'detalle_compra.ID_Artesano')
             ->where('compra.Estado', 'PENDIENTE')
             ->findAll();
+    }
+    public function carritoUnProd($idCliente,$idArtesano,$idProducto)
+    {
+        
+        return $this->select('compra.ID, compra.Total, detalle_compra.*,tiene_producto.*,producto.Nombre')
+            ->join('compra', 'compra.ID = detalle_compra.ID_Compra')
+            ->join('tiene_producto', 'tiene_producto.ID_Producto = detalle_compra.ID_Producto and tiene_producto.ID_Artesano =detalle_compra.ID_Artesano')
+            ->join('producto', 'producto.ID = detalle_compra.ID_Producto')
+            ->where('compra.ID_Cliente', $idCliente)
+            ->where('tiene_producto.ID_Artesano', $idArtesano)
+            ->where('tiene_producto.ID_producto', $idProducto)
+            // ->where('tiene_producto.ID_Artesano', 'detalle_compra.ID_Artesano')
+            ->where('compra.Estado', 'PENDIENTE')
+            ->first();
+    }
+
+    public function encontrar($idC, $idP, $idA){
+        return $this->where('ID_Compra', $idC)
+                    ->where('ID_Producto', $idP)
+                    ->where('ID_Artesano', $idA)
+                    ->first();
+    }
+    public function eliminar($idC, $idP, $idA){
+        return $this->where('ID_Compra', $idC)
+                    ->where('ID_Producto', $idP)
+                    ->where('ID_Artesano', $idA)
+                    ->delete();
     }
     
 }
