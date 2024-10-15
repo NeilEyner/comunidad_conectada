@@ -157,7 +157,7 @@ https://templatemo.com/tm-559-zay-shop
                         </div>
                         <div class=" d-flex mt-3">
                             <a href="<?= base_url('carrito')?>" class="default_btn w-50  px-1"  style="text-decoration:none;">Ver Carrito</a>
-                            <a href="<?php echo base_url('pagos/metodo_pago/9'); ?>" class="default_btn second ms-3 w-50  px-1" style="text-decoration:none;">Pagar</a>
+                            <a href="<?php echo base_url('pagos/metodo_pago/'.$prod['ID']); ?>" class="default_btn second ms-3 w-50  px-1" style="text-decoration:none;">Pagar</a>
                         </div>
                         <?php
                         }else{

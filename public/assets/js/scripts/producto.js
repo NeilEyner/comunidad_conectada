@@ -95,7 +95,7 @@ function recargaCarrito(carrito,ruta){
     html+=     '</div>'
     html+=     '<div class=" d-flex mt-3">'
     html+=         '<a href="'+ruta+'/carrito " class="default_btn w-50  px-1"  style="text-decoration:none;">Ver Carrito</a>'
-    html+=             '<a href="checkout.html" class="default_btn second ms-3 w-50  px-1" style="text-decoration:none;">Pagar</a>'
+    html+=             '<a href="'+ruta+'pagos/metodo_pago/'+prod.ID+'); ?>" class="default_btn second ms-3 w-50  px-1" style="text-decoration:none;">Pagar</a>'
     html+=     '</div>'
         
         
@@ -117,7 +117,7 @@ function obtenervalor(){
 function editCarr(ruta,idC,idP,idA,stock,cantidad,precio,diferencia){
 
     if(cantidad+diferencia<=0){
-        alert('seguro que desea eliminar el producto del carrito?');
+        eliminar(ruta, idC, idP, idA);
         return;
     }
     if(diferencia>stock){
@@ -197,4 +197,9 @@ function eliminar(ruta, idC, idP, idA){
             console.error('Error:', error); // Manejar errores
         });
     }
+    
+}
+function actualizarCarrHeader(carrito){
+
+
 }

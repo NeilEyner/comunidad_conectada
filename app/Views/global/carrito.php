@@ -102,7 +102,7 @@
                                 <p ><b id="total"><?= $prod['Total']?> Bs.</b></p>
                             </div>
                             <div class="cart_sum_pros">
-                                <a href="<?php echo base_url('pagos/metodo_pago/9'); ?>"
+                                <a href="<?php echo base_url('pagos/metodo_pago/'.$prod['ID']); ?>"
                                 class="default_btn second ms-3 w-50  px-1" style="text-decoration:none;">Pagar</a>
                             </div>
                         </div>
