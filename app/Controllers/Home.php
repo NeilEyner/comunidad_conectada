@@ -8,6 +8,7 @@ use App\Models\CategoriaModel;
 use App\Models\DetalleCompraModel;
 use App\Models\ProductoModel;
 use App\Models\CompraModel;
+use App\Models\ValoracionModel;
 
 class Home extends BaseController{
 
@@ -25,7 +26,7 @@ class Home extends BaseController{
             $usuario=session()->get('ID_Rol');
             $carrito=$detalleCompraModel->carritoProd(session()->get('ID'));
         }
-        $data=['titulo'=>'Comunidades','productos'=>$resultado,'contenido'=>$resultado2,'carrito'=>$carrito];
+        $data=['titulo'=>'Inicio','productos'=>$resultado,'contenido'=>$resultado2,'carrito'=>$carrito];
         return view('global/header',$data).view('global/homeCarrusel').view('global/homeCategorias') .view('global/homeProducto'). view('global/footer');
     }
 
@@ -114,18 +115,26 @@ class Home extends BaseController{
     }
     public function carrito(): string
     {   
+        $tieneProductoModel = new TieneProductoModel();
+        $resultado2 = $tieneProductoModel->findAll();
+        $contenidoModel = new ContenidoModel();
+        $resultado3 = $contenidoModel->findAll();
         $comunidadModel = new ComunidadModel();
         $resultado = $comunidadModel->findAll();
         $detalleCompraModel= new DetalleCompraModel();
         $carrito='';
         if (session()->get('ID_Rol') == null) {
             $usuario=0;
+        
+            $data=['titulo'=>'Inicio','productos'=>$resultado2,'contenido'=>$resultado3,'carrito'=>$carrito];
+            return view('global/header',$data).view('global/homeCarrusel').view('global/homeCategorias') .view('global/homeProducto'). view('global/footer');
         }else{
             $usuario=session()->get('ID_Rol');
             $carrito=$detalleCompraModel->carritoProd(session()->get('ID'));
+            $data=['titulo'=>'Mi Carrito','comunidad'=>$resultado,'carrito'=>$carrito];
+            return view('global/header',$data).view('global/carrito') .view('global/footer');
         }
-        $data=['titulo'=>'Mi Carrito','comunidad'=>$resultado,'carrito'=>$carrito];
-        return view('global/header',$data).view('global/carrito') .view('global/footer');
+        
     }
 
     function anadirProd($idA,$idP,$cant,$precio){
@@ -139,7 +148,7 @@ class Home extends BaseController{
         $rol=session()->get('ID_Rol');
         $idC=session()->get('ID');
         $dataC='';
-        if ( $rol!=2) {
+        if ( $rol==null) {
             //return json_encode('producto');
             // return json_encode(['status' => 'error', 'message' => 'Rol no autorizado']);
             return $this->response->setJSON(['status' => 0, 'ruta' => base_url('login')]);
@@ -194,6 +203,29 @@ class Home extends BaseController{
         }
         return $this->response->setJSON(['status' => 1,$dataC,'det'=>$idDet,'carrito'=>$carrito]);
             
+    }
+
+    function calificar($idP,$idA,$val){
+        $valoracionModel = new ValoracionModel();
+        $idC=session()->get('ID');
+        $valoracion=$valoracionModel->verifValoracion($idC,$idP,$idA);
+        if($valoracion!=null){
+            return $this->response->setJSON(['status' => 0]);
+        }
+        $data=[
+            'ID_Usuario'=>$idC,
+            'ID_Producto'=>$idP,
+            'ID_Artesano'=>$idA,
+            'Puntuacion'=>$val,
+            'Fecha'=>date('Y-m-d H:i:s'),
+
+        ];
+        $valoracionModel->insert($data);
+        $puntos=$valoracionModel->puntaje($idP,$idA);
+        $puntaje=(15+$puntos->Puntaje)/($puntos->Num+5);
+        $puntaje=round($puntaje,1);
+        return $this->response->setJSON(['status' => 1,'idArtesano'=>$idA,'puntaje'=>$puntaje]);
+
     }
 
     

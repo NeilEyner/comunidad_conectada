@@ -41,12 +41,26 @@
                             <h1 class="h2"><?php echo $prod['Nombre'] ?></h1>
                             <p class="h3 py-2"><?php echo $producto['Precio']; ?></p>
                             <p class="py-2">
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-secondary"></i>
-                                <span class="list-inline-item text-dark">Rating 4.8</span>
+                            <?php 
+                            use App\Models\ValoracionModel;
+                            $valoracionModel = new ValoracionModel();
+                            $puntajeRow=$valoracionModel->puntaje($producto['ID_Producto'],$producto['ID_Artesano']);
+                            $puntaje=(15+$puntajeRow->Puntaje)/($puntajeRow->Num+5);
+                            $puntaje=round($puntaje,1);
+                            $puntajed=$puntaje;
+                            for($i=0;$i<5;$i++){
+                                        if($puntajed>=1){
+                                            echo '<i class="text-warning fa fa-star"></i>';
+                                        }else{
+                                            if($puntajed>=0.29 && $puntajed<=0.8){
+                                                echo '<i class="text-warning fa fa-star-half-alt"></i>';
+                                            }else{
+                                                echo '<i class="text-muted fa fa-star"></i>';
+                                            }
+                                        }
+                                        $puntajed--;
+                                    } ?>
+                                <span class="list-inline-item text-dark">Rating <?= $puntaje?></span>
                             </p>
                             <!-- <ul class="list-inline">
                                 <li class="list-inline-item">
@@ -93,7 +107,7 @@
                                             <li class="list-inline-item"><span class="btn btn-success btn-size">XL</span></li>
                                         </ul>
                                     </div> -->
-                                    
+                                    <?php if(session()->get('isLoggedIn')){ ?>
                                     <div class="col-auto">
                                         <ul class="list-inline pb-3">
                                             <li class="list-inline-item text-right">
@@ -106,6 +120,7 @@
                                         </ul>
                                     </div>
                                 </div>
+                                
                                 <!-- <script>
                                         var a=document.getElementById("product-quanity").max ;
                                         console.log(a);
@@ -120,6 +135,7 @@
                                         <button  class="btn btn-success btn-lg"  value="addtocard" onclick="anadirProducto('<?= base_url()?>',<?= $producto['ID_Artesano']?>,<?= $producto['ID_Producto']?>, document.getElementById('product-quanity').value ,<?= $producto['Precio']?>)">Añadir al Carrito</button>
                                     </div>
                                 </div>
+                                <?php } ?>
                             <!-- </form> -->
 
                         </div>
@@ -142,10 +158,13 @@
                 <?php 
                 use App\Models\ProductoModel;
                 
-                
                 foreach ($prodR as $p): 
                     $productoModel = new ProductoModel();
                     $prodDet=$productoModel->find($p['ID_Producto']);
+                    $valoracionModel = new ValoracionModel();
+                    $puntajeRow=$valoracionModel->puntaje($p['ID_Producto'],$p['ID_Artesano']);
+                    $puntaje=(15+$puntajeRow->Puntaje)/($puntajeRow->Num+5);
+                    $puntaje=round($puntaje,1);
                     ?>
                 <div class="p-2 pb-3">
                     <div class="product-wap card rounded-0">
@@ -153,7 +172,9 @@
                             <img class="card-img rounded-0 img-fluid" src="<?=  base_url().$p['Imagen_URL']  ?>" style="height:30vh">
                             <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
                                 <ul class="list-unstyled">
+                                <?php if(session()->get('isLoggedIn')){?>
                                     <li><a class="btn btn-success text-white" href=""><i class="far fa-heart"></i></a></li>
+                                <?php } ?>
                                     <li><a class="btn btn-success text-white mt-2" href="<?= base_url().'producto'.'/'. $p['ID_Artesano'].'/'.$p['ID_Producto'];  ?>"><i class="far fa-eye"></i></a></li>
                                     <li><a class="btn btn-success text-white mt-2" href=""><i class="fas fa-cart-plus"></i></a></li>
                                 </ul>
@@ -173,11 +194,18 @@
                             </ul> -->
                             <ul class="list-unstyled d-flex justify-content-center mb-1">
                                 <li>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-muted fa fa-star"></i>
+                                <?php for($i=0;$i<5;$i++){
+                                        if($puntaje>=1){
+                                            echo '<i class="text-warning fa fa-star"></i>';
+                                        }else{
+                                            if($puntaje>=0.29 && $puntaje<=0.8){
+                                                echo '<i class="text-warning fa fa-star-half-alt"></i>';
+                                            }else{
+                                                echo '<i class="text-muted fa fa-star"></i>';
+                                            }
+                                        }
+                                        $puntaje--;
+                                    } ?>
                                 </li>
                             </ul>
                             <p class="text-center mb-0"><?=  $p['Precio']  ?> Bs.</p>

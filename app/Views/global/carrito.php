@@ -33,7 +33,7 @@
                             <span>Cantidad</span>
                             <span>Precio Total</span>
                         </h4>
-                        <div class="shop_cart_wrap">
+                        <div id="list-carr" class="shop_cart_wrap">
                             <?php
                             use App\Models\TieneProductoModel;
                             $tieneProductoModel = new TieneProductoModel();
@@ -81,8 +81,10 @@
                     <div class="col-lg-3 mt-4 mt-lg-0">
                         <div class="cart_summary">
                             <h4>Resumen del Pedido</h4>
+                            <div id="res-carr">
                             <?php
                             $total=0;
+                            
                             foreach($carrito as $prod): 
                                 // $producto=$tieneProductoModel->ProductosDet($prod['ID_Artesano'],$prod['ID_Producto']);
                                 // $total+=$producto['Precio']*$prod['Cantidad'];
@@ -96,15 +98,26 @@
                             endforeach;
                             ?>
                             
-                           
+                            </div>
+                            <?php if(sizeof($carrito)>0){?> 
                             <div class="cart_sum_total d-flex justify-content-between">
                                 <p ><b>Total</b></p>
                                 <p ><b id="total"><?= $prod['Total']?> Bs.</b></p>
                             </div>
-                            <div class="cart_sum_pros">
+                            <div id="btn-carr-pag" class="cart_sum_pros">
                                 <a href="<?php echo base_url('pagos/metodo_pago/'.$prod['ID']); ?>"
                                 class="default_btn second ms-3 w-50  px-1" style="text-decoration:none;">Pagar</a>
                             </div>
+                            <?php }else{?>
+                                <div class="cart_sum_total d-flex justify-content-between">
+                                    <p ><b>Total</b></p>
+                                    <p ><b id="total">0 Bs.</b></p>
+                                </div>
+                                <div id="btn-carr-pag" class="cart_sum_pros">
+                                    
+                                </div>
+                            <?php }?>
+
                         </div>
                     </div>
                 </div>

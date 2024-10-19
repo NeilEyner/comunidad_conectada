@@ -76,10 +76,15 @@
                     use App\Models\ProductoModel;
                    // use App\Models\UsuarioModel;
                     use App\Models\ProductoCategoriaModel;
+                    use App\Models\ValoracionModel;
                     $count=0;
                     $prodMostrados=0;	
                     foreach($productos as $producto): 
                         $productoModel = new ProductoModel();
+                        $valoracionModel = new ValoracionModel();
+                        $puntajeRow=$valoracionModel->puntaje($producto['ID_Producto'],$producto['ID_Artesano']);
+                        $puntaje=(15+$puntajeRow->Puntaje)/($puntajeRow->Num+5);
+                        $puntaje=round($puntaje,1);
                         //$usuarioModel = new UsuarioModel();
                         $prod=$productoModel->find($producto['ID_Producto']);
                         //$artesano=$usuarioModel->find($producto['ID_Artesano']);
@@ -100,7 +105,15 @@
                                     <img class="card-img rounded-0 " src="<?= $producto['Imagen_URL']?>" height="400px">
                                     <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
                                         <ul class="list-unstyled">
-                                            <li><a class="btn btn-success text-white" href=""><i class="far fa-heart"></i></a></li>
+                                        <?php if(session()->get('isLoggedIn')){
+                                            if($puntajeRow->Puntaje==null){?>
+                                                <li><a class="btn btn-success text-white"   onclick="mostrarPunt('<?=base_url()?>',<?=$producto['ID_Producto']?>,<?=$producto['ID_Artesano']?>)" ><i id="heart-<?=$producto['ID_Producto']?>-<?=$producto['ID_Artesano']?>" class="far fa-heart " ></i></a></li>
+                                            <?php }else{
+                                                
+                                        ?>
+                                            <!-- <li><a class="btn btn-success text-white"   onclick="puntuar()" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="far fa-heart"></i></a></li> -->
+                                            <li><a class="btn btn-success text-white"  ><i id="heart-<?=$producto['ID_Producto']?>-<?=$producto['ID_Artesano']?>" class="fa fa-heart " ></i></a></li>
+                                        <?php } } ?>
                                             <li><a class="btn btn-success text-white mt-2" href="<?= base_url().'producto'.'/'. $producto['ID_Artesano'].'/'.$producto['ID_Producto'];  ?>"><i class="far fa-eye"></i></a></li>
                                             <li><a class="btn btn-success text-white mt-2" onclick="anadirProducto('<?= base_url()?>',<?= $producto['ID_Artesano']?>,<?= $producto['ID_Producto']?>,1,<?= $producto['Precio']?>)"><i class="fas fa-cart-plus" ></i></a></li>
                                         </ul>
@@ -128,12 +141,19 @@
                                         </li>
                                     </ul>
                                     <ul class="list-unstyled d-flex justify-content-center mb-1">
-                                        <li>
-                                            <i class="text-warning fa fa-star"></i>
-                                            <i class="text-warning fa fa-star"></i>
-                                            <i class="text-warning fa fa-star"></i>
-                                            <i class="text-muted fa fa-star"></i>
-                                            <i class="text-muted fa fa-star"></i>
+                                        <li id="estr-ti-<?=$producto['ID_Producto']?>-<?=$producto['ID_Artesano']?>">
+                                            <?php for($i=0;$i<5;$i++){
+                                                if($puntaje>=1){
+                                                    echo '<i class="text-warning fa fa-star"></i>';
+                                                }else{
+                                                    if($puntaje>=0.29 && $puntaje<=0.8){
+                                                        echo '<i class="text-warning fa fa-star-half-alt"></i>';
+                                                    }else{
+                                                        echo '<i class="text-muted fa fa-star"></i>';
+                                                    }
+                                                }
+                                                $puntaje--;
+                                            } ?>
                                         </li>
                                     </ul>
                                     
@@ -158,3 +178,39 @@
         </div>
     </div>
     <!-- End Content -->
+    <div class="modal fade bg-white" id="templatemo_search" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="w-100 pt-1 mb-5 text-right">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="" method="get" class="modal-content modal-body border-0 p-0">
+                <div class="input-group mb-2">
+                    <input type="text" class="form-control" id="inputModalSearch" name="q" placeholder="Search ...">
+                    <button type="submit" class="input-group-text bg-success text-light">
+                        <i class="fa fa-fw fa-search text-white"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Califica Nuestro Producto</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id="mod-body" class="modal-body">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" id="accept" onclick="puntuar()" class="btn btn-primary" data-bs-dismiss="modal">Calificar</button>
+      </div>
+    </div>
+  </div>
+</div>

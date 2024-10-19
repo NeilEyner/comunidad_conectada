@@ -14,6 +14,7 @@
             <?php
             use App\Models\ProductoModel;
             use App\Models\UsuarioModel;
+            use App\Models\ValoracionModel;
             $count = 0;
             foreach ($productos as $producto):
                 if ($count == 3) {
@@ -28,17 +29,31 @@
                 ?>
                 <div class="col-12 col-md-4 mb-4">
                     <div class="card h-100">
-                        <a href="shop-single.html">
+                        <a href="<?= base_url().'producto'.'/'. $producto['ID_Artesano'].'/'.$producto['ID_Producto'];  ?>">
                             <img src="<?= $producto['Imagen_URL'] ?>" class="card-img-top" height="300px" alt="...">
                         </a>
                         <div class="card-body">
                             <ul class="list-unstyled d-flex justify-content-between">
                                 <li>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-muted fa fa-star"></i>
-                                    <i class="text-muted fa fa-star"></i>
+                                <?php 
+                                    
+                                    $valoracionModel = new ValoracionModel();
+                                    $puntajeRow=$valoracionModel->puntaje($producto['ID_Producto'],$producto['ID_Artesano']);
+                                    $puntaje=(15+$puntajeRow->Puntaje)/($puntajeRow->Num+5);
+                                    $puntaje=round($puntaje,1);
+                                    $puntajed=$puntaje;
+                                    for($i=0;$i<5;$i++){
+                                        if($puntajed>=1){
+                                            echo '<i class="text-warning fa fa-star"></i>';
+                                        }else{
+                                            if($puntajed>=0.29 && $puntajed<=0.8){
+                                                echo '<i class="text-warning fa fa-star-half-alt"></i>';
+                                            }else{
+                                                echo '<i class="text-muted fa fa-star"></i>';
+                                            }
+                                        }
+                                        $puntajed--;
+                                    } ?>
                                 </li>
                                 <li class="text-muted text-right"><?= $producto['Precio'] ?></li>
                             </ul>

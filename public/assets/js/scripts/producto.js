@@ -115,7 +115,7 @@ function obtenervalor(){
 
 
 function editCarr(ruta,idC,idP,idA,stock,cantidad,precio,diferencia){
-
+    console.log(diferencia+'stock'+stock+"dsfjls");
     if(cantidad+diferencia<=0){
         eliminar(ruta, idC, idP, idA);
         return;
@@ -124,13 +124,14 @@ function editCarr(ruta,idC,idP,idA,stock,cantidad,precio,diferencia){
         alert('No hay suficiente stock');
         return;
     }else{
+        console.log(diferencia+'stock'+stock);
     cantidad=cantidad+diferencia;
-    var rutac=ruta+'carritoedit/'+idC+'/'+idP+'/'+idA+'/'+precio+'/'+cantidad;
+    var rutac=ruta+'carritoedit/'+idC+'/'+idP+'/'+idA+'/'+precio+'/'+diferencia;
     var bodyData = 'idC=' + encodeURIComponent(idC) +
                     '&idP=' + encodeURIComponent(idP)+
                     '&idA=' + encodeURIComponent(idA) +
                     '&precio=' + encodeURIComponent(precio)+
-                    '&cantidad=' + encodeURIComponent(cantidad);
+                    '&dif=' + encodeURIComponent(diferencia);
     console.log(rutac)
     fetch(rutac, {
         method: 'POST',
@@ -146,12 +147,15 @@ function editCarr(ruta,idC,idP,idA,stock,cantidad,precio,diferencia){
         // console.log(data.carrito.Total);
         ruta='\''+ruta+'\'';
         console.log(ruta);
-        document.getElementById('total').innerHTML=data.carrito.Total+' Bs.';
-        document.getElementById('pre-'+idP+'-'+idA).innerHTML=data.carrito.Cantidad*data.carrito.Precio+' Bs.';
-        document.getElementById('pre2-'+idP+'-'+idA).innerHTML=data.carrito.Cantidad*data.carrito.Precio+' Bs.';
-        document.getElementById('var-val-'+idP+'-'+idA).innerHTML=data.carrito.Cantidad;
-        document.getElementById('carr-btn-menos-'+idP+'-'+idA).setAttribute('onclick','editCarr('+ruta+','+idC+','+idP+ ','+idA+','+stock+','+data.carrito.Cantidad+','+data.carrito.Precio+',-1)');
-        document.getElementById('carr-btn-mas-'+idP+'-'+idA).setAttribute('onclick','editCarr('+ruta+','+idC+','+idP+ ','+idA+','+stock+','+data.carrito.Cantidad+','+data.carrito.Precio+',1)');
+        console.log(data.cantProd);
+        
+            document.getElementById('total').innerHTML=data.carrito.Total+' Bs.';
+            document.getElementById('pre-'+idP+'-'+idA).innerHTML=data.carrito.Cantidad*data.carrito.Precio+' Bs.';
+            document.getElementById('pre2-'+idP+'-'+idA).innerHTML=data.carrito.Cantidad*data.carrito.Precio+' Bs.';
+            document.getElementById('var-val-'+idP+'-'+idA).innerHTML=data.carrito.Cantidad;
+            document.getElementById('carr-btn-menos-'+idP+'-'+idA).setAttribute('onclick','editCarr('+ruta+','+idC+','+idP+ ','+idA+','+stock+','+data.carrito.Cantidad+','+data.carrito.Precio+',-1)');
+            document.getElementById('carr-btn-mas-'+idP+'-'+idA).setAttribute('onclick','editCarr('+ruta+','+idC+','+idP+ ','+idA+','+stock+','+data.carrito.Cantidad+','+data.carrito.Precio+',1)');
+        
     })
     .catch(error => {
         console.error('Error:', error); // Manejar errores
@@ -184,14 +188,18 @@ function eliminar(ruta, idC, idP, idA){
             // console.log(data.carrito.Total);
             ruta='\''+ruta+'\'';
             console.log(ruta);
-            
+            if(data.cantProd==0){
+                document.getElementById('list-carr').innerHTML='No hay Productos en el carrito';
+                document.getElementById('total').innerHTML='0 Bs.';
+                document.getElementById('btn-carr-pag').innerHTML='';
+                document.getElementById('res-carr').innerHTML='';
+
+    
+            }else{
             document.getElementById('total').innerHTML=data.total+' Bs.';
             document.getElementById('prod-carr-'+idC+'-'+idP+'-'+idA).remove();
             document.getElementById('res-'+idC+'-'+idP+'-'+idA).innerHTML='';
-            // document.getElementById('pre2-'+idP+'-'+idA).innerHTML=data.carrito.Cantidad*data.carrito.Precio+' Bs.';
-            // document.getElementById('var-val-'+idP+'-'+idA).innerHTML=data.carrito.Cantidad;
-            // document.getElementById('carr-btn-menos-'+idP+'-'+idA).setAttribute('onclick','editCarr('+ruta+','+idC+','+idP+ ','+idA+','+stock+','+data.carrito.Cantidad+','+data.carrito.Precio+',-1)');
-            // document.getElementById('carr-btn-mas-'+idP+'-'+idA).setAttribute('onclick','editCarr('+ruta+','+idC+','+idP+ ','+idA+','+stock+','+data.carrito.Cantidad+','+data.carrito.Precio+',1)');
+            }
         })
         .catch(error => {
             console.error('Error:', error); // Manejar errores
@@ -203,3 +211,4 @@ function actualizarCarrHeader(carrito){
 
 
 }
+
