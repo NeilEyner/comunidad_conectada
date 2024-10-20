@@ -117,7 +117,7 @@ https://templatemo.com/tm-559-zay-shop
                 use App\Models\TieneProductoModel;
                 $tieneProductoModel = new TieneProductoModel();
                 if(session()->get('isLoggedIn')){ 
-                    if (session()->get('ID_Rol') == 2) {
+                    if (session()->get('ID_Rol') != null) {
                         
                     
                     ?>

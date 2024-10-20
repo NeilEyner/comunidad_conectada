@@ -7,23 +7,32 @@ use App\Models\CompraModel;
 use App\Models\TieneproductoModel;
 
 class CarritoController extends Controller{
-    public function editarCarrito($idC, $idP, $idA,$precio,$cantidad){ 
+    public function editarCarrito($idC, $idP, $idA,$precio,$dif){ 
         $detalleCompraModel= new DetalleCompraModel();
+        $tieneProductoModel=new TieneProductoModel();
         $compraModel=new CompraModel();
         $cant=$detalleCompraModel->encontrar($idC,$idP,$idA)['Cantidad'];
 
-        $detalleCompraModel->actualizarDet($idC,$idP,$idA,['Cantidad' => $cantidad]);
-
+        // $detalleCompraModel->actualizarDet($idC,$idP,$idA,['Cantidad' => $cantidad]);
+        $stock=$tieneProductoModel->getProducto($idA,$idP)['Stock'];
         $total=$compraModel->find($idC)['Total'];
-        if($cant>$cantidad){
-            $total=$total-($cant-$cantidad)*$precio;
-        }else{
-            $total=$total+($cantidad-$cant)*$precio;
-        }
+        // if($cant>$cantidad){
+        //     $total=$total-($cant-$cantidad)*$precio;
+        // }else{
+        //     $total=$total+($cantidad-$cant)*$precio;
+        // }
+
+        //-----------
+        $detalleCompraModel->actualizarDet($idC,$idP,$idA,['Cantidad' => $cant+$dif]);
+        $total=$total+$dif*$precio;
+        $stock=$stock-$dif;
+
+        //-------------------
         $compraModel->ActualizarCompra($idC,['Total' => $total]);
+        $tieneProductoModel->actualizarProd($idA,$idP,['Stock'=>$stock]);
 
         $carrito= $detalleCompraModel->carritoUnProd(session()->get('ID'),$idA,$idP);
-        return $this->response->setJSON(['carrito'=>$carrito,'total'=>$total,'cant'=>$cant,'cantidad'=>$cantidad]);
+        return $this->response->setJSON(['carrito'=>$carrito,'total'=>$total,'cant'=>$cant,'cantidad'=>$cant+$dif]);
     }
 
     public function eliminarProd(){
@@ -42,7 +51,8 @@ class CarritoController extends Controller{
         $stock=$tieneProductoModel->getProducto($idA,$idP)['Stock'];
         $tieneProductoModel->actualizarProd($idA,$idP,['Stock' => $stock+$detalle['Cantidad']]);
         $carrito= $detalleCompraModel->carritoUnProd(session()->get('ID'),$idA,$idP);
-        return $this->response->setJSON(['carrito'=>$carrito,'total'=>$total,'idC'=>$idC,'idP'=>$idP,'idA'=>$idA]);
+        $cantProd=$detalleCompraModel->where('ID_Compra',$idC)->findAll();
+        return $this->response->setJSON(['carrito'=>$carrito,'total'=>$total,'idC'=>$idC,'idP'=>$idP,'idA'=>$idA,'cantProd'=>sizeof($cantProd)]);
         //  return $this->response->setJSON(['total'=>$total,'detalle'=>$detalle]);
     }
 }

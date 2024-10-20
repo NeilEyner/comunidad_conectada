@@ -224,13 +224,16 @@ INSERT IGNORE INTO `usuario` (`ID`, `Nombre`, `Correo_electronico`, `Telefono`, 
 CREATE TABLE IF NOT EXISTS `valoracion` (
   `ID_Usuario` int DEFAULT NULL,
   `ID_Producto` int NOT NULL,
+  `ID_Artesano` int NOT NULL,
   `Puntuacion` int NOT NULL,
   `Comentario` text,
   `Fecha` date NOT NULL,
   KEY `ID_Usuario` (`ID_Usuario`),
   KEY `ID_Producto` (`ID_Producto`),
+  KEY `ID_Artesano` (`ID_Artesano`),
   CONSTRAINT `valoracion_ibfk_1` FOREIGN KEY (`ID_Usuario`) REFERENCES `usuario` (`ID`) ON DELETE SET NULL,
   CONSTRAINT `valoracion_ibfk_2` FOREIGN KEY (`ID_Producto`) REFERENCES `producto` (`ID`) ON DELETE CASCADE,
+  CONSTRAINT `valoracion_ibfk_3` FOREIGN KEY (`ID_Artesano`) REFERENCES `usuario` (`ID`) ON DELETE CASCADE,
   CONSTRAINT `valoracion_chk_1` CHECK ((`Puntuacion` between 1 and 5))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 

@@ -22,23 +22,23 @@
 
 <!-- Start Content Page -->
 
-<!-- shopping cart -->
-<div class="pb-4 pt-4" style="min-height: 50vh;">
-    <div class="cart_area section_padding_b">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-9">
-                    <h4 class="shop_cart_title sopcart_ttl d-none d-lg-flex">
-                        <span>Producto</span>
-                        <span>Cantidad</span>
-                        <span>Precio Total</span>
-                    </h4>
-                    <div class="shop_cart_wrap">
-                        <?php
-                        use App\Models\TieneProductoModel;
-                        $tieneProductoModel = new TieneProductoModel();
-                        foreach ($carrito as $prod):
-                            $producto = $tieneProductoModel->ProductosDet($prod['ID_Artesano'], $prod['ID_Producto']);
+    <!-- shopping cart -->
+     <div  class="pb-4 pt-4" style="min-height: 50vh;" >
+        <div class="cart_area section_padding_b" >
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-9">
+                        <h4 class="shop_cart_title sopcart_ttl d-none d-lg-flex">
+                            <span>Producto</span>
+                            <span>Cantidad</span>
+                            <span>Precio Total</span>
+                        </h4>
+                        <div id="list-carr" class="shop_cart_wrap">
+                            <?php
+                            use App\Models\TieneProductoModel;
+                            $tieneProductoModel = new TieneProductoModel();
+                            foreach($carrito as $prod): 
+                                $producto=$tieneProductoModel->ProductosDet($prod['ID_Artesano'],$prod['ID_Producto']);
                             ?>
                             <div id="prod-carr-<?=$prod['ID'].'-'.$prod['ID_Producto'].'-'.$prod['ID_Artesano']?>" class="single_shop_cart d-flex align-items-center flex-wrap">
                                 <div class="cart_img mb-4 mb-md-0">
@@ -81,8 +81,10 @@
                     <div class="col-lg-3 mt-4 mt-lg-0">
                         <div class="cart_summary">
                             <h4>Resumen del Pedido</h4>
+                            <div id="res-carr">
                             <?php
                             $total=0;
+                            
                             foreach($carrito as $prod): 
                                 // $producto=$tieneProductoModel->ProductosDet($prod['ID_Artesano'],$prod['ID_Producto']);
                                 // $total+=$producto['Precio']*$prod['Cantidad'];
@@ -96,15 +98,26 @@
                             endforeach;
                             ?>
                             
-                           
+                            </div>
+                            <?php if(sizeof($carrito)>0){?> 
                             <div class="cart_sum_total d-flex justify-content-between">
                                 <p ><b>Total</b></p>
                                 <p ><b id="total"><?= $prod['Total']?> Bs.</b></p>
                             </div>
-                            <div class="cart_sum_pros">
+                            <div id="btn-carr-pag" class="cart_sum_pros">
                                 <a href="<?php echo base_url('pagos/metodo_pago/'.$prod['ID']); ?>"
                                 class="default_btn second ms-3 w-50  px-1" style="text-decoration:none;">Pagar</a>
                             </div>
+                            <?php }else{?>
+                                <div class="cart_sum_total d-flex justify-content-between">
+                                    <p ><b>Total</b></p>
+                                    <p ><b id="total">0 Bs.</b></p>
+                                </div>
+                                <div id="btn-carr-pag" class="cart_sum_pros">
+                                    
+                                </div>
+                            <?php }?>
+
                         </div>
 
                     </div>

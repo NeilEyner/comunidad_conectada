@@ -31,12 +31,13 @@
             <div class="col-lg-3">
                 
                 <div class=" flex-sm-fill mt-3 mb-4 col-7 col-sm-auto pr-3">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="Search" placeholder="Search ...">
+                    <!-- <div class="input-group">
+                        <input type="text" class="form-control" id="Search" placeholder="Buscar ...">
                         <div class="input-group-text">
                             <i class="fa fa-fw fa-search"></i>
                         </div>
-                    </div>
+                    </div> -->
+                    <h1 class="h2 text-success" style="text-align:center;"><b > Comunidades </b> </h1>
                 </div>
             
                 <ul class="list">
@@ -63,7 +64,7 @@
             <div class="col-lg-9">
                 <div class="row " >
                     <div  >
-                        <h1 class="h1 text-success" style="text-align:center;"><b id= nombre-comunidad> Mallasa </b> </h1>
+                        <h1 class="h1 text-success" style="text-align:center;"><b id= "nombre-comunidad"> Mallasa </b> </h1>
                     </div>
                 </div>
                 <div class="row" >

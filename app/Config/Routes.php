@@ -29,8 +29,9 @@ $routes->get('/comunidades', 'Home::comunidades');
 $routes->get('/carrito', 'Home::carrito');
 $routes->get('/producto/(:num)/(:num)', 'Home::producto/$1/$2');
 $routes->Post('/anadirprod/(:num)/(:num)/(:num)/(:num)', 'Home::anadirProd/$1/$2/$3/$4');
-$routes->Post('/carritoedit/(:num)/(:num)/(:num)/(:num)/(:num)', 'CarritoController::editarCarrito/$1/$2/$3/$4/$5');
+$routes->Post('/carritoedit/(:num)/(:num)/(:num)/(:num)/(:any)', 'CarritoController::editarCarrito/$1/$2/$3/$4/$5');
 $routes->Post('/carreliminarprod', 'CarritoController::eliminarProd');
+$routes->Post('/calificar/(:num)/(:num)/(:num)', 'Home::calificar/$1/$2/$3');
 
 //rutas artesano
 $routes->get('dashboard/artesano/arte_dashboard', 'ArtesanoController::artesano');
