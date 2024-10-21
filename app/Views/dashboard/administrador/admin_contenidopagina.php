@@ -22,7 +22,17 @@
             <?php if (!empty($contenido_pagina) && is_array($contenido_pagina)): ?>
               <?php foreach ($contenido_pagina as $contenido): ?>
                 <tr class="text-gray-700 dark:text-gray-400">
-                  <td class="px-4 py-3 text-sm"><?php echo esc($contenido['Tipo_contenido']); ?></td>
+
+                  <td class="px-4 py-3 text-sm">
+                    <span class="block"><?php echo esc($contenido['Tipo_contenido']); ?></span>
+
+                    <?php if (!empty($contenido['Imagen'])): ?>
+                      <img src="<?php echo esc(base_url() . $contenido['Imagen']); ?>" alt=""
+                        class="mt-2 w-24 h-24 object-cover rounded-md mx-auto">
+                    <?php endif; ?>
+                  </td>
+
+
                   <td class="px-4 py-3 text-sm"><?php echo esc($contenido['Titulo']); ?></td>
                   <td class="px-4 py-3 text-sm"><?php echo esc($contenido['Contenido']); ?></td>
                   <td class="px-4 py-3 text-sm"><?php echo esc($contenido['Fecha_actualizacion']); ?></td>

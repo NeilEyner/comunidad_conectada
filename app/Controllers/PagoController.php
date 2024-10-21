@@ -13,7 +13,7 @@ use App\Models\ProductoModel;
 use App\Models\TieneProductoModel;
 use App\Models\CategoriaModel;
 use App\Models\DetalleCompraModel;
-
+use App\Models\TransporteModel;
 
 class PagoController extends BaseController
 {
@@ -22,12 +22,9 @@ class PagoController extends BaseController
 
         $compraModel = new CompraModel();
         $compra = $compraModel->find($id_compra);
-        // $data['compra'] = $compra; 
-
 
         $contenidoModel = new ContenidoPaginaModel();
 
-        // Fetch bank account details
         $transferencia = $contenidoModel->where('Tipo_contenido', 'OTRO')
             ->where('Titulo', 'Transferencia Bancaria')
             ->first();
@@ -36,7 +33,7 @@ class PagoController extends BaseController
         $qr = $contenidoModel->where('Tipo_contenido', 'OTRO')
             ->where('Titulo', 'QR')
             ->first();
-
+        $content = $contenidoModel->findAll();
 
         $tieneProductoModel = new TieneProductoModel();
         $resultado = $tieneProductoModel->findAll();
@@ -45,14 +42,24 @@ class PagoController extends BaseController
         $categoriaModel = new CategoriaModel();
         $resultado2 = $categoriaModel->findAll();
         $detalleCompraModel = new DetalleCompraModel();
-        
+
         $carrito = '';
         if (session()->get('ID_Rol') == null) {
             $usuario = 0;
         } else {
             $usuario = session()->get('ID_Rol');
-            $carrito = $detalleCompraModel->where('ID_Compra', $id_compra)->carritoProd(session()->get('ID'));
+            $carrito = $detalleCompraModel->where('ID_Compra', $id_compra)->obtenerDetallesCompra(session()->get('ID'));
         }
+        // SELECT d.* , c.Nombre, c.Latitud, c.Longitud FROM detalle_compra d
+        // JOIN usuario u ON d.ID_Artesano = u.ID
+        // JOIN comunidad c ON c.ID = u.ID_Comunidad WHERE d.ID_Compra = $id_compra;
+
+        $comunidades = new ComunidadModel();
+        $comunidad = $comunidades->findAll();
+
+        $transport = new TransporteModel();
+        $transporte = $transport->findAll();
+
         $data = [
             'ID' => $id_compra,
             'compra' => $compra,
@@ -63,7 +70,10 @@ class PagoController extends BaseController
             'carrito' => $carrito,
             'transferencia' => $transferencia,
             'qr' => $qr,
-            'tieneProductoModel' => $tieneProductoModel
+            'tieneProductoModel' => $tieneProductoModel,
+            'contenido'=> $content,
+            'comunidades'=> $comunidad,
+            'transportes'=> $transporte,
         ];
         // return view('pagos/metodos_pagos', $data);
         return view('global/header', $data) . view('pagos/metodos_pagos', $data) . view('global/footer');
@@ -103,14 +113,14 @@ class PagoController extends BaseController
 
         $compraModel = new CompraModel();
         $compra = $compraModel->find($this->request->getPost('id_compra'));
-        
+
         if ($compra) {
             $compra->Estado = 'PROCESADO';
             $compraModel->save($compra);
         } else {
             return redirect()->back()->with('error', 'Compra no encontrada.');
         }
-        
+
         if ($pagoModel->insert($pagoData)) {
             return redirect()->to(base_url())->with('success', 'Pago procesado. En espera de verificación.');
         } else {

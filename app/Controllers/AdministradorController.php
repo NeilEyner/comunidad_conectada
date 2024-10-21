@@ -649,7 +649,6 @@ class AdministradorController extends Controller
             if ($this->validate($rules)) {
                 $data = [
                     'Nombre' => $this->request->getPost('Nombre'),
-                    'Descripcion' => $this->request->getPost('Descripcion'),
                 ];
 
                 if ($model->insert($data)) {
@@ -687,7 +686,6 @@ class AdministradorController extends Controller
             if ($this->validate($rules)) {
                 $data = [
                     'Nombre' => $this->request->getPost('Nombre'),
-                    'Descripcion' => $this->request->getPost('Descripcion')
                 ];
 
                 $model->update($id, $data);
