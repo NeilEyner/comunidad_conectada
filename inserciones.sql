@@ -143,12 +143,21 @@ VALUES
 ('Poncho de Alpaca', 'Poncho tejido a mano con lana de alpaca, típico de las comunidades andinas en Oruro y La Paz. Ideal para el clima frío.'),
 ('Cerámica de Taraco', 'Cerámica decorativa hecha a mano en la comunidad de Taraco, inspirada en diseños precolombinos de la cultura Tiwanaku.'),
 ('Tejido de Aguayo', 'Tela multicolor tejida con técnicas ancestrales por las mujeres de la comunidad de Achacachi, usada como accesorio tradicional.'),
-('Arete', 'Collares y pulseras artesanales hechos de plata pura, extraída y trabajada por artesanos locales de Potosí.'),
+('Arete', 'Arete artesanal hechos de plata pura, extraída y trabajada por artesanos locales de Potosí.'),
 ('Chuspa de Coca', 'Bolsa tejida a mano para llevar hojas de coca, tradicionalmente usada por comunidades aymaras de La Paz.'),
 ('Máscara de Diablada', 'Máscara pintada a mano usada en la danza de la Diablada, elaborada por artesanos de Oruro para el carnaval.'),
 ('chompa', 'Producto textil elaborado par el clima frio de los andes, tejido por artesanos de la comunidad de Curahuara de Carangas.'),
 ('Manta', 'Manta artesanal tejida con lana de llama, usada por las comunidades del altiplano boliviano para abrigarse en climas fríos.');
-
+-- Hermosa manta tradicional de las cholas paceñas en color Amarillo claro. Este atuendo típico cuenta con flecos de seda en macramé totalmente bordados a mano por artesanos bolivianos.
+-- Sombrero artesanal Para varon elegante tradicional de La Paz, hecho a mano con filtro de alta calidad.
+-- Cerámica tiwanacota decorativa en la comunidad de Tiwanaku, inspirada en diseños precolombinos de la cultura Tiwanaku.
+-- Aguayo color negro de la comunidad de Achacachi, tejido con técnicas ancestrales por las mujeres de la comunidad, usado como accesorio tradicional.
+-- Arete de plata pura, extraída y trabajada por artesanos locales de Potosí.
+-- Chuspa de coca tejida a mano por comunidades aymaras de La Paz, usada para llevar hojas de coca.
+-- Máscara de moreno pintada a mano por artesanos de La Paz, usada en la danza de la Morenada. Hermosa calinte y acagedora.
+-- Chompa de lana de alpaca tejida por artesanos de la comunidad de Curahuara de Carangas.
+-- Manta Macrame color rojo tejida por comunidades del altiplano boliviano, Ideal para lucir la elegancia de la cholota paceña.
+--Bolsa de aguayo tejida  a mano artesanal para llevar lo necesario en tu salida, tradicionalmente usada por comunidades aymaras de La Paz.
 
 INSERT INTO `tiene_producto` (`ID_Artesano`, `ID_Producto`, `Precio`, `Stock`, `Disponibilidad`, `Imagen_URL`)
 VALUES

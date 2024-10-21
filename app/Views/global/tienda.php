@@ -112,6 +112,7 @@
                                                 
                                         ?>
                                             <!-- <li><a class="btn btn-success text-white"   onclick="puntuar()" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="far fa-heart"></i></a></li> -->
+                                            
                                             <li><a class="btn btn-success text-white"  ><i id="heart-<?=$producto['ID_Producto']?>-<?=$producto['ID_Artesano']?>" class="fa fa-heart " ></i></a></li>
                                         <?php } } ?>
                                             <li><a class="btn btn-success text-white mt-2" href="<?= base_url().'producto'.'/'. $producto['ID_Artesano'].'/'.$producto['ID_Producto'];  ?>"><i class="far fa-eye"></i></a></li>
@@ -122,7 +123,7 @@
                                 <div class="card-body" style="text-align: center;"><b></b>
                                     <a href="<?= base_url().'producto'.'/'. $producto['ID_Artesano'].'/'.$producto['ID_Producto'];  ?>" class="h3 text-decoration-none"><b><?= $prod['Nombre'] ?> </b></a>
                                     <ul class="w-100 list-unstyled d-flex justify-content-between mb-0">
-                                        <li><?= $prod['Descripcion']?></li>
+                                        <li><?= $producto['Descripcion']?></li>
                                         <li class="pt-2">
                                             <span class="product-color-dot color-dot-red float-left rounded-circle ml-1"></span>
                                             <span class="product-color-dot color-dot-blue float-left rounded-circle ml-1"></span>
@@ -195,16 +196,14 @@
     </div>
 
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+  <div class="modal-dialog modal-dialog-centered" role="document" width="50"  style="width:fit-content">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Califica Nuestro Producto</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="exampleModalLabel">Calificación</h5>
+        
       </div>
-      <div id="mod-body" class="modal-body">
+      <div id="mod-body" class="modal-body" >
         
       </div>
       <div class="modal-footer">

@@ -128,9 +128,9 @@
                                             console.log(typeof($("#product-quanity").attr("max")));
                                     </script> -->
                                 <div class="row pb-3">
-                                    <div class="col d-grid">
+                                    <!-- <div class="col d-grid">
                                         <button type="submit" class="btn btn-success btn-lg" name="submit" value="buy">Comprar</button>
-                                    </div>
+                                    </div> -->
                                     <div class="col d-grid">
                                         <button  class="btn btn-success btn-lg"  value="addtocard" onclick="anadirProducto('<?= base_url()?>',<?= $producto['ID_Artesano']?>,<?= $producto['ID_Producto']?>, document.getElementById('product-quanity').value ,<?= $producto['Precio']?>)">Añadir al Carrito</button>
                                     </div>

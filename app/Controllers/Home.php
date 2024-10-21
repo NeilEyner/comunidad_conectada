@@ -51,6 +51,8 @@ class Home extends BaseController{
         $tieneProductoModel = new TieneProductoModel();
         // $resultado = $tieneProductoModel->findAll();
         // $resultado = $tieneProductoModel->where('Disponibilidad','1')->where('Stock>1')->findAll();
+        $contenidoModel = new ContenidoModel();
+        $resultado3 = $contenidoModel->findAll();
         $resultado= $tieneProductoModel->prodTienda();
         $categoriaModel = new CategoriaModel();
         $resultado2 = $categoriaModel->findAll();
@@ -62,7 +64,7 @@ class Home extends BaseController{
             $usuario=session()->get('ID_Rol');
             $carrito=$detalleCompraModel->carritoProd(session()->get('ID'));
         }
-        $data=['titulo'=>'Tienda','productos'=>$resultado,'categorias'=>$resultado2,'usuario'=>$usuario,'carrito'=>$carrito];
+        $data=['titulo'=>'Tienda','productos'=>$resultado,'categorias'=>$resultado2,'usuario'=>$usuario,'carrito'=>$carrito,'contenido' => $resultado3];
         return view('global/header',$data).view('global/tienda',$data) . view('global/footer');
     }
 
@@ -84,6 +86,8 @@ class Home extends BaseController{
     {   
         $comunidadModel = new ComunidadModel();
         $resultado = $comunidadModel->findAll();
+        $contenidoModel = new ContenidoModel();
+        $resultado2 = $contenidoModel->findAll();
         $detalleCompraModel= new DetalleCompraModel();
         $carrito='';
         if (session()->get('ID_Rol') == null) {
@@ -92,13 +96,15 @@ class Home extends BaseController{
             $usuario=session()->get('ID_Rol');
             $carrito=$detalleCompraModel->carritoProd(session()->get('ID'));
         }
-        $data=['titulo'=>'Comunidades','comunidad'=>$resultado,'carrito'=>$carrito];
+        $data=['titulo'=>'Comunidades','comunidad'=>$resultado,'carrito'=>$carrito,'contenido'=>$resultado2];
         return view('global/header',$data).view('global/comunidades') .view('global/footer');
     }
     public function producto($idA,$idP): string
     {   
         $tieneProductoModel = new TieneProductoModel();
         $producto = $tieneProductoModel->getProducto($idA,$idP);
+        $contenidoModel = new ContenidoModel();
+        $resultado2 = $contenidoModel->findAll();
         $productoModel = new ProductoModel();
         $prod = $productoModel->find($idP);
         $prodR=$tieneProductoModel->prodRelacionados($idP);
@@ -110,7 +116,7 @@ class Home extends BaseController{
             $usuario=session()->get('ID_Rol');
             $carrito=$detalleCompraModel->carritoProd(session()->get('ID'));
         }
-        $data=['titulo'=>'Producto','producto'=>$producto,'prod'=>$prod,'prodR'=>$prodR,'carrito'=>$carrito];
+        $data=['titulo'=>'Producto','producto'=>$producto,'prod'=>$prod,'prodR'=>$prodR,'carrito'=>$carrito,'contenido'=>$resultado2];
         return view('global/header',$data).view('global/producto') .view('global/footer');
     }
     public function carrito(): string
