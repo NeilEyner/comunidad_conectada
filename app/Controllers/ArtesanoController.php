@@ -28,7 +28,7 @@ class ArtesanoController extends Controller
         $idArtesano = session()->get('ID');
     
         $productos = $tieneProductoModel
-        ->select('producto.Nombre as Nombre, producto.Descripcion as Descripcion, tiene_producto.Precio, tiene_producto.Stock, tiene_producto.Imagen_URL, tiene_producto.Disponibilidad')
+        ->select('producto.Nombre as Nombre, tiene_producto.Precio, tiene_producto.Stock, tiene_producto.Imagen_URL, tiene_producto.Disponibilidad,tiene_producto.Descripcion')
         ->join('producto', 'producto.ID = tiene_producto.ID_Producto')  
         ->where('tiene_producto.ID_Artesano', $idArtesano)
         ->findAll();
@@ -52,7 +52,7 @@ class ArtesanoController extends Controller
         $idArtesano = session()->get('ID');
     
         $productos = $tieneProductoModel
-        ->select('producto.Nombre as Nombre, producto.Descripcion as Descripcion, tiene_producto.*')
+        ->select('producto.Nombre as Nombre, tiene_producto.*')
         ->join('producto', 'producto.ID = tiene_producto.ID_Producto')  
         ->where('tiene_producto.ID_Artesano', $idArtesano)
         ->findAll();
