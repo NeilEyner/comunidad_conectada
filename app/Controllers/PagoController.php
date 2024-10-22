@@ -71,9 +71,9 @@ class PagoController extends BaseController
             'transferencia' => $transferencia,
             'qr' => $qr,
             'tieneProductoModel' => $tieneProductoModel,
-            'contenido'=> $content,
-            'comunidades'=> $comunidad,
-            'transportes'=> $transporte,
+            'contenido' => $content,
+            'comunidades' => $comunidad,
+            'transportes' => $transporte,
         ];
         // return view('pagos/metodos_pagos', $data);
         return view('global/header', $data) . view('pagos/metodos_pagos', $data) . view('global/footer');
@@ -81,7 +81,26 @@ class PagoController extends BaseController
 
     public function procesar_pago()
     {
+        $envioModel = new EnvioModel();
         $pagoModel = new PagoModel();
+        $compraModel = new CompraModel();
+
+        // Procesar los datos del formulario de envío
+        $dataEnvio = [
+            'ID_Compra' => $this->request->getPost('id_compra'),
+            'ID_Transporte' => $this->request->getPost('tipo_transporte'),
+            'Comunidad_Destino' => $this->request->getPost('Comunidad_Destino'),
+            'Direccion_Destino' => $this->request->getPost('Direccion_Destino'),
+            'Costo_envio' => $this->request->getPost('costo_envio'),
+            'Estado' => 'PREPARANDO',
+        ];
+
+        // Validar que se pueda insertar el envío
+        if (!$envioModel->insert($dataEnvio)) {
+            return redirect()->back()->withInput()->with('error', 'No se pudo procesar el envío.');
+        }
+
+        // Validar los datos del formulario de pago
         $validation = $this->validate([
             'metodo_pago' => 'required',
             'comprobante' => 'uploaded[comprobante]|max_size[comprobante,2048]|ext_in[comprobante,jpg,jpeg,png,pdf]'
@@ -90,6 +109,8 @@ class PagoController extends BaseController
         if (!$validation) {
             return redirect()->back()->withInput()->with('error', $this->validator->getErrors());
         }
+
+        // Procesar el comprobante
         $comprobante = $this->request->getFile('comprobante');
         $comprobanteURL = null;
 
@@ -103,6 +124,8 @@ class PagoController extends BaseController
                 return redirect()->back()->withInput()->with('error', 'Error al subir el comprobante: ' . $e->getMessage());
             }
         }
+
+        // Crear los datos de pago
         $pagoData = [
             'ID_Cliente' => session()->get('ID'),
             'ID_Compra' => $this->request->getPost('id_compra'),
@@ -111,22 +134,26 @@ class PagoController extends BaseController
             'IMG_Comprobante' => $comprobanteURL
         ];
 
-        $compraModel = new CompraModel();
+        // Validar la compra existente
         $compra = $compraModel->find($this->request->getPost('id_compra'));
 
-        if ($compra) {
-            $compra->Estado = 'PROCESADO';
-            $compraModel->save($compra);
-        } else {
+        if (!$compra) {
             return redirect()->back()->with('error', 'Compra no encontrada.');
         }
+        $compra['Estado'] = 'EN PROCESO';
+        $compraModel->update($compra['ID'], ['Estado' => 'EN PROCESO']);
 
+
+        // Insertar el pago
         if ($pagoModel->insert($pagoData)) {
             return redirect()->to(base_url())->with('success', 'Pago procesado. En espera de verificación.');
         } else {
-            return redirect()->back()->withInput()->with('error', 'Error al procesar el pago.');
+            $error = $pagoModel->errors();  // Captura errores del modelo de pago
+            return redirect()->back()->withInput()->with('error', 'Error al procesar el pago: ' . json_encode($error));
         }
+
     }
+
 
 
 }

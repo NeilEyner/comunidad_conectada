@@ -95,7 +95,10 @@ $routes->get('verifica_comprobante_completado/(:num)', 'AdministradorController:
 $routes->get('verifica_comprobante_fallido/(:num)', 'AdministradorController::pago_fallido/$1');
 //
 
+$routes->post('envios/asignar', 'DeliveryController::procesar_asignacion');
+$routes->post('envios/entregado', 'DeliveryController::procesar_entrega'); 
 
-
+$routes->post('compra/entregado', 'ClienteController::procesar_entregado');
+$routes->post('compra/cancelado', 'ClienteController::procesar_cancelado');
 
 $routes->post('', 'AdministradorController::admin_compra');

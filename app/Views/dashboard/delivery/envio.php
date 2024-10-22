@@ -1,118 +1,134 @@
 <?php include 'header.php'; ?>
 <main class="h-full overflow-y-auto">
-  <div class="container px-6 mx-auto">
-    <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+  <div class="container px-4 mx-auto py-4">
+    <h2 class="mb-6 text-xl font-semibold text-gray-700 dark:text-gray-200">
       Realizar Envíos
     </h2>
 
-    <?php if (!empty($compras)): ?>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-        <?php
-        $currentCompraID = null;
-        $totalCompra = 0;
-        ?>
-        <?php foreach ($compras as $index => $compra): ?>
-          <?php if ($currentCompraID !== $compra->ID): ?>
-            <?php if ($index !== 0): ?>
-              <!-- Botón para la compra anterior -->
-              <div class="flex justify-end mt-4">
-                <button onclick="openModal('modal-<?= $currentCompraID ?>')"
-                  class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue">
-                  Realizar Envío para Compra ID <?= $currentCompraID ?>
-                </button>
-              </div>
+    <div class="space-y-6">
+      <?php if (session()->getFlashdata('mensaje')): ?>
+        <div class="alert alert-success">
+          <?= session()->getFlashdata('mensaje') ?>
+        </div>
+      <?php endif; ?>
 
-              <!-- Modal para la compra anterior -->
-              <div id="modal-<?= $currentCompraID ?>"
-                class="fixed inset-0 z-50 hidden items-center justify-center bg-gray-800 bg-opacity-75">
-                <div class="bg-white rounded-lg shadow-lg p-4 max-w-sm mx-auto">
-                  <h3 class="text-lg font-semibold mb-4">Confirmar Envío</h3>
-                  <p>¿Estás seguro de que quieres realizar el envío de <strong>Compra ID <?= $currentCompraID ?></strong> con un
-                    total de <strong>$<?= $totalCompra ?></strong>?</p>
-                  <div class="mt-4 flex justify-between">
-                    <button class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-                      onclick="confirmarEnvio(<?= $currentCompraID ?>)">Confirmar</button>
-                    <button class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
-                      onclick="closeModal('modal-<?= $currentCompraID ?>')">Cancelar</button>
-                  </div>
-                </div>
-              </div>
+      <?php foreach ($envios as $envio): ?>
+        <div class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
+          <!-- Cabecera con número de compra destacado -->
+          <div class="bg-white shadow-md rounded-lg p-4 border border-gray-300 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+              <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium">
+                <?= $envio['Tipo'] ?>
+              </span>
+              <span class="bg-orange-100 text-yellow-800 px-4 py-2 rounded-full text-sm font-medium">
+                DELIVERY: <?= $envio['Estado'] ?>
+              </span>
+              <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium">
+                CLIENTE: <?= $envio['Cestado'] ?>
+              </span>
+            </div>
+
+            <?php if ($envio['Estado'] !== 'ENTREGADO'): ?>
+              <form action="<?= base_url('envios/entregado') ?>" method="POST">
+                <input type="hidden" name="id_compra" value="<?= $envio['ID_Compra'] ?>">
+                <button type="submit"
+                  class="bg-blue-600 hover:bg-green-500 text-white font-semibold py-2 px-5 rounded-lg shadow transition duration-200 ease-in-out transform hover:scale-105">
+                  Marcar como Entregado
+                </button>
+              </form>
             <?php endif; ?>
-
-            <!-- Card compacto para cada Compra -->
-            <div class="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
-              <h3 class="text-md font-bold text-gray-900 dark:text-gray-200 mb-3">Compra ID: <?= $compra->ID ?></h3>
-
-              <div class="space-y-2">
-                <?php
-                $currentCompraID = $compra->ID;
-                $totalCompra = 0;
-                ?>
-              <?php endif; ?>
-
-              <!-- Detalles del producto dentro del card compacto -->
-              <div class="flex items-center">
-                <div style="width: 96px; height: 96px;" class="mr-3">
-                  <img class="object-cover w-full h-full rounded-md shadow-sm" src="<?= base_url() . $compra->Imagen_URL ?>"
-                    alt="Producto">
-                </div>
+          </div>
 
 
+
+          <!-- Información resumida (siempre visible) -->
+          <div class="px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors"
+            onclick="toggleDetails('envio-<?= $envio['ID_Compra'] ?>')">
+            <div class="flex justify-between items-center">
+              <div class="flex space-x-4">
+                <svg class="w-5 h-5 text-gray-400 transform transition-transform duration-200"
+                  id="arrow-<?= $envio['ID_Compra'] ?>" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
                 <div class="text-sm">
-                  <p class="font-medium text-gray-900 dark:text-gray-100"><?= $compra->Nombre ?></p>
-                  <p class="text-gray-600 dark:text-gray-400">Cantidad: <?= $compra->Cantidad ?></p>
-                  <p class="text-gray-600 dark:text-gray-400">Total: $<?= $compra->Total ?></p>
+                  <span class="text-gray-600">Comunidad:</span>
+                  <span class="font-medium"><?= $envio['Comunidad'] ?></span>
+                  <span class="ml-4 text-gray-600">Costo:</span>
+                  <span class="font-medium">Bs. <?= number_format($envio['Costo_envio'], 2) ?></span>
                 </div>
               </div>
-              <?php $totalCompra += $compra->Total; ?>
+              <span class="text-sm text-gray-500">Ver detalles</span>
+            </div>
+          </div>
 
-              <?php if ($index === count($compras) - 1): ?>
-              </div>
-              <div class="flex justify-end mt-4">
-                <button onclick="openModal('modal-<?= $currentCompraID ?>')"
-                  class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md shadow-md hover:bg-blue-700">
-                  Realizar Envío para Compra ID <?= $currentCompraID ?>
-                </button>
+          <!-- Detalles expandibles -->
+          <div class="hidden bg-gray-50" id="envio-<?= $envio['ID_Compra'] ?>">
+            <div class="p-4">
+              <h3 class="text-sm font-semibold text-gray-600 mb-2">Detalles del Envío</h3>
+              <div class="text-sm text-gray-700">
+                <p><span class="font-semibold">Dirección:</span> <?= $envio['Direccion_Destino'] ?></p>
+                <p><span class="font-semibold">Comunidad:</span> <?= $envio['Comunidad'] ?></p>
               </div>
 
-              <!-- Modal para la última Compra -->
-              <div id="modal-<?= $currentCompraID ?>"
-                class="fixed inset-0 z-50 hidden items-center justify-center bg-gray-800 bg-opacity-75">
-                <div class="bg-white rounded-lg shadow-lg p-4 max-w-sm mx-auto">
-                  <h3 class="text-lg font-semibold mb-4">Confirmar Envío</h3>
-                  <p>¿Estás seguro de que quieres realizar el envío de <strong>Compra ID <?= $currentCompraID ?></strong> con
-                    un total de <strong>$<?= $totalCompra ?></strong>?</p>
-                  <div class="mt-4 flex justify-between">
-                    <button class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-                      onclick="confirmarEnvio(<?= $currentCompraID ?>)">Confirmar</button>
-                    <button class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
-                      onclick="closeModal('modal-<?= $currentCompraID ?>')">Cancelar</button>
-                  </div>
+              <div class="mt-4">
+                <h4 class="text-base font-semibold text-gray-700">Productos en el Envío</h4>
+                <div class="space-y-3 mt-3">
+                  <?php foreach ($envio['productos'] as $producto): ?>
+                    <div
+                      class="flex items-center gap-4 p-3 bg-white border border-gray-200 rounded-lg hover:shadow transition-all">
+                      <div class="w-16 h-16 overflow-hidden rounded-md">
+                        <img src="<?= base_url() . $producto['Imagen_URL'] ?>" alt="<?= $producto['Producto'] ?>"
+                          class="w-12 h-12 object-cover transition-transform duration-200 hover:scale-105">
+                      </div>
+                      <div>
+                        <h5 class="text-sm font-medium text-gray-800"><?= $producto['Producto'] ?></h5>
+                        <p class="text-xs text-gray-500">Comunidad: <?= $producto['Comunidad_Artesano'] ?></p>
+                        <p class="text-xs text-gray-500">Cantidad: <?= $producto['Cantidad'] ?></p>
+                      </div>
+                    </div>
+                  <?php endforeach; ?>
                 </div>
               </div>
-            </div> <!-- Fin del card compacto -->
-          <?php endif; ?>
-        <?php endforeach; ?>
-      </div> <!-- Fin del grid layout compacto -->
-    <?php else: ?>
-      <p class="text-center text-gray-500 dark:text-gray-400">No hay envíos pendientes.</p>
-    <?php endif; ?>
+            </div>
+          </div>
+        </div>
+        <br>
+      <?php endforeach; ?>
+    </div>
   </div>
+
+  <script>
+    function toggleDetails(envioId) {
+      const detailsDiv = document.getElementById(envioId);
+      const arrowIcon = document.getElementById('arrow-' + envioId.split('-')[1]);
+
+      detailsDiv.classList.toggle('hidden');
+
+      if (detailsDiv.classList.contains('hidden')) {
+        arrowIcon.style.transform = 'rotate(0deg)';
+      } else {
+        arrowIcon.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    function asignarDelivery(idCompra) {
+      if (confirm('¿Desea asignar un delivery a este envío?')) {
+        fetch(`/envios/asignarDelivery/${idCompra}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              alert('Delivery asignado correctamente');
+              location.reload();
+            } else {
+              alert('Error al asignar delivery');
+            }
+          });
+      }
+    }
+  </script>
 </main>
-
-<script>
-  function openModal(id) {
-    document.getElementById(id).classList.remove('hidden');
-    document.getElementById(id).classList.add('flex');
-  }
-
-  function closeModal(id) {
-    document.getElementById(id).classList.remove('flex');
-    document.getElementById(id).classList.add('hidden');
-  }
-
-  function confirmarEnvio(id) {
-    alert('Envío confirmado para la compra ID: ' + id);
-    closeModal('modal-' + id);
-  }
-</script>
