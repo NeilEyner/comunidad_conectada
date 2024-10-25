@@ -20,7 +20,7 @@
     </div>
 
 
-    <!-- Start Content Page -->
+<!-- Start Content Page -->
 
     <!-- shopping cart -->
      <div  class="pb-4 pt-4" style="min-height: 50vh;" >
@@ -122,6 +122,7 @@ use Predis\Command\Redis\SCRIPT;
                             <?php }?>
 
                         </div>
+
                     </div>
                 </div>
             </div>

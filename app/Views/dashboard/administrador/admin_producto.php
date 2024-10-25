@@ -18,7 +18,6 @@
               class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
 
               <th class="px-4 py-3">Nombre</th>
-              <th class="px-4 py-3">Descripción</th>
               <th class="px-4 py-3">Fecha de Creación</th>
               <th class="px-4 py-3">Fecha de Actualización</th>
               <th class="px-4 py-3">Acciones</th>
@@ -32,7 +31,7 @@
 
                     <?php echo esc($producto['Nombre']); ?>
                   </td>
-                  <td class="px-4 py-3 text-sm"><?php echo esc($producto['Descripcion']); ?></td>
+             
                   <td class="px-4 py-3 text-sm"><?php echo esc($producto['Fecha_creacion']); ?></td>
                   <td class="px-4 py-3 text-sm"><?php echo esc($producto['Fecha_actualizacion']); ?></td>
                   <td class="px-4 py-3">
@@ -170,13 +169,7 @@
             class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-input"
             placeholder="Ingrese el nombre del producto" required>
         </div>
-        <div class="mb-4">
-          <label for="Descripcion"
-            class="block text-sm font-medium text-gray-700 dark:text-gray-400">Descripción</label>
-          <textarea name="Descripcion" id="Descripcion"
-            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-textarea"
-            placeholder="Ingrese la descripción del producto"></textarea>
-        </div>
+
         <!-- Botones del formulario -->
         <footer
           class="flex flex-col items-center justify-end px-6 py-3 -mx-6 -mb-4 space-y-4 sm:space-y-0 sm:space-x-6 sm:flex-row bg-gray-50 dark:bg-gray-800">

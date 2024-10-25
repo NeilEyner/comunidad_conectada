@@ -92,11 +92,11 @@ class AdministradorController extends Controller
         $data = [
             'Nombre' => $this->request->getPost('Nombre'),
             'Correo_electronico' => $this->request->getPost('Correo_electronico'),
-            'Telefono' => $this->request->getPost('Telefono')?: null,
+            'Telefono' => $this->request->getPost('Telefono') ?: null,
             'ID_Rol' => $this->request->getPost('ID_Rol'),
-            'Direccion' => $this->request->getPost('Direccion')?: null,
+            'Direccion' => $this->request->getPost('Direccion') ?: null,
             'Estado' => $this->request->getPost('Estado'),
-            'ID_Comunidad' => $this->request->getPost('ID_Comunidad')?: null,
+            'ID_Comunidad' => $this->request->getPost('ID_Comunidad') ?: null,
         ];
         if (isset($imagenURL)) {
             $data['Imagen_URL'] = $imagenURL;
@@ -519,7 +519,7 @@ class AdministradorController extends Controller
             foreach ($detalleCompra as $detalle) {
                 $producto = $productoModel->where('ID', $detalle['ID_Producto'])->first();
                 $artesano = $usuarioModel->where('ID', $detalle['ID_Artesano'])->first();
-                
+
                 $detalle['producto'] = $producto;
                 $detalle['artesano'] = $artesano;
 
@@ -531,7 +531,7 @@ class AdministradorController extends Controller
             $pago['cliente'] = $cliente;
         }
 
-        return view('dashboard/administrador/admin_pago',  ['pagos' => $pagos]);
+        return view('dashboard/administrador/admin_pago', ['pagos' => $pagos]);
     }
 
     public function admin_agregar_pago()
@@ -613,20 +613,21 @@ class AdministradorController extends Controller
             return redirect()->back();
         }
     }
-    public function verificar_pago($id_pago) {
+    public function verificar_pago($id_pago)
+    {
         $pagoModel = new PagoModel();
         $pago = $pagoModel->find($id_pago);
-    
+
         // Aquí el administrador puede cambiar el estado del pago a "COMPLETADO" o "FALLIDO"
         if ($this->request->getMethod() === 'post') {
             $estado = $this->request->getPost('estado');
             $pagoModel->update($id_pago, ['Estado' => $estado]);
             return redirect()->to('/admin/pagos')->with('success', 'Pago actualizado');
         }
-    
+
         return view('admin/verificar_pago', ['pago' => $pago]);
     }
-    
+
     // ADMINISTRADOR PRODUCTO
     public function admin_producto()
     {
@@ -648,7 +649,6 @@ class AdministradorController extends Controller
             if ($this->validate($rules)) {
                 $data = [
                     'Nombre' => $this->request->getPost('Nombre'),
-                    'Descripcion' => $this->request->getPost('Descripcion'),
                 ];
 
                 if ($model->insert($data)) {
@@ -686,7 +686,6 @@ class AdministradorController extends Controller
             if ($this->validate($rules)) {
                 $data = [
                     'Nombre' => $this->request->getPost('Nombre'),
-                    'Descripcion' => $this->request->getPost('Descripcion')
                 ];
 
                 $model->update($id, $data);
@@ -706,7 +705,7 @@ class AdministradorController extends Controller
         $model = new ProductoModel();
         if ($model->find($id)) {
             $model->delete($id);
-        } 
+        }
         return redirect()->to(base_url('dashboard/administrador/admin_producto'))->with('message', 'prod agregado correctamente.');
 
     }
@@ -905,16 +904,28 @@ class AdministradorController extends Controller
         }
     }
 
-    public function pago_completado($id){
+    public function pago_completado($id)
+    {
         $model = new PagoModel();
-        $model->update(['Estado' => 'COMPLETADO'], $id);
-        return redirect()->back()->with('message', 'pago completada.');
+
+        if ($model->update($id, ['Estado' => 'COMPLETADO'])) {
+            return redirect()->back()->with('message', 'Pago completado.');
+        } else {
+            return redirect()->back()->with('message', 'Error al completar el pago.');
+        }
     }
-    public function pago_fallido($id){
+
+    public function pago_fallido($id)
+    {
         $model = new PagoModel();
-        $model->update(['Estado' => 'FALLIDO'], $id);
-        return redirect()->back()->with('message', 'Pago fallido.');
+
+        if ($model->update($id, ['Estado' => 'FALLIDO'])) {
+            return redirect()->back()->with('message', 'Pago fallido.');
+        } else {
+            return redirect()->back()->with('message', 'Error al registrar el pago fallido.');
+        }
     }
+
 
 
 }

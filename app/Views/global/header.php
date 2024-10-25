@@ -24,12 +24,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="apple-touch-icon" href="<?php echo base_url();?>assets/img/apple-icon.png">
-    <link rel="shortcut icon" type="image/x-icon" href="<?php echo base_url();?>assets/img/favicon.ico">
+    <link rel="apple-touch-icon" href="<?php echo base_url(); ?>assets/img/apple-icon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="<?php echo base_url(); ?>assets/img/favicon.ico">
 
-    <link rel="stylesheet" href="<?php echo base_url();?>assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<?php echo base_url();?>assets/css/templatemo.css">
-    <link rel="stylesheet" href="<?php echo base_url();?>assets/css/custom.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/templatemo.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/custom.css">
 
     <!-- Load fonts style after rendering the layout styles -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
@@ -37,10 +37,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <!-- Slick -->
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/css/slick.min.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/css/slick-theme.css">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url();?>assets/css/style.css">
-<!--
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/slick.min.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/slick-theme.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/style.css">
+    <!--
     
 TemplateMo 559 Zay Shop
 
@@ -78,46 +78,50 @@ https://templatemo.com/tm-559-zay-shop
     <!-- Header -->
     <nav class="navbar navbar-expand-lg navbar-light shadow">
         <div class="container d-flex justify-content-between align-items-center">
-            <!-- <img class="img-fluid" src="<?php echo base_url();?>assets/icon/Recurso 2.png" alt="" width="100" height="110"> -->
-            <a class="navbar-brand text-success logo h1 align-self-center" href="<?php echo base_url();?>">
-                <img class="img-fluid" src="<?php echo base_url();?>assets/icon/Recurso 2.png" alt="" width="80" height="90">
+            <!-- <img class="img-fluid" src="<?php echo base_url(); ?>assets/icon/Recurso 2.png" alt="" width="100" height="110"> -->
+            <a class="navbar-brand text-success logo h1 align-self-center" href="<?php echo base_url(); ?>">
+                <img class="img-fluid" src="<?php echo base_url(); ?>assets/icon/Recurso 2.png" alt="" width="80"
+                    height="90">
                 <?php echo ($titulo); ?>
             </a>
 
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#templatemo_main_nav" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                data-bs-target="#templatemo_main_nav" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <div class="align-self-center collapse navbar-collapse flex-fill  d-lg-flex justify-content-lg-between" id="templatemo_main_nav">
+            <div class="align-self-center collapse navbar-collapse flex-fill  d-lg-flex justify-content-lg-between"
+                id="templatemo_main_nav">
                 <div class="flex-fill">
                     <ul class="nav navbar-nav d-flex justify-content-between mx-lg-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="<?php echo base_url();?>">Inicio</a>
+                            <a class="nav-link" href="<?php echo base_url(); ?>">Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?php echo base_url();?>nosotros">Nosotros</a>
+                            <a class="nav-link" href="<?php echo base_url(); ?>nosotros">Nosotros</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?php echo base_url();?>tienda">Tienda</a>
+                            <a class="nav-link" href="<?php echo base_url(); ?>tienda">Tienda</a>
                         </li>
                         <!-- <li class="nav-item">
-                            <a class="nav-link" href="<?php echo base_url();?>contacto">Contacto</a>
+                            <a class="nav-link" href="<?php echo base_url(); ?>contacto">Contacto</a>
                         </li> -->
                         <li class="nav-item">
-                            <a class="nav-link" href="<?php echo base_url();?>comunidades">Comunidades</a>
+                            <a class="nav-link" href="<?php echo base_url(); ?>comunidades">Comunidades</a>
                         </li>
 
                         <p>
-                            <?php if(!session()->get('isLoggedIn')){ ?>
+                            <?php if (!session()->get('isLoggedIn')) { ?>
                                 <li class="nav-item">
-                                <a class="nav-link" href="<?php echo base_url();?>login">Login</a>
-                            </li>
-                            <?php }else{ ?>
+                                    <a class="nav-link" href="<?php echo base_url(); ?>login">Login</a>
+                                </li>
+                            <?php } else { ?>
                                 <li class="nav-item">
-                                <a class="nav-link" href="<?php echo base_url();?>logout">Salir</a>
-                            </li>
+                                    <a class="nav-link" href="<?php echo base_url(); ?>logout">Salir</a>
+                                </li>
                             <?php } ?>
-                            
+
                         </p>
 
                     </ul>
@@ -177,7 +181,7 @@ https://templatemo.com/tm-559-zay-shop
                         </div>
                         <div class=" d-flex mt-3">
                             <a href="<?= base_url('carrito')?>" class="default_btn w-50  px-1"  style="text-decoration:none;">Ver Carrito</a>
-                            <a href="<?php echo base_url('pagos/metodo_pago/'.$prod['ID']); ?>" class="default_btn second ms-3 w-50  px-1" style="text-decoration:none;">Pagar</a>
+                            <a href="<?= base_url('pagos/metodo_pago/'.$prod['ID']); ?>" class="default_btn second ms-3 w-50  px-1" style="text-decoration:none;">Pagar</a>
                         </div>
                         <?php
                         }else{
@@ -197,26 +201,26 @@ https://templatemo.com/tm-559-zay-shop
                     <?php } ?>
                     <?= $ruta='';
                         if (session()->get('ID_Rol') == 4) {
-                            $ruta = base_url().'dashboard/administrador/admin_dashboard';
-                            }
+                            $ruta = base_url() . 'dashboard/administrador/admin_dashboard';
+                        }
                         if (session()->get('ID_Rol') == 1) {
-                            $ruta = base_url().'dashboard/artesano/arte_dashboard';
-                            }
+                            $ruta = base_url() . 'dashboard/artesano/arte_dashboard';
+                        }
                         if (session()->get('ID_Rol') == 2) {
-                            $ruta = base_url().'dashboard/cliente/cli_dashboard';
+                            $ruta = base_url() . 'dashboard/cliente/cli_dashboard';
                         }
                         if (session()->get('ID_Rol') == 3) {
-                            $ruta = base_url().'dashboard/delivery/deli_dashboard';
+                            $ruta = base_url() . 'dashboard/delivery/deli_dashboard';
                         }
-                    ?>
-                    <a class="nav-icon position-relative text-decoration-none" href="<?= $ruta?>" >
-                        <i class="fa fa-fw fa-user text-dark mr-3"></i>
-                        <!-- <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark"> +99> </span> -->
-                    </a>
+                        ?>
+                        <a class="nav-icon position-relative text-decoration-none" href="<?= $ruta ?>">
+                            <i class="fa fa-fw fa-user text-dark mr-3"></i>
+                            <!-- <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark"> +99> </span> -->
+                        </a>
                     <?php } ?>
 
 
-                
+
                 </div>
             </div>
 

@@ -30,7 +30,7 @@
                   <td class="px-4 py-3 text-sm"><?php echo esc($envio['ID_Compra']); ?></td>
                   <td class="px-4 py-3 text-sm"><?php echo esc($envio['ID_Delivery']); ?></td>
                   <td class="px-4 py-3 text-sm"><?php echo esc($envio['ID_Transporte']); ?></td>
-                  <td class="px-4 py-3 text-sm"><?php echo esc($envio['Comunidad_Origen']); ?></td>
+                  <td class="px-4 py-3 text-sm"><?php echo esc($envio['Comunidad_Destino']); ?></td>
                   <td class="px-4 py-3 text-sm"><?php echo esc($envio['Direccion_Destino']); ?></td>
                   <td class="px-4 py-3 text-sm"><?php echo esc($envio['Fecha_Envio']); ?></td>
                   <td class="px-4 py-3 text-sm"><?php echo esc($envio['Fecha_Entrega']); ?></td>

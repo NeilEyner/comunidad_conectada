@@ -14,7 +14,7 @@ class TieneProductoModel extends Model
     // Método opcional para obtener productos con detalles de la tabla producto
     public function getProductosConDetalles($idArtesano)
     {
-        return $this->select('producto.Nombre as Nombre, producto.Descripcion, tiene_producto.*')
+        return $this->select('producto.Nombre as Nombre, tiene_producto.*')
             ->join('producto', 'producto.ID = tiene_producto.ID_Producto')
             ->where('tiene_producto.ID_Artesano', $idArtesano)
             ->findAll();
