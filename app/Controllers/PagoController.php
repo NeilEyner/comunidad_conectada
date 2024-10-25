@@ -13,6 +13,7 @@ use App\Models\ProductoModel;
 use App\Models\TieneProductoModel;
 use App\Models\CategoriaModel;
 use App\Models\DetalleCompraModel;
+use App\Models\ContenidoModel;
 
 
 class PagoController extends BaseController
@@ -43,6 +44,8 @@ class PagoController extends BaseController
         $categoriaModel = new CategoriaModel();
         $resultado2 = $categoriaModel->findAll();
         $detalleCompraModel = new DetalleCompraModel();
+        $contenidoModel = new ContenidoModel();
+        $resultado3 = $contenidoModel->findAll();
         $carrito = '';
         if (session()->get('ID_Rol') == null) {
             $usuario = 0;
@@ -59,7 +62,8 @@ class PagoController extends BaseController
             'usuario' => $usuario,
             'carrito' => $carrito,
             'transferencia' => $transferencia,
-            'qr' => $qr
+            'qr' => $qr,
+            'contenido'=>$resultado3,
         ];
         // return view('pagos/metodos_pagos', $data);
         return view('global/header', $data) . view('pagos/metodos_pagos', $data) . view('global/footer');

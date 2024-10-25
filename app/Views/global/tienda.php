@@ -107,7 +107,7 @@
                                         <ul class="list-unstyled">
                                         <?php if(session()->get('isLoggedIn')){
                                             if($puntajeRow->Puntaje==null){?>
-                                                <li><a class="btn btn-success text-white"   onclick="mostrarPunt('<?=base_url()?>',<?=$producto['ID_Producto']?>,<?=$producto['ID_Artesano']?>)" ><i id="heart-<?=$producto['ID_Producto']?>-<?=$producto['ID_Artesano']?>" class="far fa-heart " ></i></a></li>
+                                                <li><a class="btn btn-success text-white"  id="h-t-<?=$producto['ID_Producto']?>-<?=$producto['ID_Artesano']?>" onclick="mostrarPunt('<?=base_url()?>',<?=$producto['ID_Producto']?>,<?=$producto['ID_Artesano']?>)" ><i id="heart-<?=$producto['ID_Producto']?>-<?=$producto['ID_Artesano']?>" class="far fa-heart " ></i></a></li>
                                             <?php }else{
                                                 
                                         ?>
@@ -179,21 +179,6 @@
         </div>
     </div>
     <!-- End Content -->
-    <div class="modal fade bg-white" id="templatemo_search" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="w-100 pt-1 mb-5 text-right">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="" method="get" class="modal-content modal-body border-0 p-0">
-                <div class="input-group mb-2">
-                    <input type="text" class="form-control" id="inputModalSearch" name="q" placeholder="Search ...">
-                    <button type="submit" class="input-group-text bg-success text-light">
-                        <i class="fa fa-fw fa-search text-white"></i>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
 
 
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
@@ -207,7 +192,7 @@
         
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button id="btn-mod-cancelar" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         <button type="button" id="accept" onclick="puntuar()" class="btn btn-primary" data-bs-dismiss="modal">Calificar</button>
       </div>
     </div>

@@ -43,7 +43,7 @@ class TieneProductoModel extends Model
 
     public function ProductosDet($idArtesano,$idProducto)
     {
-        return $this->select('producto.Nombre as Nombre, producto.Descripcion, tiene_producto.*')
+        return $this->select('producto.Nombre as Nombre, tiene_producto.*')
             ->join('producto', 'producto.ID = tiene_producto.ID_Producto')
             ->where('tiene_producto.ID_Artesano', $idArtesano)
             ->where('tiene_producto.ID_Producto', $idProducto)

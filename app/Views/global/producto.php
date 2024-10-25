@@ -2,6 +2,7 @@
  <script   src="<?php echo base_url() ?>assets/js/scripts/producto.js" >
         // import {cambiarCat,catTodos} from './assets/js/scripts/categoria.js';
     </script>
+    <script src="<?php echo base_url() ?>assets/js/scripts/tienda.js"></script>
 
  <!-- Modal -->
  <div class="modal fade bg-white" id="templatemo_search" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -72,7 +73,7 @@
                             </ul> -->
 
                             <h6>Descripción:</h6>
-                            <p><?php echo $prod['Descripcion']; ?></p>
+                            <p><?php echo $producto['Descripcion']; ?></p>
                             <!-- <ul class="list-inline">
                                 <li class="list-inline-item">
                                     <h6>Avaliable Color :</h6>
@@ -173,7 +174,16 @@
                             <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
                                 <ul class="list-unstyled">
                                 <?php if(session()->get('isLoggedIn')){?>
-                                    <li><a class="btn btn-success text-white" href=""><i class="far fa-heart"></i></a></li>
+                                    <?php if(session()->get('isLoggedIn')){
+                                            if($puntajeRow->Puntaje==null){?>
+                                                <li><a class="btn btn-success text-white" id="h-p-<?=$p['ID_Producto']?>-<?=$p['ID_Artesano']?>"  onclick="mostrarPunt('<?=base_url()?>',<?=$p['ID_Producto']?>,<?=$p['ID_Artesano']?>)" ><i id="heart-<?=$p['ID_Producto']?>-<?=$p['ID_Artesano']?>" class="far fa-heart " ></i></a></li>
+                                            <?php }else{
+                                                
+                                        ?>
+                                            <!-- <li><a class="btn btn-success text-white"   onclick="puntuar()" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="far fa-heart"></i></a></li> -->
+                                            
+                                            <li><a class="btn btn-success text-white"  ><i id="heart-<?=$p['ID_Producto']?>-<?=$p['ID_Artesano']?>" class="fa fa-heart " ></i></a></li>
+                                        <?php } } ?>
                                 <?php } ?>
                                     <li><a class="btn btn-success text-white mt-2" href="<?= base_url().'producto'.'/'. $p['ID_Artesano'].'/'.$p['ID_Producto'];  ?>"><i class="far fa-eye"></i></a></li>
                                     <li><a class="btn btn-success text-white mt-2" href=""><i class="fas fa-cart-plus"></i></a></li>
@@ -193,7 +203,7 @@
                                 </li>
                             </ul> -->
                             <ul class="list-unstyled d-flex justify-content-center mb-1">
-                                <li>
+                                <li id="estr-ti-<?=$p['ID_Producto']?>-<?=$p['ID_Artesano']?>">
                                 <?php for($i=0;$i<5;$i++){
                                         if($puntaje>=1){
                                             echo '<i class="text-warning fa fa-star"></i>';
@@ -219,6 +229,25 @@
 
         </div>
     </section>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+  <div class="modal-dialog modal-dialog-centered" role="document" width="50"  style="width:fit-content">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Calificación</h5>
+        
+      </div>
+      <div id="mod-body" class="modal-body" >
+        
+      </div>
+      <div class="modal-footer">
+        <button id="btn-mod-cancelar" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" id="accept" onclick="puntuar()" class="btn btn-primary" data-bs-dismiss="modal">Calificar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="<?php echo base_url() ?>assets/js/scripts/tienda.js"></script>
     <!-- End Article -->
 
     <!-- Start Slider Script -->
