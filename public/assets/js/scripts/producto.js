@@ -56,6 +56,13 @@ function anadirProducto(ruta,idA,idP,cant,precio){
         // document.getElementById('shopcart_dropdown').reload();
         // recargaCarrito(JSON.stringify(data.carrito),ruta)
         recargaCarrito(data.carrito,ruta)
+        var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+        document.getElementById('btn-mod-cancelar').innerHTML='Aceptar';
+        // document.getElementById('exampleModalLabel').innerHTML='Un Producto Añadido'
+        document.getElementById('mod-body').innerHTML='Un producto ha sido añadido al carrito';
+        document.getElementById('accept').setAttribute('hidden','true');
+        document.getElementById('exampleModalLabel').setAttribute('hidden','true');
+        myModal.show();
     })
     .catch(error => {
         console.error('Error:', error); // Manejar errores
@@ -71,7 +78,7 @@ function recargaCarrito(carrito,ruta){
     // var carrito=JSON.parse(localStorage.getItem('carrito'));
     var html='';
     if(carrito.length>0){
-    html+=' <div class="cart_droptitle"><h4 class="text_lg">'+ 'TAMAÑO DEL CARRITO'+' Productos</h4></div>'
+    html+=' <div class="cart_droptitle"><h4 class="text_lg">'+ carrito.length+' Productos</h4></div>'
     //for (const prod of carrito) {
     prod=''
     // for (carrito in prod) {
@@ -94,8 +101,8 @@ function recargaCarrito(carrito,ruta){
     html+=         '<h5 class=" mb-0 ms-2">'+prod.Total+'</h5>'
     html+=     '</div>'
     html+=     '<div class=" d-flex mt-3">'
-    html+=         '<a href="'+ruta+'/carrito " class="default_btn w-50  px-1"  style="text-decoration:none;">Ver Carrito</a>'
-    html+=             '<a href="'+ruta+'pagos/metodo_pago/'+prod.ID+'); ?>" class="default_btn second ms-3 w-50  px-1" style="text-decoration:none;">Pagar</a>'
+    html+=         '<a href="'+ruta+'carrito " class="default_btn w-50  px-1"  style="text-decoration:none;">Ver Carrito</a>'
+    html+=             '<a href="'+ruta+'pagos/metodo_pago/'+prod.ID+'" class="default_btn second ms-3 w-50  px-1" style="text-decoration:none;">Pagar</a>'
     html+=     '</div>'
         
         

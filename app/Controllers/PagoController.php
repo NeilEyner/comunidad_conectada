@@ -13,6 +13,8 @@ use App\Models\ProductoModel;
 use App\Models\TieneProductoModel;
 use App\Models\CategoriaModel;
 use App\Models\DetalleCompraModel;
+use App\Models\ContenidoModel;
+
 use App\Models\TransporteModel;
 
 class PagoController extends BaseController
@@ -42,7 +44,8 @@ class PagoController extends BaseController
         $categoriaModel = new CategoriaModel();
         $resultado2 = $categoriaModel->findAll();
         $detalleCompraModel = new DetalleCompraModel();
-
+        $contenidoModel = new ContenidoModel();
+        $resultado3 = $contenidoModel->findAll();
         $carrito = '';
         if (session()->get('ID_Rol') == null) {
             $usuario = 0;

@@ -137,7 +137,7 @@ class Home extends BaseController{
         }else{
             $usuario=session()->get('ID_Rol');
             $carrito=$detalleCompraModel->carritoProd(session()->get('ID'));
-            $data=['titulo'=>'Mi Carrito','comunidad'=>$resultado,'carrito'=>$carrito];
+            $data=['titulo'=>'Mi Carrito','comunidad'=>$resultado,'contenido'=>$resultado3,'carrito'=>$carrito];
             return view('global/header',$data).view('global/carrito') .view('global/footer');
         }
         

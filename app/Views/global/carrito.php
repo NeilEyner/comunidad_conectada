@@ -36,6 +36,8 @@
                         <div id="list-carr" class="shop_cart_wrap">
                             <?php
                             use App\Models\TieneProductoModel;
+use Predis\Command\Redis\SCRIPT;
+
                             $tieneProductoModel = new TieneProductoModel();
                             foreach($carrito as $prod): 
                                 $producto=$tieneProductoModel->ProductosDet($prod['ID_Artesano'],$prod['ID_Producto']);
@@ -82,6 +84,7 @@
                         <div class="cart_summary">
                             <h4>Resumen del Pedido</h4>
                             <div id="res-carr">
+                                
                             <?php
                             $total=0;
                             

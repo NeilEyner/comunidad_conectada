@@ -71,7 +71,6 @@ function modEstr(num){
 function puntuar(ruta,idP,idA){
 
     // var res= confirm("¿Que puntuacion le das al producto?");
-    console.log('puntuar');
     var punt=document.getElementById('star-val').value;
     if(punt==0){
         alert('Seleccione una puntuacion');
@@ -79,7 +78,6 @@ function puntuar(ruta,idP,idA){
     }
     // var val=punt.value;
     var rutac=ruta+'calificar/'+idP+'/'+idA+'/'+punt;
-    console.log(rutac);
     fetch(rutac, {
         method: 'POST',
         headers: {
@@ -99,6 +97,8 @@ function puntuar(ruta,idP,idA){
             // alert('Gracias por puntuar el producto');
             document.getElementById('heart-'+idP+'-'+idA).classList.remove('far');
             document.getElementById('heart-'+idP+'-'+idA).className+=" fa";
+            document.getElementById('h-p-'+idP+'-'+idA).removeAttribute('onclick');
+            document.getElementById('h-t-'+idP+'-'+idA).removeAttribute('onclick');
             var estrellas='';
             var puntos=data.puntaje;
             for (let i = 1; i <= 5; i++) {
@@ -124,6 +124,11 @@ function puntuar(ruta,idP,idA){
 
 async function mostrarPunt(ruta,idP,idA){
     var modal=document.getElementById('exampleModal');
+
+    document.getElementById('accept').removeAttribute('hidden');
+    document.getElementById('exampleModalLabel').removeAttribute('hidden');
+    document.getElementById('exampleModalLabel').innerHTML='Calificación';
+    document.getElementById('btn-mod-cancelar').innerHTML='Cancelar';
     var estrellas='';
     estrellas+='<input  type="hidden" name="product-quanity" id="star-val" value="0" >'
     estrellas+='<ul class="list-unstyled d-flex justify-content-center mb-1"><li>'
