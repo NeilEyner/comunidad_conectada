@@ -72,7 +72,7 @@
                             </ul> -->
 
                             <h6>Descripción:</h6>
-                            <p><?php echo $prod['Descripcion']; ?></p>
+                            <p><?php echo $producto['Descripcion']; ?></p>
                             <!-- <ul class="list-inline">
                                 <li class="list-inline-item">
                                     <h6>Avaliable Color :</h6>
