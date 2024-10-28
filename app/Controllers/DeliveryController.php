@@ -13,6 +13,9 @@ use App\Models\ProductoModel;
 use App\Models\CompraModel;
 use App\Models\TieneProductoModel;
 use App\Models\CategoriaModel;
+use App\Models\ContenidoModel;
+use App\Models\DetalleCompraModel;
+
 
 class DeliveryController extends Controller
 {
@@ -51,8 +54,21 @@ class DeliveryController extends Controller
             ", [$envio['ID_Compra']]);
             $envio['productos'] = $query->getResultArray();
         }
+        // Obtener productos y contenido
+        $tieneProductoModel = new TieneProductoModel();
+        $data['productos'] = $tieneProductoModel->findAll();
 
-        return view('dashboard/delivery/dely_dashboard', ['envios' => $envios]);
+        $contenidoModel = new ContenidoModel();
+        $data['contenido'] = $contenidoModel->findAll();
+
+        $detalleCompraModel = new DetalleCompraModel();
+        $carrito = (session()->get('ID_Rol') == null) ? '' : $detalleCompraModel->carritoProd(session()->get('ID'));
+
+        $data['carrito'] = $carrito;
+        return view('global/header', ['titulo' => 'Cliente Dashboard'] + $data)
+            . view('dashboard/delivery/dely_dashboard', ['envios' => $envios])
+            . view('global/footer', $data);
+        // return view('dashboard/delivery/dely_dashboard', ['envios' => $envios]);
     }
     public function envio()
     {
@@ -62,7 +78,7 @@ class DeliveryController extends Controller
 
         $db = \Config\Database::connect();
         $idCompra = session()->get('ID');
-        $idCompra = intval($idCompra); 
+        $idCompra = intval($idCompra);
 
         $query = $db->query("
     SELECT e.ID_Compra,e.Estado,c.Estado as Cestado, t.Tipo, com.Nombre as Comunidad, 
@@ -71,8 +87,7 @@ class DeliveryController extends Controller
     JOIN compra c ON c.ID = e.ID_Compra
     JOIN transporte t ON t.ID = e.ID_Transporte
     JOIN comunidad com ON e.Comunidad_Destino = com.ID
-    WHERE e.ID_Delivery = $idCompra
-");
+    WHERE e.ID_Delivery = $idCompra");
 
         $envios = $query->getResultArray();
 
@@ -90,8 +105,22 @@ class DeliveryController extends Controller
             ", [$envio['ID_Compra']]);
             $envio['productos'] = $query->getResultArray();
         }
+        // Obtener productos y contenido
+        $tieneProductoModel = new TieneProductoModel();
+        $data['productos'] = $tieneProductoModel->findAll();
 
-        return view('dashboard/delivery/envio', ['envios' => $envios]);
+        $contenidoModel = new ContenidoModel();
+        $data['contenido'] = $contenidoModel->findAll();
+
+        $detalleCompraModel = new DetalleCompraModel();
+        $carrito = (session()->get('ID_Rol') == null) ? '' : $detalleCompraModel->carritoProd(session()->get('ID'));
+
+        $data['carrito'] = $carrito;
+        return view('global/header', ['titulo' => 'Cliente Dashboard'] + $data)
+            . view('dashboard/delivery/envio', ['envios' => $envios])
+            . view('global/footer', $data);
+
+        // return view('dashboard/delivery/envio', ['envios' => $envios]);
     }
 
 

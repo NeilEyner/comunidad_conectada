@@ -71,15 +71,23 @@ class DetalleCompraModel extends Model
     public function obtenerDetallesCompra($idCliente)
     {
         return $this->select('compra.ID, compra.Total, detalle_compra.*, tiene_producto.*, producto.Nombre, comunidad.Latitud, comunidad.Longitud')
-        ->join('compra', 'compra.ID = detalle_compra.ID_Compra')
-        ->join('tiene_producto', 'tiene_producto.ID_Producto = detalle_compra.ID_Producto and tiene_producto.ID_Artesano = detalle_compra.ID_Artesano')
-        ->join('producto', 'producto.ID = detalle_compra.ID_Producto')
-        ->join('usuario', 'usuario.ID = detalle_compra.ID_Artesano')  // Unimos la tabla de usuario para obtener la comunidad del artesano
-        ->join('comunidad', 'comunidad.ID = usuario.ID_Comunidad')  // Unimos la tabla de comunidad para obtener la latitud y longitud
-        ->where('compra.ID_Cliente', $idCliente)
-        ->where('compra.Estado', 'PENDIENTE')
-        ->findAll();
+            ->join('compra', 'compra.ID = detalle_compra.ID_Compra')
+            ->join('tiene_producto', 'tiene_producto.ID_Producto = detalle_compra.ID_Producto and tiene_producto.ID_Artesano = detalle_compra.ID_Artesano')
+            ->join('producto', 'producto.ID = detalle_compra.ID_Producto')
+            ->join('usuario', 'usuario.ID = detalle_compra.ID_Artesano')  // Unimos la tabla de usuario para obtener la comunidad del artesano
+            ->join('comunidad', 'comunidad.ID = usuario.ID_Comunidad')  // Unimos la tabla de comunidad para obtener la latitud y longitud
+            ->where('compra.ID_Cliente', $idCliente)
+            ->where('compra.Estado', 'PENDIENTE')
+            ->findAll();
     }
-
+    public function getProductosVendidosPorArtesano($idArtesano)
+    {
+        // Fetch all products sold by the artisan with the given ID
+        return $this->select('tiene_producto.Imagen_URL, tiene_producto.Descripcion, detalle_compra.Cantidad, tiene_producto.Precio')
+            ->join('tiene_producto', 'tiene_producto.ID_Producto = detalle_compra.ID_Producto')
+            ->where('tiene_producto.ID_Artesano', $idArtesano)
+            ->findAll();
+    }
+    
 
 }

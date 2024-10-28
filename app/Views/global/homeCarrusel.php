@@ -40,13 +40,13 @@
                 <div class="container">
                     <div class="row p-5">
                         <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
-                            <img class="img-fluid" src="<?=  $item['Imagen'] ?>" alt="" style=' height:35vh;'>
+                            <img class="img-fluid " src="<?=  $item['Imagen'] ?>" alt="" style='  border-radius: 20px; height:50vh;'>
                         </div>
                         <div class="col-lg-6 mb-0 d-flex align-items-center">
                             <div class="text-align-left align-self-center">
-                                <h1 class="h1 text-success"><b><?=  $item['Titulo'] ?></b> </h1>
-                                <h3 class="h2"><?=  $item['Subtitulo'] ?></h3>
-                                <p><?=  $item['Contenido'] ?></p>
+                                <h1 class="h2 text-success"><b><?=  $item['Titulo'] ?></b> </h1>
+                                <h3 class="h3"><?=  $item['Subtitulo'] ?></h3>
+                                <p class="small"><?=  $item['Contenido'] ?></p>
                             </div>
                         </div>
                     </div>

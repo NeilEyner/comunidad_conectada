@@ -13,6 +13,7 @@ use App\Models\ProductoModel;
 use App\Models\CompraModel;
 use App\Models\TieneProductoModel;
 use App\Models\DetalleCompraModel;
+use App\Models\TransporteModel;
 
 
 class AdministradorController extends Controller
@@ -925,7 +926,71 @@ class AdministradorController extends Controller
             return redirect()->back()->with('message', 'Error al registrar el pago fallido.');
         }
     }
+    //TRANSPORTE
+    public function transporte()
+    {
+        $transporteModel = new TransporteModel();
+        $data['transportes'] = $transporteModel->findAll();
+        return view('dashboard/administrador/admin_transporte', $data);
+    }
 
+    public function agregar_transporte()
+    {
+        if ($this->request->getMethod() === 'post') {
+            $transporteModel = new TransporteModel();
+            $data = [
+                'Tipo' => $this->request->getPost('Tipo'),
+                'Descripcion' => $this->request->getPost('Descripcion'),
+                'Costo_por_km' => $this->request->getPost('Costo_por_km'),
+                'Capacidad' => $this->request->getPost('Capacidad'),
+                'Estado' => $this->request->getPost('Estado'),
+            ];
+            $transporteModel->insert($data);
+            return redirect()->to(base_url('administrador/transporte'))->with('success', 'Transporte agregado exitosamente.');
+        }
+        return view('dashboard/administrador/admin_transporte');
+    }
+
+    public function editar_transporte($id)
+    {
+        $transporteModel = new TransporteModel();
+        $transporte = $transporteModel->find($id);
+        if (!$transporte) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Transporte no encontrado.');
+        }
+        if ($this->request->getMethod() === 'POST') { 
+            $data = [
+                'Tipo' => $this->request->getPost('Tipo'),
+                'Descripcion' => $this->request->getPost('Descripcion'),
+                'Costo_por_km' => $this->request->getPost('Costo_por_km'),
+                // 'Capacidad' => $this->request->getPost('Capacidad'),
+                // 'Estado' => $this->request->getPost('Estado'),
+            ];
+            $transporteModel->update($id, $data);
+            return redirect()->to(base_url('dashboard/administrador/admin_transporte'))->with('success', 'Transporte actualizado exitosamente.');
+        }
+        return view('dashboard/administrador/admin_transporte', ['transporte' => $transporte]);
+    }
+
+    public function eliminar_transporte($id)
+    {
+        // Load the TransporteModel
+        $transporteModel = new TransporteModel();
+
+        // Check if the `transporte` exists
+        $transporte = $transporteModel->find($id);
+
+        if (!$transporte) {
+            // If `transporte` not found, show 404 error
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Transporte no encontrado.');
+        }
+
+        // Delete the `transporte` record
+        $transporteModel->delete($id);
+
+        // Redirect back to the transport list with success message
+        return redirect()->to(base_url('dashboard/administrador/admin_transporte'))->with('success', 'Transporte eliminado exitosamente.');
+    }
 
 
 }

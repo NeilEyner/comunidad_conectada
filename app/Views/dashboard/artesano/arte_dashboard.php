@@ -27,7 +27,7 @@
                 <td class="px-4 py-3 text-sm">
                   <div class="flex items-center text-sm">
                     <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                      <img class="object-cover w-full h-full " src="<?php echo esc($producto['Imagen_URL']); ?>"
+                      <img class="object-cover w-full h-full " src="<?php echo esc(base_url().$producto['Imagen_URL']); ?>"
                         alt="<?php echo esc($producto['Nombre']); ?>" />
                       <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
                     </div>
@@ -39,7 +39,7 @@
 
                 </td>
                 <td class="px-4 py-3 text-sm"><?= $producto['Descripcion'] ?></td>
-                <td class="px-4 py-3 text-sm">$<?= number_format($producto['Precio'], 2) ?></td>
+                <td class="px-4 py-3 text-sm">Bs. <?= number_format($producto['Precio'], 2) ?></td>
                 <td class="px-4 py-3 text-sm"><?= $producto['Stock'] ?></td>
                 <td class="px-4 py-3 text-xs">
                   <?php if ($producto['Disponibilidad']): ?>

@@ -106,7 +106,7 @@
                 <span class="ml-4">Contenido Pagina</span>
               </a>
             </li>
-            <li class="relative px-6 py-3 ">
+            <!-- <li class="relative px-6 py-3 ">
               <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                 href="<?=base_url()?>dashboard/administrador/admin_envio" >
                 <svg class="w-5 h-5"
@@ -121,7 +121,7 @@
                 </svg>
                 <span class="ml-4">Envios</span>
               </a>
-            </li>
+            </li> -->
             <li class="relative px-6 py-3 ">
               <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                 href="<?=base_url()?>dashboard/administrador/admin_pago" >
@@ -157,7 +157,7 @@
             </li>
             <li class="relative px-6 py-3 ">
               <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                href="<?=base_url()?>dashboard/administrador/admin_compra" >
+                href="<?=base_url()?>dashboard/administrador/admin_transporte" >
                 <svg class="w-5 h-5"
                   aria-hidden="true"
                   fill="none"
@@ -168,7 +168,7 @@
                   stroke="currentColor" >
                   <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                 </svg>
-                <span class="ml-4">Compras</span>
+                <span class="ml-4">Transporte</span>
               </a>
             </li>
           </ul>

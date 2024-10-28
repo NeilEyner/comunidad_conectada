@@ -16,6 +16,7 @@
             <tr
               class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
               <th class="px-4 py-3">Nombre</th>
+              <th class="px-4 py-3">Descripcion</th>
               <th class="px-4 py-3">Precio</th>
               <th class="px-4 py-3">Stock</th>
               <th class="px-4 py-3">Disponibilidad</th>
@@ -29,7 +30,7 @@
                   <td class="px-4 py-3 text-sm">
                     <div class="flex items-center text-sm">
                       <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                        <img class="object-cover w-full h-full " src="<?php echo esc($producto['Imagen_URL']); ?>"
+                        <img class="object-cover w-full h-full " src="<?php echo esc(base_url().$producto['Imagen_URL']); ?>"
                           alt="<?php echo esc($producto['Nombre']); ?>" />
                         <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
                       </div>
@@ -39,6 +40,7 @@
                       </div>
                     </div>
                   </td>
+                  <td class="px-4 py-3 text-sm"><?php echo esc($producto['Descripcion']); ?></td>
                   <td class="px-4 py-3 text-sm"><?php echo esc($producto['Precio']); ?></td>
                   <td class="px-4 py-3 text-sm"><?php echo esc($producto['Stock']); ?></td>
                   <td class="px-4 py-3 text-sm">
@@ -55,7 +57,9 @@
                           </path>
                         </svg>
                       </button>
-                      <form action="<?= base_url('artesano/eliminar_producto/' .  $producto['ID_Artesano'] . '/' . $producto['ID_Producto']) ?>" method="post">
+                      <form
+                        action="<?= base_url('artesano/eliminar_producto/' . $producto['ID_Artesano'] . '/' . $producto['ID_Producto']) ?>"
+                        method="post">
                         <button type="submit"
                           class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-red-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
                           aria-label="Delete">
@@ -112,6 +116,13 @@
                           </select>
                         </div>
 
+                        <div class="mb-4">
+                          <label for="Descripcion"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-400">Descripcion</label>
+                          <input type="text" name="Descripcion" id="Descripcion"
+                            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-input"
+                            placeholder="Ingrese la Descripcion" value="<?php echo $producto['Descripcion']; ?>">
+                        </div>
 
                         <div class="mb-4">
                           <label for="Precio"
@@ -207,11 +218,19 @@
           <select id="ID_Producto" name="ID_Producto" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 
               focus:outline-none focus:shadow-outline-purple dark:text-gray-300 form-select" required>
             <?php foreach ($productos_list as $prod): ?>
-              <option value="<?= esc($prod['ID']); ?>" >
+              <option value="<?= esc($prod['ID']); ?>">
                 <?= esc($prod['Nombre']); ?>
               </option>
             <?php endforeach; ?>
           </select>
+        </div>
+
+        <div class="mb-4">
+          <label for="Descripcion"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-400">Descripcion</label>
+          <input type="text" name="Descripcion" id="Descripcion"
+            class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-input"
+            placeholder="Ingrese la Descripcion">
         </div>
 
         <div class="mb-4">

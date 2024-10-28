@@ -13,12 +13,14 @@ use App\Models\ProductoModel;
 use App\Models\CompraModel;
 use App\Models\TieneProductoModel;
 use App\Models\CategoriaModel;
+use App\Models\ContenidoModel;
+use App\Models\DetalleCompraModel;
 
 class ClienteController extends Controller
 {
     public function cliente()
     {
-        if (session()->get('ID_Rol') != 2) {
+        if (!session()->has('ID_Rol')) {
             return redirect()->to(base_url('login'));
         }
         // Obtener compras del cliente
@@ -30,8 +32,23 @@ class ClienteController extends Controller
 
         $envios = $db->query("SELECT e.ID_Compra, t.Tipo, u.Nombre AS Nombre_Delivery, c.Nombre AS Nombre_Comunidad, e.Direccion_Destino, e.Fecha_Envio, e.Fecha_Entrega, e.Estado, e.Costo_envio FROM envio e JOIN usuario u ON u.ID = e.ID_Delivery JOIN transporte t ON t.ID = e.ID_Transporte JOIN comunidad c ON c.ID = e.Comunidad_Destino")->getResult();
         $data['envios'] = $envios;
+        // Obtener productos y contenido
+        $tieneProductoModel = new TieneProductoModel();
+        $data['productos'] = $tieneProductoModel->findAll();
 
-        return view('dashboard/cliente/cli_dashboard', $data);
+        $contenidoModel = new ContenidoModel();
+        $data['contenido'] = $contenidoModel->findAll();
+
+        $detalleCompraModel = new DetalleCompraModel();
+        $carrito = (session()->get('ID_Rol') == null) ? '' : $detalleCompraModel->carritoProd(session()->get('ID'));
+
+        $data['carrito'] = $carrito;
+
+
+        return view('global/header', ['titulo' => 'Cliente Dashboard'] +$data)
+        . view('dashboard/cliente/cli_dashboard', $data)
+        . view('global/footer',$data);
+
     }
 
 
@@ -41,18 +58,18 @@ class ClienteController extends Controller
     public function procesar_entregado()
     {
         $id_compra = $this->request->getPost('id_compra');
-    
+
         $compraModel = new CompraModel();
-    
+
         // Actualiza el estado de la compra
         $data = [
             'Estado' => 'ENTREGADO',
         ];
-    
+
         // Asegúrate de que el ID de compra no sea nulo
         if ($id_compra) {
             $updated = $compraModel->update($id_compra, $data);
-            
+
             if ($updated) {
                 // Mensaje de éxito
                 session()->setFlashdata('success', 'La compra ha sido marcada como entregada.');
@@ -63,26 +80,26 @@ class ClienteController extends Controller
         } else {
             session()->setFlashdata('error', 'ID de compra no válido.');
         }
-    
+
         return redirect()->back();
     }
-    
+
 
     public function procesar_cancelado()
     {
         $id_compra = $this->request->getPost('id_compra');
-    
+
         $compraModel = new CompraModel();
-    
+
         // Actualiza el estado de la compra
         $data = [
             'Estado' => 'CANCELADO',
         ];
-    
+
         // Asegúrate de que el ID de compra no sea nulo
         if ($id_compra) {
             $updated = $compraModel->update($id_compra, $data);
-            
+
             if ($updated) {
                 // Mensaje de éxito
                 session()->setFlashdata('success', 'La compra ha sido marcada como entregada.');
@@ -93,7 +110,7 @@ class ClienteController extends Controller
         } else {
             session()->setFlashdata('error', 'ID de compra no válido.');
         }
-    
+
         return redirect()->back();
     }
 

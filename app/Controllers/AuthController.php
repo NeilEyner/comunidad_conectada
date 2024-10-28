@@ -181,18 +181,19 @@ class AuthController extends BaseController
     }
     protected function redirectBasedOnRole($rolId)
     {
-        switch ($rolId) {
-            case 1: // Artesano
-                return redirect()->to(base_url('dashboard/artesano/arte_dashboard'));
-            case 2: // Cliente
-                return redirect()->to(base_url('dashboard/cliente/cli_dashboard'));
-            case 3: // Delivery
-                return redirect()->to(base_url('dashboard/delivery/deli_dashboard'));
-            case 4: // Administrador
-                return redirect()->to(base_url('dashboard/administrador/admin_dashboard'));
-            default:
-                return redirect()->to(base_url('dashboard'));
-        }
+        return redirect()->to(base_url());
+        // switch ($rolId) {
+        //     case 1: // Artesano
+        //         return redirect()->to(base_url());
+        //     case 2: // Cliente
+        //         return redirect()->to(base_url('dashboard/cliente/cli_dashboard'));
+        //     case 3: // Delivery
+        //         return redirect()->to(base_url('dashboard/delivery/deli_dashboard'));
+        //     case 4: // Administrador
+        //         return redirect()->to(base_url('dashboard/administrador/admin_dashboard'));
+        //     default:
+        //         return redirect()->to(base_url());
+        // }
     }
     public function logout()
     {

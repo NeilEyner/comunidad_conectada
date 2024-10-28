@@ -91,21 +91,14 @@
               <p class="text-center mt-3">
                 ¿No tienes una cuenta? 
                 <a
-                  class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+                  class="text-sm font-medium text-gr-600 dark:text-purple-400 hover:underline"
                   href="<?= base_url('register') ?>"
                 >
                   Regístrate aquí
                 </a>
               </p>
               
-              <p class="mt-4">
-                <a
-                  class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                  href="./forgot-password.html"
-                >
-                  ¿Olvidaste tu contraseña?
-                </a>
-              </p>
+             
             </div>
           </div>
         </div>

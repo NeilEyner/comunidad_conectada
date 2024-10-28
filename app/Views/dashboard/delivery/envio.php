@@ -1,134 +1,268 @@
-<?php include 'header.php'; ?>
-<main class="h-full overflow-y-auto">
-  <div class="container px-4 mx-auto py-4">
-    <h2 class="mb-6 text-xl font-semibold text-gray-700 dark:text-gray-200">
-      Realizar Envíos
-    </h2>
 
-    <div class="space-y-6">
-      <?php if (session()->getFlashdata('mensaje')): ?>
-        <div class="alert alert-success">
-          <?= session()->getFlashdata('mensaje') ?>
-        </div>
-      <?php endif; ?>
-
-      <?php foreach ($envios as $envio): ?>
-        <div class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
-          <!-- Cabecera con número de compra destacado -->
-          <div class="bg-white shadow-md rounded-lg p-4 border border-gray-300 flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-              <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium">
-                <?= $envio['Tipo'] ?>
-              </span>
-              <span class="bg-orange-100 text-yellow-800 px-4 py-2 rounded-full text-sm font-medium">
-                DELIVERY: <?= $envio['Estado'] ?>
-              </span>
-              <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium">
-                CLIENTE: <?= $envio['Cestado'] ?>
-              </span>
-            </div>
-
-            <?php if ($envio['Estado'] !== 'ENTREGADO'): ?>
-              <form action="<?= base_url('envios/entregado') ?>" method="POST">
-                <input type="hidden" name="id_compra" value="<?= $envio['ID_Compra'] ?>">
-                <button type="submit"
-                  class="bg-blue-600 hover:bg-green-500 text-white font-semibold py-2 px-5 rounded-lg shadow transition duration-200 ease-in-out transform hover:scale-105">
-                  Marcar como Entregado
-                </button>
-              </form>
-            <?php endif; ?>
-          </div>
-
-
-
-          <!-- Información resumida (siempre visible) -->
-          <div class="px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors"
-            onclick="toggleDetails('envio-<?= $envio['ID_Compra'] ?>')">
-            <div class="flex justify-between items-center">
-              <div class="flex space-x-4">
-                <svg class="w-5 h-5 text-gray-400 transform transition-transform duration-200"
-                  id="arrow-<?= $envio['ID_Compra'] ?>" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-                <div class="text-sm">
-                  <span class="text-gray-600">Comunidad:</span>
-                  <span class="font-medium"><?= $envio['Comunidad'] ?></span>
-                  <span class="ml-4 text-gray-600">Costo:</span>
-                  <span class="font-medium">Bs. <?= number_format($envio['Costo_envio'], 2) ?></span>
-                </div>
-              </div>
-              <span class="text-sm text-gray-500">Ver detalles</span>
-            </div>
-          </div>
-
-          <!-- Detalles expandibles -->
-          <div class="hidden bg-gray-50" id="envio-<?= $envio['ID_Compra'] ?>">
-            <div class="p-4">
-              <h3 class="text-sm font-semibold text-gray-600 mb-2">Detalles del Envío</h3>
-              <div class="text-sm text-gray-700">
-                <p><span class="font-semibold">Dirección:</span> <?= $envio['Direccion_Destino'] ?></p>
-                <p><span class="font-semibold">Comunidad:</span> <?= $envio['Comunidad'] ?></p>
-              </div>
-
-              <div class="mt-4">
-                <h4 class="text-base font-semibold text-gray-700">Productos en el Envío</h4>
-                <div class="space-y-3 mt-3">
-                  <?php foreach ($envio['productos'] as $producto): ?>
-                    <div
-                      class="flex items-center gap-4 p-3 bg-white border border-gray-200 rounded-lg hover:shadow transition-all">
-                      <div class="w-16 h-16 overflow-hidden rounded-md">
-                        <img src="<?= base_url() . $producto['Imagen_URL'] ?>" alt="<?= $producto['Producto'] ?>"
-                          class="w-12 h-12 object-cover transition-transform duration-200 hover:scale-105">
-                      </div>
-                      <div>
-                        <h5 class="text-sm font-medium text-gray-800"><?= $producto['Producto'] ?></h5>
-                        <p class="text-xs text-gray-500">Comunidad: <?= $producto['Comunidad_Artesano'] ?></p>
-                        <p class="text-xs text-gray-500">Cantidad: <?= $producto['Cantidad'] ?></p>
-                      </div>
+<div class="container-fluid py-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="position-relative p-4 bg-gradient-primary text-white rounded-lg shadow-sm" 
+                 style="background: linear-gradient(45deg, #3b82f6, #2563eb);">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h1 class="display-6 mb-0">Gestión de Envíos</h1>
+                        <p class="opacity-75 mb-0">Sistema de seguimiento y control de entregas</p>
                     </div>
-                  <?php endforeach; ?>
+                    <div class="col-auto">
+                        <i class="fas fa-shipping-fast fa-3x opacity-50"></i>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-        <br>
-      <?php endforeach; ?>
     </div>
-  </div>
 
-  <script>
-    function toggleDetails(envioId) {
-      const detailsDiv = document.getElementById(envioId);
-      const arrowIcon = document.getElementById('arrow-' + envioId.split('-')[1]);
+    <!-- Alert Messages -->
+    <?php if (session()->getFlashdata('mensaje')): ?>
+        <div class="alert alert-success border-0 shadow-sm slide-in-top" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <?= session()->getFlashdata('mensaje') ?>
+        </div>
+    <?php endif; ?>
 
-      detailsDiv.classList.toggle('hidden');
+    <!-- Envíos Grid -->
+    <div class="row g-4">
+        <?php foreach ($envios as $envio): ?>
+            <div class="col-12">
+                <div class="card border-0 shadow-sm hover-shadow-lg transition-all">
+                    <!-- Estado Badges Section -->
+                    <div class="card-header border-bottom-0 bg-white pt-4">
+                        <div class="d-flex flex-wrap gap-3 mb-3">
+                            <div class="status-pill">
+                                <span class="badge rounded-pill px-4 py-2" 
+                                      style="background: linear-gradient(45deg, #60a5fa, #3b82f6);">
+                                    <i class="fas fa-box me-2"></i>
+                                    <?= $envio['Tipo'] ?>
+                                </span>
+                            </div>
+                            <div class="status-pill">
+                                <span class="badge rounded-pill px-4 py-2" 
+                                      style="background: linear-gradient(45deg, #f59e0b, #d97706);">
+                                    <i class="fas fa-motorcycle me-2"></i>
+                                    Delivery: <?= $envio['Estado'] ?>
+                                </span>
+                            </div>
+                            <div class="status-pill">
+                                <span class="badge rounded-pill px-4 py-2" 
+                                      style="background: linear-gradient(45deg, #10b981, #059669);">
+                                    <i class="fas fa-user me-2"></i>
+                                    Cliente: <?= $envio['Cestado'] ?>
+                                </span>
+                            </div>
+                        </div>
 
-      if (detailsDiv.classList.contains('hidden')) {
-        arrowIcon.style.transform = 'rotate(0deg)';
-      } else {
+                        <?php if ($envio['Estado'] !== 'ENTREGADO'): ?>
+                            <div class="action-button mb-3">
+                                <form action="<?= base_url('envios/entregado') ?>" method="POST">
+                                    <input type="hidden" name="id_compra" value="<?= $envio['ID_Compra'] ?>">
+                                    <button type="submit" class="btn btn-success btn-lg px-4 shadow-sm hover-lift">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        Marcar como Entregado
+                                    </button>
+                                </form>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Envío Summary -->
+                    <div class="card-body pt-0">
+                        <div class="envio-summary cursor-pointer p-3 rounded-3 hover-bg-light" 
+                             onclick="toggleDetails('envio-<?= $envio['ID_Compra'] ?>')">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-chevron-down me-3 transition-transform" 
+                                           id="arrow-<?= $envio['ID_Compra'] ?>"></i>
+                                        <div>
+                                            <div class="text-muted mb-1">Información General</div>
+                                            <div class="d-flex flex-wrap gap-4">
+                                                <div class="info-item">
+                                                    <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                                    <strong>Comunidad:</strong>
+                                                    <span class="ms-2"><?= $envio['Comunidad'] ?></span>
+                                                </div>
+                                                <div class="info-item">
+                                                    <i class="fas fa-coins text-warning me-2"></i>
+                                                    <strong>Costo:</strong>
+                                                    <span class="ms-2">Bs. <?= number_format($envio['Costo_envio'], 2) ?></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <span class="text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Ver detalles
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Detalles Expandibles -->
+                        <div class="collapse" id="envio-<?= $envio['ID_Compra'] ?>">
+                            <div class="border-top mt-3 pt-4">
+                                <div class="row">
+                                    <!-- Detalles de Envío -->
+                                    <div class="col-md-4 mb-4">
+                                        <div class="card h-100 bg-light border-0">
+                                            <div class="card-body">
+                                                <h6 class="card-title text-uppercase text-muted mb-3">
+                                                    <i class="fas fa-info-circle me-2"></i>
+                                                    Detalles del Envío
+                                                </h6>
+                                                <div class="details-list">
+                                                    <div class="detail-item mb-3">
+                                                        <i class="fas fa-map-marked-alt text-danger me-2"></i>
+                                                        <strong>Dirección:</strong>
+                                                        <p class="text-muted mb-0 mt-1 ps-4">
+                                                            <?= $envio['Direccion_Destino'] ?>
+                                                        </p>
+                                                    </div>
+                                                    <div class="detail-item">
+                                                        <i class="fas fa-home text-primary me-2"></i>
+                                                        <strong>Comunidad:</strong>
+                                                        <p class="text-muted mb-0 mt-1 ps-4">
+                                                            <?= $envio['Comunidad'] ?>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Lista de Productos -->
+                                    <div class="col-md-8">
+                                        <h6 class="text-uppercase text-muted mb-3">
+                                            <i class="fas fa-box-open me-2"></i>
+                                            Productos en el Envío
+                                        </h6>
+                                        <div class="row g-3">
+                                            <?php foreach ($envio['productos'] as $producto): ?>
+                                                <div class="col-md-6">
+                                                    <div class="card h-100 hover-shadow-sm transition-all">
+                                                        <div class="row g-0">
+                                                            <div class="col-4 p-3">
+                                                                <div class="ratio ratio-1x1 rounded-3 overflow-hidden">
+                                                                    <img src="<?= base_url() . $producto['Imagen_URL'] ?>"
+                                                                         class="object-fit-cover"
+                                                                         alt="<?= $producto['Producto'] ?>">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <div class="card-body">
+                                                                    <h6 class="card-title text-truncate">
+                                                                        <?= $producto['Producto'] ?>
+                                                                    </h6>
+                                                                    <div class="small text-muted mb-2">
+                                                                        <i class="fas fa-map-pin me-1"></i>
+                                                                        <?= $producto['Comunidad_Artesano'] ?>
+                                                                    </div>
+                                                                    <span class="badge bg-secondary">
+                                                                        <i class="fas fa-cubes me-1"></i>
+                                                                        Cantidad: <?= $producto['Cantidad'] ?>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+
+<!-- Custom CSS -->
+<style>
+.hover-shadow-lg {
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.hover-shadow-lg:hover {
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+}
+
+.hover-lift {
+    transition: transform 0.2s ease-in-out;
+}
+
+.hover-lift:hover {
+    transform: translateY(-2px);
+}
+
+.hover-bg-light:hover {
+    background-color: rgba(0,0,0,.03);
+}
+
+.slide-in-top {
+    animation: slideInTop 0.5s ease-out;
+}
+
+@keyframes slideInTop {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.transition-all {
+    transition: all 0.3s ease-in-out;
+}
+
+.status-pill .badge {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.detail-item strong {
+    color: #4b5563;
+}
+</style>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://kit.fontawesome.com/your-code.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize all tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+});
+
+function toggleDetails(envioId) {
+    const detailsDiv = document.getElementById(envioId);
+    const arrowIcon = document.getElementById('arrow-' + envioId.split('-')[1]);
+    const collapse = new bootstrap.Collapse(detailsDiv, {
+        toggle: true
+    });
+    
+    detailsDiv.addEventListener('show.bs.collapse', function() {
         arrowIcon.style.transform = 'rotate(180deg)';
-      }
-    }
-
-    function asignarDelivery(idCompra) {
-      if (confirm('¿Desea asignar un delivery a este envío?')) {
-        fetch(`/envios/asignarDelivery/${idCompra}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              alert('Delivery asignado correctamente');
-              location.reload();
-            } else {
-              alert('Error al asignar delivery');
-            }
-          });
-      }
-    }
-  </script>
-</main>
+    });
+    
+    detailsDiv.addEventListener('hide.bs.collapse', function() {
+        arrowIcon.style.transform = 'rotate(0deg)';
+    });
+}
+</script>

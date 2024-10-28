@@ -30,7 +30,8 @@
                 <div class="col-12 col-md-4 mb-4">
                     <div class="card h-100">
                         <a href="<?= base_url().'producto'.'/'. $producto['ID_Artesano'].'/'.$producto['ID_Producto'];  ?>">
-                            <img src="<?= $producto['Imagen_URL'] ?>" class="card-img-top" height="300px" alt="...">
+                        <img src="<?= $producto['Imagen_URL'] ?>" class="card-img-top" style="width: 100%; height: 300px; object-fit: cover;" alt="...">
+
                         </a>
                         <div class="card-body">
                             <ul class="list-unstyled d-flex justify-content-between">

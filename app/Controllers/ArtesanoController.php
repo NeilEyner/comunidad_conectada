@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\DetalleCompraModel;
 use CodeIgniter\Controller;
 use App\Models\UsuarioModel;
 use App\Models\ComunidadModel;
@@ -74,7 +75,7 @@ class ArtesanoController extends Controller
             return redirect()->back()->with('message', 'Producto no encontrado.');
         }
         $rules = [
-            'Precio' => 'required|decimal',
+            'Precio' => 'required',
             'Stock' => 'required|integer',
             'Disponibilidad' => 'required|integer',
         ];
@@ -84,13 +85,14 @@ class ArtesanoController extends Controller
         if ($imagen && $imagen->isValid() && !$imagen->hasMoved()) {
             $nombreImagen = $imagen->getRandomName();
             $imagen->move(FCPATH . 'images/productos/', $nombreImagen);
-            $imagenURL = base_url('images/productos/' . $nombreImagen);
+            $imagenURL = 'images/productos/' . $nombreImagen;
         }
 
         $data = [
             'Precio' => $this->request->getPost('Precio'),
             'Stock' => $this->request->getPost('Stock'),
             'Disponibilidad' => $this->request->getPost('Disponibilidad'),
+            'Descripcion' => $this->request->getPost('Descripcion'),
         ];
 
         if (isset($imagenURL)) {
@@ -111,7 +113,7 @@ class ArtesanoController extends Controller
         if ($this->request->getMethod() == 'POST') {
             $rules = [
                 'ID_Producto' => 'required|integer',
-                'Precio' => 'required|decimal',
+                'Precio' => 'required',
                 'Stock' => 'required|integer',
                 'Disponibilidad' => 'required|integer',
             ];
@@ -121,9 +123,9 @@ class ArtesanoController extends Controller
                 if ($imagen && $imagen->isValid() && !$imagen->hasMoved()) {
                     $nombreImagen = $imagen->getRandomName();
                     $imagen->move(FCPATH . 'images/productos/', $nombreImagen);
-                    $imagenURL = base_url('images/productos/' . $nombreImagen);
+                    $imagenURL = 'images/productos/' . $nombreImagen;
                 } else {
-                    $imagenURL = base_url('images/productos/default.png');
+                    $imagenURL = 'images/productos/default.png';
                 }
 
                 $data = [
@@ -133,6 +135,7 @@ class ArtesanoController extends Controller
                     'Stock' => $this->request->getPost('Stock'),
                     'Disponibilidad' => $this->request->getPost('Disponibilidad'),
                     'Imagen_URL' => $imagenURL,
+                    'Descripcion' => $this->request->getPost('Descripcion'),
                 ];
 
                 if ($model->insert($data)) {
@@ -158,12 +161,22 @@ class ArtesanoController extends Controller
 
     public function pedido_producto()
     {
-        return view('dashboard/artesano/pedido_producto');
+        $idArtesano = session()->get('ID'); // Obtener el ID del usuario logueado desde la sesión
+
+        $productoModel = new DetalleCompraModel();
+        $data['productos'] = $productoModel->getProductosVendidosPorArtesano($idArtesano);
+
+        return view('dashboard/artesano/pedido_producto', $data);
     }
 
     public function valoracion_producto()
     {
-        return view('dashboard/artesano/valoracion_producto');
+        $idArtesano = session()->get('ID');
+
+        $productoModel = new TieneProductoModel();
+        $data['productos'] = $productoModel->getProductosPuntuadosPorArtesano($idArtesano);
+
+        return view('dashboard/artesano/valoracion_producto', $data);
     }
    
 }
