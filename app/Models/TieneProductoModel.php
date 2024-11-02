@@ -65,7 +65,7 @@ class TieneProductoModel extends Model
         return $this->select('tiene_producto.*, usuario.Nombre,comunidad.Nombre as Comunidad')
             ->join('usuario', 'usuario.ID= tiene_producto.ID_Artesano')
             ->join('comunidad', 'comunidad.ID=usuario.ID_Comunidad')
-            ->where('Disponibilidad', '1')->where('Stock>1')->findAll();
+            ->where('Disponibilidad', '1')->where('Stock>=1')->findAll();
     }
 
     public function getProductosPuntuadosPorArtesano($idArtesano)

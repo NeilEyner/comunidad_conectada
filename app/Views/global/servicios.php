@@ -4,10 +4,7 @@
         <div class="row text-center pt-5 pb-3">
             <div class="col-lg-6 m-auto">
                 <h1 class="h1">Nuestros Servicios</h1>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                    Lorem ipsum dolor sit amet.
-                </p>
+                
             </div>
         </div>
         <div class="row">
