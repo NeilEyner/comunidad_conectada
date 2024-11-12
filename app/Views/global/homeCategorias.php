@@ -40,7 +40,7 @@
                         <div class="col-12 col-md-4 p-5 mt-3">
                             <a href="<?php echo base_url();?>tienda" ><img src="<?= array_shift($prod)['Imagen_URL'] ?>" class="rounded-circle  square img-fluid border " style='width:30vh; height:30vh;'></a>
                             <h5 class="text-center mt-3 mb-3"><?= $categoria['Nombre'] ?></h5>
-                            <p class="text-center"><a class="btn btn-success">Ir a la Tienda</a></p>
+                            <p class="text-center"><a href="<?php echo base_url();?>tienda" class="btn btn-success">Ir a la Tienda</a></p>
                         </div>
                         <?php
                         }

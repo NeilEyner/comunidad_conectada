@@ -43,9 +43,9 @@ function anadirProducto(ruta,idA,idP,cant,precio){
             window.location.href = data.ruta;
         }
 
-        if(data.status==2){
-            alert('No hay suficiente stock');
-        }
+        // if(data.status==2){
+        //     alert('No hay suficiente stock');
+        // }
 
         // if(location.pathname=='/carrito'){
         //     recargaCarrito();
@@ -59,7 +59,11 @@ function anadirProducto(ruta,idA,idP,cant,precio){
         var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
         document.getElementById('btn-mod-cancelar').innerHTML='Aceptar';
         // document.getElementById('exampleModalLabel').innerHTML='Un Producto Añadido'
-        document.getElementById('mod-body').innerHTML='Un producto ha sido añadido al carrito';
+        if(data.status==2){
+            document.getElementById('mod-body').innerHTML='no hay suficiente Stock';
+        }else{
+            document.getElementById('mod-body').innerHTML='Un producto ha sido añadido al carrito';
+        }
         document.getElementById('accept').setAttribute('hidden','true');
         document.getElementById('exampleModalLabel').setAttribute('hidden','true');
         myModal.show();
