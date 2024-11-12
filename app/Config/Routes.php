@@ -13,6 +13,7 @@ $routes->post('login', 'AuthController::do_login');
 $routes->get('logout', 'AuthController::logout');
 $routes->get('perfil/(:num)', 'AuthController::perfil/$1');
 $routes->post('update_perfil/(:num)', 'AuthController::do_update/$1');
+$routes->get('api/comunidades', 'AuthController::getComunidades');
 
 
 $routes->get('dashboard/artesano', 'DashboardController::artesano');
@@ -103,21 +104,11 @@ $routes->post('compra/cancelado', 'ClienteController::procesar_cancelado');
 
 $routes->post('', 'AdministradorController::admin_compra');
 //transporte
-// Mostrar la lista de entradas de transporte
 $routes->get('dashboard/administrador/admin_transporte', 'AdministradorController::transporte');
-
-// Mostrar el formulario para agregar una nueva entrada de transporte
 $routes->get('administrador/transporte/agregar', 'AdministradorController::agregar_transporte');
-
-// Manejar la sumisión del formulario para agregar una nueva entrada de transporte (solicitud POST)
 $routes->post('administrador/transporte/agregar', 'AdministradorController::agregar_transporte');
-
-// Mostrar el formulario para editar una entrada de transporte existente
 $routes->get('administrador/transporte/editar/(:num)', 'AdministradorController::editar_transporte/$1');
-
-// Manejar la sumisión del formulario para editar una entrada de transporte (solicitud POST)
 $routes->post('administrador/transporte/editar/(:num)', 'AdministradorController::editar_transporte/$1');
-
-// Eliminar una entrada de transporte
 $routes->get('administrador/transporte/eliminar/(:num)', 'AdministradorController::eliminar_transporte/$1');
-
+//comuini
+$routes->get('pdf/exportarCompraPDF/(:num)', 'PdfController::exportarCompraPDF/$1');

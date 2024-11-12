@@ -59,10 +59,6 @@ class PagoController extends BaseController
 
         $comunidades = new ComunidadModel();
         $comunidad = $comunidades->findAll();
-
-        $transport = new TransporteModel();
-        $transporte = $transport->findAll();
-
         $data = [
             'ID' => $id_compra,
             'compra' => $compra,
@@ -76,7 +72,6 @@ class PagoController extends BaseController
             'tieneProductoModel' => $tieneProductoModel,
             'contenido' => $content,
             'comunidades' => $comunidad,
-            'transportes' => $transporte,
         ];
         // return view('pagos/metodos_pagos', $data);
         return view('global/header', $data) . view('pagos/metodos_pagos', $data) . view('global/footer');
@@ -94,7 +89,8 @@ class PagoController extends BaseController
             'ID_Transporte' => $this->request->getPost('tipo_transporte'),
             'Comunidad_Destino' => $this->request->getPost('Comunidad_Destino'),
             'Direccion_Destino' => $this->request->getPost('Direccion_Destino'),
-            'Costo_envio' => $this->request->getPost('costo_envio'),
+            'Latitud' => $this->request->getPost('latitud'),
+            'Longitud' => $this->request->getPost('longitud'),
             'Estado' => 'PREPARANDO',
         ];
 

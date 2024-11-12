@@ -21,109 +21,166 @@ class DeliveryController extends Controller
 {
     public function delivery()
     {
+        // Verificar autenticación
         if (session()->get('ID_Rol') != 3) {
             return redirect()->to(base_url('login'));
         }
 
-
         $db = \Config\Database::connect();
 
-        // Consulta principal de envíos pendientes
+        // Consulta principal de envíos pendientes con estado
         $query = $db->query("
-            SELECT e.ID_Compra, t.Tipo, com.Nombre as Comunidad, 
-                   e.Direccion_Destino, e.Costo_envio 
+            SELECT 
+                e.ID_Compra,
+                e.Estado,
+                e.Fecha_Envio,
+                e.Fecha_Entrega, 
+                t.Tipo,
+                com.Nombre as Comunidad,
+                e.Direccion_Destino,
+                e.Costo_envio,
+                e.Distancia,
+                e.Latitud,
+                e.Longitud,
+                c.Estado as Estado_Compra
             FROM envio e
             JOIN compra c ON c.ID = e.ID_Compra
             JOIN transporte t ON t.ID = e.ID_Transporte
             JOIN comunidad com ON e.Comunidad_Destino = com.ID
-            WHERE e.ID_Delivery IS NULL
-        ");
+            WHERE (e.ID_Delivery = ? OR e.ID_Delivery IS NULL)
+            AND c.Estado != 'CANCELADO'AND e.Estado = 'PREPARANDO'
+            ORDER BY e.Fecha_Envio DESC
+        ", [session()->get('ID')]);
+
         $envios = $query->getResultArray();
 
         // Obtener detalles de productos para cada compra
         foreach ($envios as &$envio) {
-            $query = $db->query("
-                SELECT d.ID_Compra, p.Nombre as Producto, t.Imagen_URL, 
-                       d.Cantidad, c.Nombre as Comunidad_Artesano
-                FROM tiene_producto t
-                JOIN detalle_compra d ON d.ID_Producto = t.ID_Producto
-                JOIN producto p ON p.ID = t.ID_Producto
-                JOIN usuario u ON u.ID = t.ID_Artesano
+            $productosQuery = $db->query("
+                SELECT 
+                    d.ID_Compra,
+                    p.Nombre as Producto,
+                    p.ID as ID_Producto,
+                    COALESCE(tp.Imagen_URL, '/assets/img/default-product.jpg') as Imagen_URL,
+                    d.Cantidad,
+                    c.Nombre as Comunidad_Artesano,
+                    u.Latitud,
+                    u.Longitud,
+                    u.Direccion,
+                    u.ID as ID_Artesano
+                FROM detalle_compra d
+                JOIN producto p ON p.ID = d.ID_Producto
+                LEFT JOIN tiene_producto tp ON tp.ID_Producto = p.ID AND tp.ID_Artesano = d.ID_Artesano
+                JOIN usuario u ON u.ID = d.ID_Artesano
                 JOIN comunidad c ON u.ID_Comunidad = c.ID
                 WHERE d.ID_Compra = ?
             ", [$envio['ID_Compra']]);
-            $envio['productos'] = $query->getResultArray();
+
+            $envio['productos'] = $productosQuery->getResultArray();
         }
-        // Obtener productos y contenido
+
+        // Cargar modelos necesarios para la vista global
         $tieneProductoModel = new TieneProductoModel();
-        $data['productos'] = $tieneProductoModel->findAll();
-
         $contenidoModel = new ContenidoModel();
-        $data['contenido'] = $contenidoModel->findAll();
-
         $detalleCompraModel = new DetalleCompraModel();
-        $carrito = (session()->get('ID_Rol') == null) ? '' : $detalleCompraModel->carritoProd(session()->get('ID'));
 
-        $data['carrito'] = $carrito;
-        return view('global/header', ['titulo' => 'Cliente Dashboard'] + $data)
-            . view('dashboard/delivery/dely_dashboard', ['envios' => $envios])
-            . view('global/footer', $data);
-        // return view('dashboard/delivery/dely_dashboard', ['envios' => $envios]);
+        // Preparar datos para la vista
+        $data = [
+            'titulo' => 'Dashboard de Delivery',
+            'productos' => $tieneProductoModel->findAll(),
+            'contenido' => $contenidoModel->findAll(),
+            'carrito' => (session()->get('ID_Rol') == null) ? '' :
+                $detalleCompraModel->carritoProd(session()->get('ID')),
+            'envios' => $envios
+        ];
+
+        // Renderizar vistas
+        return
+            view('global/header', $data) .
+            view('dashboard/delivery/dely_dashboard', ['envios' => $envios]) .
+            view('global/footer', $data);
     }
     public function envio()
     {
+        // Verificar autenticación
         if (session()->get('ID_Rol') != 3) {
             return redirect()->to(base_url('login'));
         }
 
         $db = \Config\Database::connect();
-        $idCompra = session()->get('ID');
-        $idCompra = intval($idCompra);
 
+        // Consulta principal de envíos pendientes con estado
         $query = $db->query("
-    SELECT e.ID_Compra,e.Estado,c.Estado as Cestado, t.Tipo, com.Nombre as Comunidad, 
-           e.Direccion_Destino, e.Costo_envio 
-    FROM envio e
-    JOIN compra c ON c.ID = e.ID_Compra
-    JOIN transporte t ON t.ID = e.ID_Transporte
-    JOIN comunidad com ON e.Comunidad_Destino = com.ID
-    WHERE e.ID_Delivery = $idCompra");
+                    SELECT 
+                        e.ID_Compra,
+                        e.Estado,
+                        e.Fecha_Envio,
+                        e.Fecha_Entrega, 
+                        t.Tipo,
+                        com.Nombre as Comunidad,
+                        e.Direccion_Destino,
+                        e.Costo_envio,
+                        e.Distancia,
+                        com.Latitud,
+                        com.Longitud,
+                        c.Estado as Estado_Compra
+                    FROM envio e
+                    JOIN compra c ON c.ID = e.ID_Compra
+                    JOIN transporte t ON t.ID = e.ID_Transporte
+                    JOIN comunidad com ON e.Comunidad_Destino = com.ID
+                    WHERE (e.ID_Delivery = ? OR e.ID_Delivery IS NULL)
+                    AND c.Estado != 'CANCELADO' AND e.Estado != 'PREPARANDO'
+                    ORDER BY e.Fecha_Envio DESC
+                ", [session()->get('ID')]);
 
         $envios = $query->getResultArray();
 
         // Obtener detalles de productos para cada compra
         foreach ($envios as &$envio) {
-            $query = $db->query("
-                SELECT d.ID_Compra, p.Nombre as Producto, t.Imagen_URL, 
-                       d.Cantidad, c.Nombre as Comunidad_Artesano
-                FROM tiene_producto t
-                JOIN detalle_compra d ON d.ID_Producto = t.ID_Producto
-                JOIN producto p ON p.ID = t.ID_Producto
-                JOIN usuario u ON u.ID = t.ID_Artesano
-                JOIN comunidad c ON u.ID_Comunidad = c.ID
-                WHERE d.ID_Compra = ?
-            ", [$envio['ID_Compra']]);
-            $envio['productos'] = $query->getResultArray();
+            $productosQuery = $db->query("
+                        SELECT 
+                            d.ID_Compra,
+                            p.Nombre as Producto,
+                            p.ID as ID_Producto,
+                            COALESCE(tp.Imagen_URL, '/assets/img/default-product.jpg') as Imagen_URL,
+                            d.Cantidad,
+                            c.Nombre as Comunidad_Artesano,
+                            c.Latitud,
+                            c.Longitud,
+                            u.ID as ID_Artesano
+                        FROM detalle_compra d
+                        JOIN producto p ON p.ID = d.ID_Producto
+                        LEFT JOIN tiene_producto tp ON tp.ID_Producto = p.ID AND tp.ID_Artesano = d.ID_Artesano
+                        JOIN usuario u ON u.ID = d.ID_Artesano
+                        JOIN comunidad c ON u.ID_Comunidad = c.ID
+                        WHERE d.ID_Compra = ?
+                    ", [$envio['ID_Compra']]);
+
+            $envio['productos'] = $productosQuery->getResultArray();
         }
-        // Obtener productos y contenido
+
+        // Cargar modelos necesarios para la vista global
         $tieneProductoModel = new TieneProductoModel();
-        $data['productos'] = $tieneProductoModel->findAll();
-
         $contenidoModel = new ContenidoModel();
-        $data['contenido'] = $contenidoModel->findAll();
-
         $detalleCompraModel = new DetalleCompraModel();
-        $carrito = (session()->get('ID_Rol') == null) ? '' : $detalleCompraModel->carritoProd(session()->get('ID'));
 
-        $data['carrito'] = $carrito;
-        return view('global/header', ['titulo' => 'Cliente Dashboard'] + $data)
-            . view('dashboard/delivery/envio', ['envios' => $envios])
-            . view('global/footer', $data);
+        // Preparar datos para la vista
+        $data = [
+            'titulo' => 'Dashboard de Delivery',
+            'productos' => $tieneProductoModel->findAll(),
+            'contenido' => $contenidoModel->findAll(),
+            'carrito' => (session()->get('ID_Rol') == null) ? '' :
+                $detalleCompraModel->carritoProd(session()->get('ID')),
+            'envios' => $envios
+        ];
 
-        // return view('dashboard/delivery/envio', ['envios' => $envios]);
+        // Renderizar vistas
+        return
+            view('global/header', $data) .
+            view('dashboard/delivery/envio', ['envios' => $envios]) .
+            view('global/footer', $data);
+
     }
-
-
     public function entregado()
     {
 

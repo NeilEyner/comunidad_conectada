@@ -5,7 +5,6 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <?php
-            // Sumar cantidades de productos con la misma descripción
             $productos_agrupados = [];
 
             foreach ($productos as $producto) {

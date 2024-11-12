@@ -8,7 +8,7 @@ class EnvioModel extends Model
 {
     protected $table = 'envio';
     protected $primaryKey = 'ID';
-    protected $allowedFields = ['ID_Compra', 'ID_Delivery', 'ID_Transporte', 'Comunidad_Destino', 'Direccion_Destino', 'Fecha_Envio', 'Fecha_Entrega', 'Estado', 'Distancia', 'Costo_envio'];
+    protected $allowedFields = ['ID_Compra', 'ID_Delivery', 'ID_Transporte', 'Comunidad_Destino', 'Direccion_Destino', 'Fecha_Envio', 'Fecha_Entrega', 'Estado', 'Distancia', 'Costo_envio','Latitud','Longitud'];
     protected $useTimestamps = false;   
     public function updateEstado($id_compra, $data)
     {

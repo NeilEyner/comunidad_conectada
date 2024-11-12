@@ -50,7 +50,7 @@
               <span class="ml-4">Productos</span>
             </a>
           </li>
-          <li class="relative px-6 py-3 ">
+          <!-- <li class="relative px-6 py-3 ">
             <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
               href="<?= base_url() ?>dashboard/artesano/pedido_producto">
               <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round"
@@ -61,7 +61,7 @@
               </svg>
               <span class="ml-4">Pedidos</span>
             </a>
-          </li>
+          </li> -->
           <li class="relative px-6 py-3 ">
             <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
               href="<?= base_url() ?>dashboard/artesano/valoracion_producto">
