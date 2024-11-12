@@ -154,6 +154,7 @@ class Home extends BaseController{
         $rol=session()->get('ID_Rol');
         $idC=session()->get('ID');
         $dataC='';
+        $status=1;
         if ( $rol==null) {
             //return json_encode('producto');
             // return json_encode(['status' => 'error', 'message' => 'Rol no autorizado']);
@@ -162,7 +163,9 @@ class Home extends BaseController{
              $compra = $compraModel->verifCompra($idC);
             //  echo $compra;
              $idCompra='';
-             if($compra!=null){
+             if($prod['Stock']==0)
+                $status=2;
+             elseif($compra!=null){
                 $idCompra=$compra['ID'];
                 $detalle=$detalleCompraModel->verifDetalle($idCompra,$idP,$idA);
                 $dataC='';
@@ -208,7 +211,7 @@ class Home extends BaseController{
             $idDet='det';
             $carrito=$detalleCompraModel->carritoProd(session()->get('ID'));
         }
-        return $this->response->setJSON(['status' => 1,$dataC,'det'=>$idDet,'carrito'=>$carrito]);
+        return $this->response->setJSON(['status' => $status,$dataC,'det'=>$idDet,'carrito'=>$carrito]);
             
     }
 
