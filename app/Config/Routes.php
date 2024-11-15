@@ -112,3 +112,8 @@ $routes->post('administrador/transporte/editar/(:num)', 'AdministradorController
 $routes->get('administrador/transporte/eliminar/(:num)', 'AdministradorController::eliminar_transporte/$1');
 //comuini
 $routes->get('pdf/exportarCompraPDF/(:num)', 'PdfController::exportarCompraPDF/$1');
+
+
+// API ANDROID
+$routes->get('/api/usuarios', 'UsuarioController::listarUsuarios');
+$routes->post('/api/login', 'AuthController::api_login');

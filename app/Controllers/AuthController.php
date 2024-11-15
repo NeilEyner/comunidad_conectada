@@ -6,9 +6,12 @@ use App\Models\UsuarioModel;
 use App\Models\RolModel;
 use App\Models\ComunidadModel;
 use CodeIgniter\Controller;
+use CodeIgniter\RESTful\ResourceController;
+use CodeIgniter\API\ResponseTrait;
 
 class AuthController extends BaseController
 {
+    use ResponseTrait;
     protected $usuarioModel;
     protected $rolModel;
     protected $comunidadModel;
@@ -288,6 +291,43 @@ class AuthController extends BaseController
         $comunidades = $comunidadModel->findAll();
         return $this->response->setJSON($comunidades);
     }
+    public function api_login()
+    {
+        $email = $this->request->getPost('Correo_electronico');
+        $password = $this->request->getPost('Contrasena');
 
+        $model = new UsuarioModel();
+        $user = $model->where('Correo_electronico', $email)->first();
+
+        if ($user && password_verify($password, $user['Contrasena'])) {
+            if ($user['Estado'] !== 'ACTIVO') {
+                return $this->respond([
+                    'status' => 'error',
+                    'message' => 'Tu cuenta no está activa. Contacta al administrador.'
+                ], 403);
+            }
+
+            return $this->respond([
+                'status' => 'success',
+                'message' => 'Inicio de sesión exitoso',
+                'data' => [
+                    'ID' => $user['ID'],
+                    'Nombre' => $user['Nombre'],
+                    'Correo_electronico' => $user['Correo_electronico'],
+                    'ID_Rol' => $user['ID_Rol'],
+                    'Imagen_URL' => $user['Imagen_URL'],
+                    'Direccion' => $user['Direccion'],
+                    'ID_Comunidad' => $user['ID_Comunidad'],
+                    'Latitud' => $user['Latitud'],
+                    'Longitud' => $user['Longitud']
+                ]
+            ]);
+        } else {
+            return $this->respond([
+                'status' => 'error',
+                'message' => 'Credenciales incorrectas'
+            ], 401);
+        }
+    }
 
 }

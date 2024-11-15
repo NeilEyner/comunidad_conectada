@@ -32,6 +32,7 @@ class UsuarioModel extends Model
 
     protected $beforeInsert = ['hashPassword'];
     protected $beforeUpdate = ['hashPassword'];
+    protected $returnType = 'array';
 
     protected function hashPassword(array $data)
     {
