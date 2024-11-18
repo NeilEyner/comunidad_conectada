@@ -88,6 +88,17 @@ class DetalleCompraModel extends Model
             ->where('tiene_producto.ID_Artesano', $idArtesano)
             ->findAll();
     }
+    public function getDetallesByCompra($compraId)
+    {
+        return $this->asArray()
+                    ->select('d.ID_Compra, p.Nombre as Producto, p.ID as ID_Producto, COALESCE(tp.Imagen_URL, "/assets/img/default-product.jpg") as Imagen_URL, d.Cantidad, c.Nombre as Comunidad_Artesano, u.Latitud, u.Longitud, u.Direccion, u.ID as ID_Artesano')
+                    ->join('producto p', 'p.ID = d.ID_Producto')
+                    ->join('tiene_producto tp', 'tp.ID_Producto = p.ID AND tp.ID_Artesano = d.ID_Artesano', 'left')
+                    ->join('usuario u', 'u.ID = d.ID_Artesano')
+                    ->join('comunidad c', 'c.ID = u.ID_Comunidad')
+                    ->where('d.ID_Compra', $compraId)
+                    ->findAll();
+    }
     
 
 }

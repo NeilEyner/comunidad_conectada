@@ -130,12 +130,9 @@
     <!-- Lista de Órdenes -->
     <div class="row g-4" id="ordersList">
         <?php foreach ($compras as $index => $compra):
-            // Obtener los detalles de esta compra
             $compraDetalles = array_filter($detalles, function ($d) use ($compra) {
                 return $d->ID_Compra === $compra->ID;
             });
-
-            // Obtener el envío de esta compra si existe
             $compraEnvio = array_filter($envios, function ($e) use ($compra) {
                 return $e->ID_Compra === $compra->ID;
             });
@@ -151,7 +148,7 @@
                                     <i class="fas fa-shopping-bag"></i>
                                 </div>
                                 <div>
-                                    <h5 class="card-title mb-0 fw-bold">Orden #<?= $compra->ID ?></h5>
+                                    <h5 class="card-title mb-0 fw-bold">Codigo de Orden: <?= $compra->ID ?></h5>
                                     <small class="text-muted"><?= date('d/m/Y - H:i', strtotime($compra->Fecha)) ?></small>
                                 </div>
                             </div>
@@ -189,16 +186,17 @@
                                         $shown++;
                                     endif;
                                 endforeach;
-
                                 if (count($compraDetalles) > 5):
                                     ?>
                                     <div class="stats-icon bg-light text-primary">+<?= count($compraDetalles) - 5 ?></div>
                                 <?php endif; ?>
                             </div>
+
                             <div class="text-end">
                                 <small class="text-muted d-block">Total</small>
                                 <h4 class="mb-0 text-primary fw-bold">Bs. <?= number_format($compra->Total, 2) ?></h4>
                             </div>
+
                         </div>
 
                         <div class="progress">
@@ -218,12 +216,15 @@
                     <div class="modal-content">
                         <div class="modal-header bg-primary text-white">
                             <h5 class="modal-title" id="cartModal<?= $compra->ID ?>Label">
-                                Orden #<?= $compra->ID ?>
+                                Orden <?= $compra->ID ?>
                             </h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                 aria-label="Cerrar"></button>
                         </div>
                         <div class="modal-body">
+                            <button class="btn btn-primary m-3 export-pdf-btn" name="<?= $compra->ID ?>">Exportar a
+                                PDF</button>
+
                             <div class="row mb-4">
                                 <div class="col-md-6">
                                     <h6 class="fw-bold">Información de la Orden</h6>
@@ -239,7 +240,7 @@
                                     <div class="col-md-6">
                                         <h6 class="fw-bold">Información de Envío</h6>
                                         <p><strong>Método de envío:</strong> <?= $compraEnvio->Tipo ?></p>
-                                        <p><strong>Empresa de envío:</strong> <?= $compraEnvio->Nombre_Delivery ?></p>
+                                        <p><strong>Encargado de envío:</strong> <?= $compraEnvio->Nombre_Delivery ?></p>
                                         <p><strong>Comunidad:</strong> <?= $compraEnvio->Nombre_Comunidad ?></p>
                                         <p><strong>Dirección:</strong> <?= $compraEnvio->Direccion_Destino ?></p>
                                         <p><strong>Costo de envío:</strong> Bs.
@@ -277,22 +278,30 @@
                         </div>
                         <div class="modal-footer">
                             <div class="d-flex gap-2 mt-4">
-                                <form action="<?= base_url('compra/entregado') ?>" method="POST" class="d-inline">
-                                    <input type="hidden" name="id_compra" value="<?= $compra->ID ?>">
-                                    <button type="submit" class="btn btn-success rounded">
-                                        <i class="bi bi-check-circle me-2"></i>Confirmar Recepción
-                                    </button>
-                                </form>
-                                <form action="<?= base_url('compra/cancelado') ?>" method="POST" class="d-inline">
-                                    <input type="hidden" name="id_compra" value="<?= $compra->ID ?>">
-                                    <button type="submit" class="btn btn-danger rounded">
-                                        <i class="bi bi-x-circle me-2"></i>Cancelar
-                                    </button>
-                                </form>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <?php if ($compra->Estado == 'PENDIENTE' || $compra->Estado == 'EN PROCESO'): ?>
+                                    <form action="<?= base_url('compra/entregado') ?>" method="POST" class="d-inline">
+                                        <input type="hidden" name="id_compra" value="<?= $compra->ID ?>">
+                                        <button type="submit" class="btn btn-success rounded">
+                                            <i class="bi bi-check-circle me-2"></i>Confirmar Recepción
+                                        </button>
+                                    </form>
+                                <?php endif; ?>
+
+                                <?php if ($compra->Estado == 'PENDIENTE' || $compra->Estado == 'EN PROCESO'): ?>
+                                    <form action="<?= base_url('compra/cancelado') ?>" method="POST" class="d-inline">
+                                        <input type="hidden" name="id_compra" value="<?= $compra->ID ?>">
+                                        <button type="submit" class="btn btn-danger rounded">
+                                            <i class="bi bi-x-circle me-2"></i>Cancelar
+                                        </button>
+                                    </form>
+                                <?php endif; ?>
+
+                                <?php if ($compra->Estado != 'CANCELADO'): ?>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <?php endif; ?>
                             </div>
-                            
                         </div>
+
                     </div>
                 </div>
 
@@ -450,6 +459,18 @@ function getProgressWidth($status)
             order.style.animationDelay = `${index * 0.1}s`;
         });
     });
+    // PDF export function
+    document.addEventListener("DOMContentLoaded", function () {
+    // Delegación de eventos para todos los botones que tengan la clase '.export-pdf-btn'
+    document.body.addEventListener('click', function (event) {
+        if (event.target && event.target.classList.contains('export-pdf-btn')) {
+            const idCompra = event.target.getAttribute('name');
+            const baseUrl = "<?= base_url() ?>";
+            window.location.href = `${baseUrl}/pdf/exportarCompraPDF/${idCompra}`;
+        }
+    });
+});
+
 </script>
 
 <!-- Estilos específicos -->

@@ -15,6 +15,7 @@ use App\Models\TieneProductoModel;
 use App\Models\CategoriaModel;
 use App\Models\ContenidoModel;
 use App\Models\DetalleCompraModel;
+use App\Models\TransporteModel;
 
 
 class DeliveryController extends Controller
@@ -27,79 +28,91 @@ class DeliveryController extends Controller
         }
 
         $db = \Config\Database::connect();
+        $userId = session()->get('ID');
 
-        // Consulta principal de envíos pendientes con estado
-        $query = $db->query("
-            SELECT 
-                e.ID_Compra,
-                e.Estado,
-                e.Fecha_Envio,
-                e.Fecha_Entrega, 
-                t.Tipo,
-                com.Nombre as Comunidad,
-                e.Direccion_Destino,
-                e.Costo_envio,
-                e.Distancia,
-                e.Latitud,
-                e.Longitud,
-                c.Estado as Estado_Compra
-            FROM envio e
-            JOIN compra c ON c.ID = e.ID_Compra
-            JOIN transporte t ON t.ID = e.ID_Transporte
-            JOIN comunidad com ON e.Comunidad_Destino = com.ID
-            WHERE (e.ID_Delivery = ? OR e.ID_Delivery IS NULL)
-            AND c.Estado != 'CANCELADO'AND e.Estado = 'PREPARANDO'
-            ORDER BY e.Fecha_Envio DESC
-        ", [session()->get('ID')]);
-
-        $envios = $query->getResultArray();
-
-        // Obtener detalles de productos para cada compra
-        foreach ($envios as &$envio) {
-            $productosQuery = $db->query("
+        try {
+            // Consulta principal de envíos pendientes con estado
+            $query = $db->query("
                 SELECT 
-                    d.ID_Compra,
-                    p.Nombre as Producto,
-                    p.ID as ID_Producto,
-                    COALESCE(tp.Imagen_URL, '/assets/img/default-product.jpg') as Imagen_URL,
-                    d.Cantidad,
-                    c.Nombre as Comunidad_Artesano,
-                    u.Latitud,
-                    u.Longitud,
-                    u.Direccion,
-                    u.ID as ID_Artesano
-                FROM detalle_compra d
-                JOIN producto p ON p.ID = d.ID_Producto
-                LEFT JOIN tiene_producto tp ON tp.ID_Producto = p.ID AND tp.ID_Artesano = d.ID_Artesano
-                JOIN usuario u ON u.ID = d.ID_Artesano
-                JOIN comunidad c ON u.ID_Comunidad = c.ID
-                WHERE d.ID_Compra = ?
-            ", [$envio['ID_Compra']]);
+                    e.ID_Compra,
+                    e.Estado,
+                    e.Fecha_Envio,
+                    e.Fecha_Entrega, 
+                    t.Tipo,
+                    com.Nombre as Comunidad,
+                    e.Direccion_Destino,
+                    e.Costo_envio,
+                    e.Distancia,
+                    e.Latitud,
+                    e.Longitud,
+                    c.Estado as Estado_Compra
+                FROM envio e
+                LEFT JOIN compra c ON c.ID = e.ID_Compra
+                LEFT JOIN transporte t ON t.ID = e.ID_Transporte
+                LEFT JOIN comunidad com ON e.Comunidad_Destino = com.ID
+                WHERE (e.ID_Delivery = ? OR e.ID_Delivery IS NULL)
+                AND c.Estado != 'CANCELADO'
+                AND e.Estado = 'PREPARANDO'
+                ORDER BY e.Fecha_Envio DESC
+            ", [$userId]);
 
-            $envio['productos'] = $productosQuery->getResultArray();
+            if (!$query) {
+                throw new \Exception("Error en la consulta principal de envíos: " . $db->error());
+            }
+
+            $envios = $query->getResultArray();
+
+            // Obtener detalles de productos para cada compra
+            foreach ($envios as &$envio) {
+                $productosQuery = $db->query("
+                    SELECT 
+                        d.ID_Compra,
+                        p.Nombre as Producto,
+                        p.ID as ID_Producto,
+                        COALESCE(tp.Imagen_URL, '/assets/img/default-product.jpg') as Imagen_URL,
+                        d.Cantidad,
+                        c.Nombre as Comunidad_Artesano,
+                        u.Latitud,
+                        u.Longitud,
+                        u.Direccion,
+                        u.ID as ID_Artesano
+                    FROM detalle_compra d
+                    JOIN producto p ON p.ID = d.ID_Producto
+                    LEFT JOIN tiene_producto tp ON tp.ID_Producto = p.ID AND tp.ID_Artesano = d.ID_Artesano
+                    JOIN usuario u ON u.ID = d.ID_Artesano
+                    JOIN comunidad c ON u.ID_Comunidad = c.ID
+                    WHERE d.ID_Compra = ?
+                ", [$envio['ID_Compra']]);
+
+                if (!$productosQuery) {
+                    throw new \Exception("Error en la consulta de productos para la compra ID: {$envio['ID_Compra']}. " . $db->error());
+                }
+
+                $envio['productos'] = $productosQuery->getResultArray();
+            }
+            $tieneProductoModel = new TieneProductoModel();
+            $contenidoModel = new ContenidoModel();
+            $detalleCompraModel = new DetalleCompraModel();
+            $transportesModel = new TransporteModel();
+            $data = [
+                'titulo' => 'Dashboard de Delivery',
+                'productos' => $tieneProductoModel->findAll(),
+                'contenido' => $contenidoModel->findAll(),
+                'transportes' => $transportesModel->findAll(),
+                'carrito' => (session()->get('ID_Rol') == null) ? '' :
+                    $detalleCompraModel->carritoProd(session()->get('ID')),
+                'envios' => $envios
+            ];
+            return
+                view('global/header', $data) .
+                view('dashboard/delivery/dely_dashboard', ['envios' => $envios]) .
+                view('global/footer', $data);
+        } catch (\Exception $e) {
+            log_message('error', $e->getMessage());
+            return redirect()->back()->with('error', 'Ocurrió un error al procesar la solicitud.');
         }
-
-        // Cargar modelos necesarios para la vista global
-        $tieneProductoModel = new TieneProductoModel();
-        $contenidoModel = new ContenidoModel();
-        $detalleCompraModel = new DetalleCompraModel();
-
-        // Preparar datos para la vista
-        $data = [
-            'titulo' => 'Dashboard de Delivery',
-            'productos' => $tieneProductoModel->findAll(),
-            'contenido' => $contenidoModel->findAll(),
-            'carrito' => (session()->get('ID_Rol') == null) ? '' :
-                $detalleCompraModel->carritoProd(session()->get('ID')),
-            'envios' => $envios
-        ];
-
-        // Renderizar vistas
-        return
-            view('global/header', $data) .
-            view('dashboard/delivery/dely_dashboard', ['envios' => $envios]) .
-            view('global/footer', $data);
     }
+
     public function envio()
     {
         // Verificar autenticación
@@ -108,77 +121,89 @@ class DeliveryController extends Controller
         }
 
         $db = \Config\Database::connect();
+        $userId = session()->get('ID');
 
-        // Consulta principal de envíos pendientes con estado
-        $query = $db->query("
+        try {
+            // Consulta principal de envíos pendientes con estado
+            $query = $db->query("
+                SELECT 
+                    e.ID_Compra,
+                    e.Estado,
+                    e.Fecha_Envio,
+                    e.Fecha_Entrega, 
+                    t.Tipo,
+                    com.Nombre as Comunidad,
+                    e.Direccion_Destino,
+                    e.Costo_envio,
+                    e.Distancia,
+                    e.Latitud,
+                    e.Longitud,
+                    c.Estado as Estado_Compra
+                FROM envio e
+                LEFT JOIN compra c ON c.ID = e.ID_Compra
+                LEFT JOIN transporte t ON t.ID = e.ID_Transporte
+                LEFT JOIN comunidad com ON e.Comunidad_Destino = com.ID
+                WHERE (e.ID_Delivery = ? OR e.ID_Delivery IS NULL)
+                AND c.Estado != 'CANCELADO'
+                AND e.Estado != 'PREPARANDO'
+                ORDER BY e.Fecha_Envio DESC
+            ", [$userId]);
+
+            if (!$query) {
+                throw new \Exception("Error en la consulta principal de envíos: " . $db->error());
+            }
+
+            $envios = $query->getResultArray();
+
+            // Obtener detalles de productos para cada compra
+            foreach ($envios as &$envio) {
+                $productosQuery = $db->query("
                     SELECT 
-                        e.ID_Compra,
-                        e.Estado,
-                        e.Fecha_Envio,
-                        e.Fecha_Entrega, 
-                        t.Tipo,
-                        com.Nombre as Comunidad,
-                        e.Direccion_Destino,
-                        e.Costo_envio,
-                        e.Distancia,
-                        com.Latitud,
-                        com.Longitud,
-                        c.Estado as Estado_Compra
-                    FROM envio e
-                    JOIN compra c ON c.ID = e.ID_Compra
-                    JOIN transporte t ON t.ID = e.ID_Transporte
-                    JOIN comunidad com ON e.Comunidad_Destino = com.ID
-                    WHERE (e.ID_Delivery = ? OR e.ID_Delivery IS NULL)
-                    AND c.Estado != 'CANCELADO' AND e.Estado != 'PREPARANDO'
-                    ORDER BY e.Fecha_Envio DESC
-                ", [session()->get('ID')]);
+                        d.ID_Compra,
+                        p.Nombre as Producto,
+                        p.ID as ID_Producto,
+                        COALESCE(tp.Imagen_URL, '/assets/img/default-product.jpg') as Imagen_URL,
+                        d.Cantidad,
+                        c.Nombre as Comunidad_Artesano,
+                        u.Latitud,
+                        u.Longitud,
+                        u.Direccion,
+                        u.ID as ID_Artesano
+                    FROM detalle_compra d
+                    JOIN producto p ON p.ID = d.ID_Producto
+                    LEFT JOIN tiene_producto tp ON tp.ID_Producto = p.ID AND tp.ID_Artesano = d.ID_Artesano
+                    JOIN usuario u ON u.ID = d.ID_Artesano
+                    JOIN comunidad c ON u.ID_Comunidad = c.ID
+                    WHERE d.ID_Compra = ?
+                ", [$envio['ID_Compra']]);
 
-        $envios = $query->getResultArray();
+                if (!$productosQuery) {
+                    throw new \Exception("Error en la consulta de productos para la compra ID: {$envio['ID_Compra']}. " . $db->error());
+                }
 
-        // Obtener detalles de productos para cada compra
-        foreach ($envios as &$envio) {
-            $productosQuery = $db->query("
-                        SELECT 
-                            d.ID_Compra,
-                            p.Nombre as Producto,
-                            p.ID as ID_Producto,
-                            COALESCE(tp.Imagen_URL, '/assets/img/default-product.jpg') as Imagen_URL,
-                            d.Cantidad,
-                            c.Nombre as Comunidad_Artesano,
-                            c.Latitud,
-                            c.Longitud,
-                            u.ID as ID_Artesano
-                        FROM detalle_compra d
-                        JOIN producto p ON p.ID = d.ID_Producto
-                        LEFT JOIN tiene_producto tp ON tp.ID_Producto = p.ID AND tp.ID_Artesano = d.ID_Artesano
-                        JOIN usuario u ON u.ID = d.ID_Artesano
-                        JOIN comunidad c ON u.ID_Comunidad = c.ID
-                        WHERE d.ID_Compra = ?
-                    ", [$envio['ID_Compra']]);
-
-            $envio['productos'] = $productosQuery->getResultArray();
+                $envio['productos'] = $productosQuery->getResultArray();
+            }
+            $tieneProductoModel = new TieneProductoModel();
+            $contenidoModel = new ContenidoModel();
+            $detalleCompraModel = new DetalleCompraModel();
+            $transportesModel = new TransporteModel();
+            $data = [
+                'titulo' => 'Dashboard de Delivery',
+                'productos' => $tieneProductoModel->findAll(),
+                'contenido' => $contenidoModel->findAll(),
+                'transportes' => $transportesModel->findAll(),
+                'carrito' => (session()->get('ID_Rol') == null) ? '' :
+                    $detalleCompraModel->carritoProd(session()->get('ID')),
+                'envios' => $envios
+            ];
+            return
+                view('global/header', $data) .
+                view('dashboard/delivery/envio', ['envios' => $envios]) .
+                view('global/footer', $data);
+        } catch (\Exception $e) {
+            log_message('error', $e->getMessage());
+            return redirect()->back()->with('error', 'Ocurrió un error al procesar la solicitud.');
         }
-
-        // Cargar modelos necesarios para la vista global
-        $tieneProductoModel = new TieneProductoModel();
-        $contenidoModel = new ContenidoModel();
-        $detalleCompraModel = new DetalleCompraModel();
-
-        // Preparar datos para la vista
-        $data = [
-            'titulo' => 'Dashboard de Delivery',
-            'productos' => $tieneProductoModel->findAll(),
-            'contenido' => $contenidoModel->findAll(),
-            'carrito' => (session()->get('ID_Rol') == null) ? '' :
-                $detalleCompraModel->carritoProd(session()->get('ID')),
-            'envios' => $envios
-        ];
-
-        // Renderizar vistas
-        return
-            view('global/header', $data) .
-            view('dashboard/delivery/envio', ['envios' => $envios]) .
-            view('global/footer', $data);
 
     }
     public function entregado()
@@ -190,27 +215,33 @@ class DeliveryController extends Controller
     public function procesar_asignacion()
     {
         $id_compra = $this->request->getPost('id_compra');
-
+        $transporte_id = $this->request->getPost('transporte_id');
+        $costo_envio = $this->request->getPost('costo_envio');
+        if (empty($id_compra) || empty($transporte_id) || empty($costo_envio)) {
+            session()->setFlashdata('mensaje', 'Faltan datos necesarios para procesar el envío.');
+            return redirect()->back();
+        }
         $envioModel = new EnvioModel();
         $data = [
-            'ID_Delivery' => session()->get('ID'),
+            'ID_Transporte' => $transporte_id,
+            'Costo_envio' => $costo_envio,
+            'Distancia' => $this->request->getPost('distancia'),
+            'ID_Delivery' => session()->get('ID'),  
             'Fecha_Envio' => date('Y-m-d'),
             'Estado' => 'EN TRÁNSITO',
         ];
         $resultado = $envioModel->updateEstado($id_compra, $data);
         if ($resultado) {
-
             session()->setFlashdata('mensaje', 'El envío ha sido asignado correctamente.');
         } else {
-
             session()->setFlashdata('mensaje', 'Error al asignar el envío. Intenta de nuevo.');
         }
         return redirect()->back();
     }
+
     public function procesar_entrega()
     {
         $id_compra = $this->request->getPost('id_compra');
-
         $envioModel = new EnvioModel();
         $data = [
             'Fecha_Entrega' => date('Y-m-d'),
@@ -218,12 +249,11 @@ class DeliveryController extends Controller
         ];
         $resultado = $envioModel->updateEstado($id_compra, $data);
         if ($resultado) {
-
             session()->setFlashdata('mensaje', 'El envío ha sido asignado correctamente.');
         } else {
-
             session()->setFlashdata('mensaje', 'Error al asignar el envío. Intenta de nuevo.');
         }
         return redirect()->back();
     }
+
 }

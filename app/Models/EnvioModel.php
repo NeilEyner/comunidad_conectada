@@ -14,4 +14,14 @@ class EnvioModel extends Model
     {
         return $this->set($data)->where('ID_Compra', $id_compra)->update();
     }
+    public function getEnviosByUser($userId)
+    {
+        return $this->asArray()
+                    ->select('ID_Compra, Estado, Fecha_Envio, Fecha_Entrega, ID_Transporte, Comunidad_Destino, Direccion_Destino, Costo_envio, Distancia, Latitud, Longitud')
+                    ->join('compra c', 'c.ID = envio.ID_Compra')
+                    ->where('envio.ID_Delivery', $userId)
+                    ->where('c.Estado !=', 'CANCELADO')
+                    ->where('envio.Estado', 'PREPARANDO')
+                    ->findAll();
+    }
 }

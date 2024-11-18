@@ -208,19 +208,19 @@ class AuthController extends BaseController
         return redirect()->to(base_url())->with('success', 'Has cerrado sesión exitosamente');
     }
     public function perfil($ID)
-{
-    $usuarioModel = new UsuarioModel();
-    $usuario = $usuarioModel->find($ID);
+    {
+        $usuarioModel = new UsuarioModel();
+        $usuario = $usuarioModel->find($ID);
 
-    $comunidadModel = new ComunidadModel();
-    $comunidades = $comunidadModel->findAll();
+        $comunidadModel = new ComunidadModel();
+        $comunidades = $comunidadModel->findAll();
 
-    // Enviamos tanto el usuario como las comunidades a la vista
-    return view('auth/perfil', [
-        'usuario' => $usuario,
-        'comunidades' => $comunidades
-    ]);
-}
+        // Enviamos tanto el usuario como las comunidades a la vista
+        return view('auth/perfil', [
+            'usuario' => $usuario,
+            'comunidades' => $comunidades
+        ]);
+    }
 
     public function do_update($id)
     {

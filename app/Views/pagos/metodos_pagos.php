@@ -62,9 +62,7 @@
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                         <h4 class="mb-0">Carrito de Compras</h4>
-                        <button class="btn btn-outline-light btn-sm" onclick="exportToPDF()">
-                            <i class="ri-file-pdf-line me-1"></i>Exportar PDF
-                        </button>
+                        
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -119,7 +117,7 @@
                 </div>
 
                 <!-- Delivery Status Timeline -->
-                <div class="card shadow-sm">
+                <!-- <div class="card shadow-sm">
                     <div class="card-header bg-success text-white">
                         <h4 class="mb-0">Estado del Envío</h4>
                     </div>
@@ -139,7 +137,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
             <br>
             <!-- Right Column: Delivery Options -->
@@ -155,12 +153,13 @@
                                     <i class="ri-map-pin-line"></i> Comunidad de Destino
                                 </label>
                                 <select id="Comunidad_Destino" name="Comunidad_Destino" class="form-select">
-                                    <option value="<?= session()->get('ID_Comunidad') ?>">
-                                        Seleccione una comunidad
-                                    </option>
+                                    <!-- Opción predeterminada si no se selecciona una comunidad -->
+                                    <option value="0">Seleccione una comunidad</option>
+
                                     <?php foreach ($comunidades as $comunidad): ?>
                                         <option value="<?= $comunidad['ID']; ?>" data-lat="<?= $comunidad['Latitud']; ?>"
-                                            data-lon="<?= $comunidad['Longitud']; ?>">
+                                            data-lon="<?= $comunidad['Longitud']; ?>"
+                                            <?= $comunidad['ID'] == session()->get('ID_Comunidad') ? 'selected' : ''; ?>>
                                             <?= $comunidad['Nombre']; ?>
                                         </option>
                                     <?php endforeach; ?>
@@ -172,17 +171,32 @@
                                     <i class="ri-home-line"></i> Dirección de Destino
                                 </label>
                                 <input type="text" id="Direccion_Destino" name="Direccion_Destino" class="form-control"
-                                    required>
+                                    value="<?= session()->get('Direccion') ?>" required>
                             </div>
+
 
                             <!-- Map -->
                             <div class="mb-3">
-                                <label class="form-label">
-                                    <i class="ri-map-2-line"></i> Seleccionar Ubicación
+                                <label for="map" class="form-label d-flex align-items-center">
+                                    <i class="ri-map-2-line me-2"></i> Seleccionar Ubicación
                                 </label>
-                                <div id="map" class="rounded"></div>
-                                <input type="hidden" name="latitud" id="latitud">
-                                <input type="hidden" name="longitud" id="longitud">
+
+                                <!-- Mapa -->
+                                <div id="map" class="rounded-3 border border-light" style="height: 300px;"></div>
+
+                                <!-- Contenedor de campos para latitud y longitud -->
+                                <div class="d-flex justify-content-between mt-3">
+                                    <div class="w-48">
+                                        <label for="latitud" class="form-label">Latitud</label>
+                                        <input class="form-control form-control-sm rounded-3" type="text" name="latitud"
+                                            id="latitud" placeholder="Latitud" value="" readonly>
+                                    </div>
+                                    <div class="w-48">
+                                        <label for="longitud" class="form-label">Longitud</label>
+                                        <input class="form-control form-control-sm rounded-3" type="text"
+                                            name="longitud" id="longitud" placeholder="Longitud" value="" readonly>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="mb-3">
@@ -219,9 +233,8 @@
                                         accept=".jpg,.jpeg,.png,.pdf">
                                 </div>
                             </div>
-
                             <input type="hidden" name="id_compra" value="<?= $ID ?>">
-                            <button type="submit" class="btn btn-primary w-100">
+                            <button type="submit" class="btn btn-primary w-100" onclick="exportToPDF()">
                                 <i class="ri-send-plane-line"></i> Procesar Envío
                             </button>
                         </form>
@@ -232,26 +245,23 @@
     </div>
     <br>
     <script>
-        // Initialize map
         var map = L.map('map').setView([-16.5, -68.15], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
         var marker;
-
-        // Handle map clicks
         map.on('click', function (e) {
             if (marker) {
                 map.removeLayer(marker);
             }
             marker = L.marker(e.latlng).addTo(map);
-
             document.getElementById('latitud').value = e.latlng.lat;
             document.getElementById('longitud').value = e.latlng.lng;
+            document.getElementById('latitud').setAttribute('value', e.latlng.lat);
+            document.getElementById('longitud').setAttribute('value', e.latlng.lng);
         });
 
-        // Payment method handling
         document.getElementById('metodo_pago').addEventListener('change', function () {
             const infoPago = document.getElementById('informacion_pago');
             const infoTransferencia = document.getElementById('info_transferencia');
@@ -264,25 +274,12 @@
             comprobante.style.display = this.value ? 'block' : 'none';
         });
 
-        // Handle quantity updates
-        function updateQuantity(productId, change) {
-            // Implement quantity update logic
-            console.log('Update quantity for product:', productId, 'change:', change);
-        }
-
-        // Handle item removal
-        function removeItem(productId) {
-            // Implement item removal logic
-            console.log('Remove product:', productId);
-        }
-
         // PDF export function
         function exportToPDF() {
-    const idCompra = document.querySelector('input[name="id_compra"]').value;
-    const baseUrl = "<?= base_url() ?>";  // Inyectamos base_url() de PHP
-    window.location.href = `${baseUrl}/pdf/exportarCompraPDF/${idCompra}`;
-}
-
+            const idCompra = document.querySelector('input[name="id_compra"]').value;
+            const baseUrl = "<?= base_url() ?>";
+            window.location.href = `${baseUrl}/pdf/exportarCompraPDF/${idCompra}`;
+        }
     </script>
 </body>
 

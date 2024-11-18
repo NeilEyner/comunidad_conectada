@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa con Trayecto - Leaflet</title>
+    <!-- Incluir el CSS de Leaflet desde el CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map { height: 400px; width: 100%; }
+    </style>
+</head>
+<body>
+    <h3>Mapa con Trayecto</h3>
+    <div id="map"></div>
+
+    <!-- Incluir el script de Leaflet desde el CDN -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Crear el mapa y centrarlo en una ubicación
+        var map = L.map('map').setView([40.7128, -74.0060], 13); // Coords de Nueva York
+
+        // Agregar el mapa base (usando OpenStreetMap, que es gratuito)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Definir las coordenadas para la ruta
+        var latlngs = [
+            [40.7128, -74.0060],  // Punto de inicio
+            [40.730610, -73.935242], // Segundo punto
+            [40.748817, -73.985428]  // Tercer punto
+        ];
+
+        // Crear la polilínea para mostrar el trayecto
+        var polyline = L.polyline(latlngs, {color: 'blue'}).addTo(map);
+
+        // Ajustar el mapa para mostrar toda la ruta
+        map.fitBounds(polyline.getBounds());
+    </script>
+</body>
+</html>

@@ -94,7 +94,6 @@ class PagoController extends BaseController
             'Estado' => 'PREPARANDO',
         ];
 
-        // Validar que se pueda insertar el envío
         if (!$envioModel->insert($dataEnvio)) {
             return redirect()->back()->withInput()->with('error', 'No se pudo procesar el envío.');
         }
