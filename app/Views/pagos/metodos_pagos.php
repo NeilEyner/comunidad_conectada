@@ -147,7 +147,7 @@
                         <h4 class="mb-0">Opciones de Envío</h4>
                     </div>
                     <div class="card-body">
-                        <form action="<?= site_url('pago/procesar') ?>" method="post" enctype="multipart/form-data">
+                        <form action="<?= site_url('pago/procesar/').$ID?>" method="post" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label class="form-label">
                                     <i class="ri-map-pin-line"></i> Comunidad de Destino

@@ -90,7 +90,7 @@ $routes->post('admin/eliminar_producto/(:num)', 'AdministradorController::admin_
 //PAGOS
 
 $routes->get('pagos/metodo_pago/(:num)', 'PagoController::mostrar_metodos_pago/$1');
-$routes->post('pago/procesar/', 'PagoController::procesar_pago');
+$routes->post('pago/procesar/(:num)', 'PagoController::procesar_pago/$1');
 
 $routes->get('verifica_comprobante_completado/(:num)', 'AdministradorController::pago_completado/$1');
 $routes->get('verifica_comprobante_fallido/(:num)', 'AdministradorController::pago_fallido/$1');

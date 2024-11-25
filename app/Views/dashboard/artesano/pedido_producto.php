@@ -1,35 +1,88 @@
 <?php include 'header.php'; ?>
-<main class="h-full overflow-y-auto">
-    <div class="container mx-auto mt-8">
-        <h2 class="text-2xl font-bold mb-4">Productos Vendidos</h2>
+<!DOCTYPE html>
+<html lang="es">
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <?php
-            $productos_agrupados = [];
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $titulo ?></title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Remixicon CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
 
-            foreach ($productos as $producto) {
-                $descripcion = esc($producto['Descripcion']);
-                if (!isset($productos_agrupados[$descripcion])) {
-                    $productos_agrupados[$descripcion] = $producto;
-                } else {
-                    $productos_agrupados[$descripcion]['Cantidad'] += $producto['Cantidad'];
-                }
-            }
-
-            if (count($productos_agrupados) > 0): ?>
-                <?php foreach ($productos_agrupados as $producto): ?>
-                    <div class="bg-white rounded-lg shadow-lg p-6 transition-transform transform hover:scale-105">
-                        <img src="<?= esc($producto['Imagen_URL']); ?>" alt="<?= esc($producto['Descripcion']); ?>" class="h-48 w-full object-cover mb-4 rounded-lg">
-                        <h3 class="text-lg font-bold"><?= esc($producto['Descripcion']); ?></h3>
-                        <p class="text-gray-600">Cantidad vendida: <?= esc($producto['Cantidad']); ?></p>
-                        <p class="text-gray-800 font-bold">Precio: <?= esc($producto['Precio']); ?> $</p>
+<body class="bg-light">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-9 p-4">
+                <?php if (empty($ventas)): ?>
+                    <div class="alert alert-info">
+                        <i class="ri-information-line me-2"></i> Aún no tienes ventas registradas.
                     </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p class="text-gray-500">No se encontraron productos vendidos para este artesano.</p>
-            <?php endif; ?>
+                <?php else: ?>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID Venta</th>
+                                    <th>Fecha</th>
+                                    <th>Cliente</th>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($ventas as $venta): ?>
+                                    <tr>
+                                        <td>#<?= $venta['compra_id'] ?></td>
+                                        <td><?= date('d/m/Y H:i', strtotime($venta['Fecha'])) ?></td>
+                                        <td><?= $venta['cliente_nombre'] ?></td>
+                                        <td><?= $venta['producto_nombre'] ?></td>
+                                        <td><?= $venta['Cantidad'] ?></td>
+                                        <td>$<?= number_format($venta['Total'], 2) ?></td>
+                                        <td>
+                                            <span class="badge <?= getEstadoClass($venta['Estado']) ?>">
+                                                <?= $venta['Estado'] ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                                <i class="ri-eye-line"></i>
+                                            </button>
+                                            <?php if ($venta['Estado'] === 'PENDIENTE'): ?>
+                                                <button class="btn btn-sm btn-outline-success" title="Procesar venta">
+                                                    <i class="ri-check-line"></i>
+                                                </button>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
-</main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <?php
+    function getEstadoClass($estado)
+    {
+        return match ($estado) {
+            'PENDIENTE' => 'bg-warning',
+            'EN PROCESO' => 'bg-info',
+            'ENVIADO' => 'bg-primary',
+            'ENTREGADO' => 'bg-success',
+            'CANCELADO' => 'bg-danger',
+            default => 'bg-secondary'
+        };
+    }
+    ?>
 </body>
+
 </html>

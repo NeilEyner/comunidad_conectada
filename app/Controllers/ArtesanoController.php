@@ -17,6 +17,14 @@ use App\Models\CategoriaModel;
 
 class ArtesanoController extends Controller
 {
+    protected $session;
+    protected $db;
+
+    public function __construct()
+    {
+        $this->session = \Config\Services::session();
+        $this->db = \Config\Database::connect();
+    }
     public function artesano()
     {
         if (session()->get('ID_Rol') != 1) {
@@ -161,10 +169,40 @@ class ArtesanoController extends Controller
 
     public function pedido_producto()
     {
-        $idArtesano = session()->get('ID'); // Obtener el ID del usuario logueado desde la sesión
+        if (!$this->session->get('isLoggedIn')) {
+            return redirect()->to('/login');
+        }
 
-        $productoModel = new DetalleCompraModel();
-        $data['productos'] = $productoModel->getProductosVendidosPorArtesano($idArtesano);
+        $artesanoId = $this->session->get('ID');
+
+        // Consulta para obtener todas las ventas del artesano
+        $builder = $this->db->table('compra c')
+            ->select('c.ID as compra_id, c.Fecha, c.Estado, c.Total, 
+                     u.Nombre as cliente_nombre,
+                     dc.Cantidad,
+                     p.Nombre as producto_nombre,
+                     tp.Precio as precio_unitario,
+                     e.Estado as estado_envio,
+                     e.Direccion_Destino')
+            ->join('detalle_compra dc', 'c.ID = dc.ID_Compra')
+            ->join('usuario u', 'c.ID_Cliente = u.ID')
+            ->join('producto p', 'dc.ID_Producto = p.ID')
+            ->join('tiene_producto tp', 'p.ID = tp.ID_Producto AND tp.ID_Artesano = dc.ID_Artesano')
+            ->join('envio e', 'c.ID = e.ID_Compra', 'left')
+            ->where('dc.ID_Artesano', $artesanoId)
+            ->orderBy('c.Fecha', 'DESC');
+
+        $ventas = $builder->get()->getResultArray();
+
+        $data = [
+            'titulo' => 'Mis Ventas',
+            'ventas' => $ventas,
+            'usuario' => [
+                'nombre' => $this->session->get('Nombre'),
+                'imagen' => $this->session->get('Imagen_URL')
+            ]
+        ];
+
 
         return view('dashboard/artesano/pedido_producto', $data);
     }

@@ -110,7 +110,7 @@
     <div class="profile-header text-white text-center">
         <div class="container">
             <div class="profile-picture mb-3">
-                <img src="<?= $usuario['Imagen_URL'] ?? '/images/default-avatar.png' ?>" alt="Foto de perfil"
+                <img src="<?= base_url().$usuario['Imagen_URL'] ?? '/images/default-avatar.png' ?>" alt="Foto de perfil"
                     id="profileImage">
 
             </div>
@@ -150,24 +150,24 @@
                                     placeholder="Teléfono" value="<?= $usuario['Telefono'] ?>">
                                 <label for="telefono">Teléfono</label>
                             </div>
-<!-- Selector de Comunidad -->
-<div class="community-selector">
-    <h5 class="mb-3">
-        <i class="ri-community-line me-2"></i>
-        Selecciona tu Comunidad
-    </h5>
-    <div class="mb-3">
-        <select class="form-select" name="ID_Comunidad" id="selectedCommunity">
-            <option value="">Seleccione una comunidad</option>
-            <?php foreach ($comunidades as $comunidad): ?>
-                <option value="<?= $comunidad['ID'] ?>"
-                    <?= $usuario['ID_Comunidad'] == $comunidad['ID'] ? 'selected' : '' ?>>
-                    <?= $comunidad['Nombre'] ?> - <?= $comunidad['Ubicacion'] ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </div>
-</div>
+                            <!-- Selector de Comunidad -->
+                            <div class="community-selector">
+                                <h5 class="mb-3">
+                                    <i class="ri-community-line me-2"></i>
+                                    Selecciona tu Comunidad
+                                </h5>
+                                <div class="mb-3">
+                                    <select class="form-select" name="ID_Comunidad" id="selectedCommunity">
+                                        <option value="">Seleccione una comunidad</option>
+                                        <?php foreach ($comunidades as $comunidad): ?>
+                                            <option value="<?= $comunidad['ID'] ?>"
+                                                <?= $usuario['ID_Comunidad'] == $comunidad['ID'] ? 'selected' : '' ?>>
+                                                <?= $comunidad['Nombre'] ?> - <?= $comunidad['Ubicacion'] ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
 
 
 
@@ -430,21 +430,21 @@
         document.addEventListener('DOMContentLoaded', loadCommunities);
     </script>
 
-<script>
-    // Script para manejar la selección de comunidad
-    document.addEventListener('DOMContentLoaded', function() {
-        const communityButtons = document.querySelectorAll('.community-option');
-        const selectedCommunityInput = document.getElementById('selectedCommunity');
+    <script>
+        // Script para manejar la selección de comunidad
+        document.addEventListener('DOMContentLoaded', function () {
+            const communityButtons = document.querySelectorAll('.community-option');
+            const selectedCommunityInput = document.getElementById('selectedCommunity');
 
-        communityButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                // Asignamos el valor del ID de la comunidad seleccionada al input oculto
-                selectedCommunityInput.value = this.getAttribute('data-id');
+            communityButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    // Asignamos el valor del ID de la comunidad seleccionada al input oculto
+                    selectedCommunityInput.value = this.getAttribute('data-id');
 
-                // Opcional: Puedes agregar una clase activa para mostrar la selección visualmente
-                communityButtons.forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
+                    // Opcional: Puedes agregar una clase activa para mostrar la selección visualmente
+                    communityButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
             });
         });
-    });
-</script>
+    </script>

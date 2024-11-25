@@ -100,7 +100,7 @@ class AuthController extends BaseController
             ];
 
             if ($this->validate($rules)) {
-                $imagenURL = base_url('images/avatar/ava.png');
+                $imagenURL ='images/avatar/ava.png';
                 $data = [
                     'Nombre' => $this->request->getPost('Nombre'),
                     'Correo_electronico' => $this->request->getPost('Correo_electronico'),
@@ -252,7 +252,7 @@ class AuthController extends BaseController
         if ($imagen && $imagen->isValid() && !$imagen->hasMoved()) {
             $nombreImagen = $imagen->getRandomName();
             $imagen->move(FCPATH . 'images/avatar/', $nombreImagen);
-            $imagenURL = base_url('images/avatar/' . $nombreImagen);
+            $imagenURL = 'images/avatar/' . $nombreImagen;
         }
 
         // Obtener los valores del formulario
