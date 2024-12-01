@@ -50,9 +50,11 @@ class DeliveryController extends Controller
                 LEFT JOIN compra c ON c.ID = e.ID_Compra
                 LEFT JOIN transporte t ON t.ID = e.ID_Transporte
                 LEFT JOIN comunidad com ON e.Comunidad_Destino = com.ID
+                JOIN pago p ON p.ID_Compra = c.ID
                 WHERE (e.ID_Delivery = ? OR e.ID_Delivery IS NULL)
                 AND c.Estado != 'CANCELADO'
                 AND e.Estado = 'PREPARANDO'
+                AND p.Estado = 'COMPLETADO'
                 ORDER BY e.Fecha_Envio DESC
             ", [$userId]);
 

@@ -536,7 +536,7 @@
                 >
                   <img
                     class="object-cover w-8 h-8 rounded-full"
-                    src="<?= session()->get(base_url().'Imagen_URL') ?>"
+                    src="<?= base_url().session()->get('Imagen_URL') ?>"
                     alt="<?= session()->get('Nombre') ?>" aria-hidden="true" />
                 </button>
                 <template x-if="isProfileMenuOpen">

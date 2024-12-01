@@ -160,14 +160,18 @@ class AdministradorController extends Controller
     public function admin_eliminar_usuario($id)
     {
         $model = new UsuarioModel();
+        $compraModel = new CompraModel();
+        $tieneproducto = new TieneproductoModel();
         if ($model->find($id)) {
+            $compraModel->where('ID_Cliente', $id)->delete();
+            $tieneproducto->where('ID_Artesano', $id)->delete();
             $model->delete($id);
-            return redirect()->back()->with('message', 'Usuario eliminado correctamente.');
+            return redirect()->back()->with('message', 'Usuario y compras eliminados correctamente.');
         } else {
             return redirect()->back()->with('error', 'Usuario no encontrado.');
         }
     }
-
+    
     //ADMINISTRADOR COMUNIDAD
 
     public function admin_comunidad()
@@ -919,6 +923,48 @@ class AdministradorController extends Controller
     public function pago_fallido($id)
     {
         $model = new PagoModel();
+        $pago = $model->find($id);
+        $id_compra = $pago['ID_Compra'];
+        // Cargar los modelos
+        $compraModel = new CompraModel();
+        $detalleCompraModel = new DetalleCompraModel();  // Asegúrate de que este modelo exista
+        $tieneProductoModel = new TieneProductoModel();  // Asegúrate de que este modelo exista
+
+        // Obtener la compra con el ID proporcionado
+        $compra = $compraModel->find($id_compra);
+
+        if ($compra) {
+            $detalleCompra = $detalleCompraModel->where('ID_Compra', $id_compra)->findAll();
+            $db = \Config\Database::connect();
+            $db->transBegin();
+
+            try {
+                foreach ($detalleCompra as $detalle) {
+                    $idArtesano = $detalle['ID_Artesano'];
+                    $idProducto = $detalle['ID_Producto'];
+                    $cantidadVendida = $detalle['Cantidad'];
+                    $productoArtesano = $tieneProductoModel->where([
+                        'ID_Artesano' => $idArtesano,
+                        'ID_Producto' => $idProducto
+                    ])->first();
+
+                    if ($productoArtesano) {
+                        $nuevoStock = max(0, $productoArtesano['Stock'] + $cantidadVendida);
+                        $tieneProductoModel->where([
+                            'ID_Artesano' => $productoArtesano['ID_Artesano'],
+                            'ID_Producto' => $productoArtesano['ID_Producto']
+                        ])
+                            ->set('Stock', $nuevoStock)
+                            ->update();
+
+                    }
+                }
+                $db->transCommit();
+            } catch (\Exception $e) {
+                $db->transRollback();
+                throw $e;
+            }
+        }
 
         if ($model->update($id, ['Estado' => 'FALLIDO'])) {
             return redirect()->back()->with('message', 'Pago fallido.');
@@ -958,7 +1004,7 @@ class AdministradorController extends Controller
         if (!$transporte) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Transporte no encontrado.');
         }
-        if ($this->request->getMethod() === 'POST') { 
+        if ($this->request->getMethod() === 'POST') {
             $data = [
                 'Tipo' => $this->request->getPost('Tipo'),
                 'Descripcion' => $this->request->getPost('Descripcion'),

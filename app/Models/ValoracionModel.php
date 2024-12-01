@@ -15,11 +15,26 @@ class ValoracionModel extends Model
         return $this->where('ID_Usuario',$idU)->where('ID_Producto',$idP)->where('ID_Artesano',$idA)->first();
     }
 
-    public function puntaje($idP,$idA){
-        $db      = \Config\Database::connect();
-        $query = $db->query("SELECT SUM(Puntuacion)as Puntaje, count(ID_artesano) as Num FROM valoracion WHERE ID_Producto=$idP and ID_Artesano=$idA");
-        $puntos   = $query->getRow();
-        return $puntos;
+    public function puntaje($idP, $idA)
+    {
+        $db = \Config\Database::connect();
+        
+        // Usando Query Builder con parámetros
+        $builder = $db->table('valoracion');
+        $builder->select('SUM(Puntuacion) as Puntaje, count(ID_artesano) as Num');
+        $builder->where('ID_Producto', $idP);
+        $builder->where('ID_Artesano', $idA);
+        
+        $query = $builder->get();
+        $puntos = $query->getRow();
+        
+        // Verificar si se encontró un resultado
+        if ($puntos) {
+            return $puntos;
+        } else {
+            return (object) ['Puntaje' => 0, 'Num' => 0]; // Retornar valores predeterminados si no hay registros
+        }
     }
+    
 }
 
