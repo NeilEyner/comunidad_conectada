@@ -79,19 +79,17 @@ class PagoController extends BaseController
         $envioModel = new EnvioModel();
         $pagoModel = new PagoModel();
         $compraModel = new CompraModel();
-        // Cargar los modelos
+    
         $compraModel = new CompraModel();
-        $detalleCompraModel = new DetalleCompraModel();  // Asegúrate de que este modelo exista
-        $tieneProductoModel = new TieneProductoModel();  // Asegúrate de que este modelo exista
+        $detalleCompraModel = new DetalleCompraModel();  
+        $tieneProductoModel = new TieneProductoModel();  
 
         // Obtener la compra con el ID proporcionado
         $compra = $compraModel->find($id_compra);
-
         if ($compra) {
             $detalleCompra = $detalleCompraModel->where('ID_Compra', $id_compra)->findAll();
             $db = \Config\Database::connect();
             $db->transBegin();
-
             try {
                 foreach ($detalleCompra as $detalle) {
                     $idArtesano = $detalle['ID_Artesano'];
@@ -109,8 +107,7 @@ class PagoController extends BaseController
                             'ID_Producto' => $productoArtesano['ID_Producto']
                         ])
                         ->set('Stock', $nuevoStock)
-                        ->update();
-                        
+                        ->update();                       
                     }
                 }
                 $db->transCommit();
@@ -137,7 +134,7 @@ class PagoController extends BaseController
         // Validar los datos del formulario de pago
         $validation = $this->validate([
             'metodo_pago' => 'required',
-            'comprobante' => 'uploaded[comprobante]|max_size[comprobante,2048]|ext_in[comprobante,jpg,jpeg,png,pdf]'
+            'comprobante' => 'permit_empty|uploaded[comprobante]|max_size[comprobante,2048]|ext_in[comprobante,jpg,jpeg,png,pdf]'
         ]);
 
         if (!$validation) {
@@ -153,7 +150,7 @@ class PagoController extends BaseController
                 $rutaComprobantes = FCPATH . 'images/comprobantes/';
                 $nombreComprobante = $comprobante->getRandomName();
                 $comprobante->move($rutaComprobantes, $nombreComprobante);
-                $comprobanteURL = base_url('images/comprobantes/' . $nombreComprobante);
+                $comprobanteURL = 'images/comprobantes/' . $nombreComprobante;
             } catch (\Exception $e) {
                 return redirect()->back()->withInput()->with('error', 'Error al subir el comprobante: ' . $e->getMessage());
             }
@@ -164,7 +161,7 @@ class PagoController extends BaseController
             'ID_Cliente' => session()->get('ID'),
             'ID_Compra' => $this->request->getPost('id_compra'),
             'Metodo_pago' => $this->request->getPost('metodo_pago'),
-            'Estado' => 'PENDIENTE',
+            'Estado' => 'COMPLETADO',
             'IMG_Comprobante' => $comprobanteURL
         ];
 

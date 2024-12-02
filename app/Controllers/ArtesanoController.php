@@ -172,27 +172,22 @@ class ArtesanoController extends Controller
         if (!$this->session->get('isLoggedIn')) {
             return redirect()->to('/login');
         }
-
         $artesanoId = $this->session->get('ID');
 
         // Consulta para obtener todas las ventas del artesano
         $builder = $this->db->table('compra c')
-            ->select('c.ID as compra_id, c.Fecha, c.Estado, c.Total, 
-                     u.Nombre as cliente_nombre,
-                     dc.Cantidad,
-                     p.Nombre as producto_nombre,
-                     tp.Precio as precio_unitario,
-                     e.Estado as estado_envio,
-                     e.Direccion_Destino')
+            ->select('c.ID as ID_Compra, tp.Imagen_URL as imagen, c.Fecha as Fecha_Compra, 
+                     u.Nombre as Cliente, p.Nombre as Producto, dc.Cantidad, 
+                     (dc.Cantidad * tp.Precio) as Total_Venta, c.Estado as Estado_Compra')
             ->join('detalle_compra dc', 'c.ID = dc.ID_Compra')
             ->join('usuario u', 'c.ID_Cliente = u.ID')
             ->join('producto p', 'dc.ID_Producto = p.ID')
             ->join('tiene_producto tp', 'p.ID = tp.ID_Producto AND tp.ID_Artesano = dc.ID_Artesano')
-            ->join('envio e', 'c.ID = e.ID_Compra', 'left')
             ->where('dc.ID_Artesano', $artesanoId)
             ->orderBy('c.Fecha', 'DESC');
-
+        
         $ventas = $builder->get()->getResultArray();
+        
 
         $data = [
             'titulo' => 'Mis Ventas',

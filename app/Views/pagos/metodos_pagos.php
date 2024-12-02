@@ -55,14 +55,14 @@
 </head>
 
 <body>
-    <div class="container mt-5">
-        <div class="row g-4">
+    <div class="mt-4 mx-3">
+        <div class="row g-2">
             <!-- Left Column: Cart Items -->
-            <div class="col-lg-8">
+            <div class="col-lg-5">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                         <h4 class="mb-0">Carrito de Compras</h4>
-                        
+
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -141,63 +141,73 @@
             </div>
             <br>
             <!-- Right Column: Delivery Options -->
-            <div class="col-lg-4">
+            <div class="col-lg-7">
                 <div class="card shadow-sm">
                     <div class="card-header bg-success text-white">
                         <h4 class="mb-0">Opciones de Envío</h4>
                     </div>
                     <div class="card-body">
-                        <form action="<?= site_url('pago/procesar/').$ID?>" method="post" enctype="multipart/form-data">
-                            <div class="mb-3">
-                                <label class="form-label">
-                                    <i class="ri-map-pin-line"></i> Comunidad de Destino
-                                </label>
-                                <select id="Comunidad_Destino" name="Comunidad_Destino" class="form-select">
-                                    <!-- Opción predeterminada si no se selecciona una comunidad -->
-                                    <option value="0">Seleccione una comunidad</option>
+                        <form action="<?= site_url('pago/procesar/') . $ID ?>" method="post"
+                            enctype="multipart/form-data">
+                            <div class="row">
+                                <!-- Primera columna (Comunidad de Destino y Dirección de Destino) -->
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="ri-map-pin-line"></i> Comunidad de Destino
+                                        </label>
+                                        <select id="Comunidad_Destino" name="Comunidad_Destino" class="form-select">
+                                            <!-- Opción predeterminada si no se selecciona una comunidad -->
+                                            <option value="0">Seleccione una comunidad</option>
 
-                                    <?php foreach ($comunidades as $comunidad): ?>
-                                        <option value="<?= $comunidad['ID']; ?>" data-lat="<?= $comunidad['Latitud']; ?>"
-                                            data-lon="<?= $comunidad['Longitud']; ?>"
-                                            <?= $comunidad['ID'] == session()->get('ID_Comunidad') ? 'selected' : ''; ?>>
-                                            <?= $comunidad['Nombre']; ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">
-                                    <i class="ri-home-line"></i> Dirección de Destino
-                                </label>
-                                <input type="text" id="Direccion_Destino" name="Direccion_Destino" class="form-control"
-                                    value="<?= session()->get('Direccion') ?>" required>
-                            </div>
-
-
-                            <!-- Map -->
-                            <div class="mb-3">
-                                <label for="map" class="form-label d-flex align-items-center">
-                                    <i class="ri-map-2-line me-2"></i> Seleccionar Ubicación
-                                </label>
-
-                                <!-- Mapa -->
-                                <div id="map" class="rounded-3 border border-light" style="height: 300px;"></div>
-
-                                <!-- Contenedor de campos para latitud y longitud -->
-                                <div class="d-flex justify-content-between mt-3">
-                                    <div class="w-48">
-                                        <label for="latitud" class="form-label">Latitud</label>
-                                        <input class="form-control form-control-sm rounded-3" type="text" name="latitud"
-                                            id="latitud" placeholder="Latitud" value="" readonly>
+                                            <?php foreach ($comunidades as $comunidad): ?>
+                                                <option value="<?= $comunidad['ID']; ?>"
+                                                    data-lat="<?= $comunidad['Latitud']; ?>"
+                                                    data-lon="<?= $comunidad['Longitud']; ?>"
+                                                    <?= $comunidad['ID'] == session()->get('ID_Comunidad') ? 'selected' : ''; ?>>
+                                                    <?= $comunidad['Nombre']; ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
                                     </div>
-                                    <div class="w-48">
-                                        <label for="longitud" class="form-label">Longitud</label>
-                                        <input class="form-control form-control-sm rounded-3" type="text"
-                                            name="longitud" id="longitud" placeholder="Longitud" value="" readonly>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="ri-home-line"></i> Dirección de Destino
+                                        </label>
+                                        <textarea id="Direccion_Destino" name="Direccion_Destino" class="form-control"
+                                            rows="5" required><?= session()->get('Direccion') ?></textarea>
+                                    </div>
+
+                                </div>
+
+                                <!-- Segunda columna (Mapa y Latitud/Longitud) -->
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <label for="map" class="form-label d-flex align-items-center">
+                                            <i class="ri-map-2-line me-2"></i> Seleccionar Ubicación
+                                        </label>
+
+                                        <!-- Mapa -->
+                                        <div id="map" class="rounded-3 border border-light" style="height: 300px;">
+                                        </div>
+
+                                        <!-- Contenedor de campos para latitud y longitud -->
+                                        <div class="d-flex justify-content-between mt-3">
+                                            <div class="w-48">
+                                                <input class="form-control form-control-sm rounded-3" type="hidden"
+                                                    name="latitud" id="latitud" placeholder="Latitud" value="" readonly>
+                                            </div>
+                                            <div class="w-48">
+                                                <input class="form-control form-control-sm rounded-3" type="hidden"
+                                                    name="longitud" id="longitud" placeholder="Longitud" value=""
+                                                    readonly>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
 
                             <div class="mb-3">
                                 <label class="form-label">
@@ -218,7 +228,7 @@
                                     </div>
                                 </div>
 
-                                <div id="info_qr" style="display:none;">
+                                <div id="info_qr" style="display:none; width:50%;">
                                     <div class="alert alert-info">
                                         <h5><i class="ri-qr-code-line"></i> Código QR</h5>
                                         <?= $qr ? '<img src="' . $qr['Imagen'] . '" class="img-fluid">' : '<p>No disponible.</p>' ?>
@@ -271,8 +281,11 @@
             infoPago.style.display = this.value ? 'block' : 'none';
             infoTransferencia.style.display = this.value === 'TRANSFERENCIA' ? 'block' : 'none';
             infoQR.style.display = this.value === 'QR' ? 'block' : 'none';
-            comprobante.style.display = this.value ? 'block' : 'none';
+
+            // Modificar la lógica para el comprobante
+            comprobante.style.display = this.value && this.value !== 'QR' ? 'block' : 'none';
         });
+
 
         // PDF export function
         function exportToPDF() {

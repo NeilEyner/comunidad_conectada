@@ -117,11 +117,10 @@ class DeliveryController extends Controller
 
     public function envio()
     {
-        // Verificar autenticación
         if (session()->get('ID_Rol') != 3) {
             return redirect()->to(base_url('login'));
         }
-
+        
         $db = \Config\Database::connect();
         $userId = session()->get('ID');
 
@@ -145,7 +144,7 @@ class DeliveryController extends Controller
                 LEFT JOIN compra c ON c.ID = e.ID_Compra
                 LEFT JOIN transporte t ON t.ID = e.ID_Transporte
                 LEFT JOIN comunidad com ON e.Comunidad_Destino = com.ID
-                WHERE (e.ID_Delivery = ? OR e.ID_Delivery IS NULL)
+                WHERE e.ID_Delivery = ?
                 AND c.Estado != 'CANCELADO'
                 AND e.Estado != 'PREPARANDO'
                 ORDER BY e.Fecha_Envio DESC
@@ -183,7 +182,10 @@ class DeliveryController extends Controller
                     throw new \Exception("Error en la consulta de productos para la compra ID: {$envio['ID_Compra']}. " . $db->error());
                 }
 
+
                 $envio['productos'] = $productosQuery->getResultArray();
+
+
             }
             $tieneProductoModel = new TieneProductoModel();
             $contenidoModel = new ContenidoModel();
@@ -203,7 +205,12 @@ class DeliveryController extends Controller
                 view('dashboard/delivery/envio', ['envios' => $envios]) .
                 view('global/footer', $data);
         } catch (\Exception $e) {
-            log_message('error', $e->getMessage());
+            // Registrar el error completo
+            log_message('error', 'Excepción en la función envio: ' . $e->getMessage());
+            log_message('error', 'ID: ' . session()->get('ID') . ' | ID_Rol: ' . session()->get('ID_Rol'));
+
+
+            // Redirigir con mensaje de error
             return redirect()->back()->with('error', 'Ocurrió un error al procesar la solicitud.');
         }
 
@@ -228,7 +235,7 @@ class DeliveryController extends Controller
             'ID_Transporte' => $transporte_id,
             'Costo_envio' => $costo_envio,
             'Distancia' => $this->request->getPost('distancia'),
-            'ID_Delivery' => session()->get('ID'),  
+            'ID_Delivery' => session()->get('ID'),
             'Fecha_Envio' => date('Y-m-d'),
             'Estado' => 'EN TRÁNSITO',
         ];
@@ -244,6 +251,10 @@ class DeliveryController extends Controller
     public function procesar_entrega()
     {
         $id_compra = $this->request->getPost('id_compra');
+
+        $compra = new CompraModel();
+        $compra->update($id_compra, ['Estado' => 'ENTREGADO']);
+
         $envioModel = new EnvioModel();
         $data = [
             'Fecha_Entrega' => date('Y-m-d'),

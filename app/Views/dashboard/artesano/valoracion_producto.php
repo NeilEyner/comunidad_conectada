@@ -1,111 +1,39 @@
 <?php include 'header.php'; ?>
-<style>
-    .product-container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 1rem;
-    }
 
-    .product-header {
-        font-size: 1.5rem;
-        font-weight: bold;
-        text-align: center;
-        color: #333;
-        margin-bottom: 1rem;
-    }
+<div class="product-container max-w-screen-lg mx-auto p-4">
+    <h2 class="text-xl font-semibold text-gray-800 mb-6">Productos Puntuados</h2>
 
-    .product-card {
-        display: flex;
-        align-items: center;
-        padding: 0.75rem;
-        margin-bottom: 0.75rem;
-        border-radius: 8px;
-        background-color: #fff;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s;
-    }
+    <?php foreach ($productos as $producto): ?>
+        <div class="product-card bg-white shadow-md rounded-lg mb-6 p-6 flex flex-col items-center">
+            <!-- Imagen del producto -->
+            <img src="<?= esc(base_url() . $producto['Imagen_URL']); ?>" alt="<?= esc($producto['Descripcion']); ?>" class="w-48 h-48 object-cover rounded-md mb-6">
 
-    .product-card:hover {
-        transform: scale(1.02);
-    }
+            <!-- Nombre o descripción del producto -->
+            <div class="product-name text-lg font-semibold text-gray-900 mb-2"><?= esc($producto['Descripcion']); ?></div>
 
-    .product-image {
-        width: 60px;
-        height: 60px;
-        object-fit: cover;
-        border-radius: 6px;
-        margin-right: 1rem;
-    }
-
-    .product-details {
-        flex-grow: 1;
-    }
-
-    .product-name {
-        font-size: 1rem;
-        font-weight: bold;
-        color: #333;
-        margin-bottom: 0.25rem;
-    }
-
-    .product-stock {
-        font-size: 0.875rem;
-        color: #555;
-        margin-bottom: 0.25rem;
-    }
-
-    .rating {
-        display: flex;
-        align-items: center;
-    }
-
-    .rating-bar {
-        position: relative;
-        width: 80px;
-        height: 8px;
-        background-color: #e5e5e5;
-        border-radius: 4px;
-        overflow: hidden;
-        margin-right: 0.5rem;
-    }
-
-    .rating-text {
-        font-size: 0.875rem;
-        color: #666;
-    }
-</style>
-
-<main class="bg-gray-100">
-    <div class="product-container">
-        <h2 class="product-header">Productos Mejor Puntuados</h2>
-
-        <?php foreach ($productos as $producto): ?>
-            <div class="product-card">
-                <img src="<?= esc(base_url() . $producto['Imagen_URL']); ?>" alt="<?= esc($producto['Descripcion']); ?>"
-                    class="product-image">
-                <div class="product-details">
-                    <div class="product-name"><?= esc($producto['Descripcion']); ?></div>
-                    <div class="product-stock">Stock: <?= esc($producto['Stock']); ?></div>
-                    <div class="rating">
-                        <style>
-                            .rating-fill {
-                                height: 100%;
-                                background-color: #fbbf24;
-                                width: calc(20% *
-                                        <?= esc($producto['Puntuacion']); ?>
-                                    );
-                            }
-                        </style>
-                        <div class="rating-bar">
-                            <div class="rating-fill" style="width: <?= esc($producto['Puntuacion']) * 20; ?>%;"></div>
-                        </div>
-                        <span class="rating-text"><?= esc($producto['Puntuacion']); ?>/5</span>
-                    </div>
-                </div>
+            <!-- Mostrar la mejor puntuación con estrellas -->
+            <div class="rating flex items-center mb-4">
+                <?php for ($i = 1; $i <= 5; $i++): ?>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 <?= ($i <= $producto['MejorPuntuacion']) ? 'text-yellow-400' : 'text-gray-300' ?>" fill="currentColor" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M12 17.75l5.55 3.25-1.45-6.35L22 9.25h-6.5L12 2 8.5 9.25H2l4.9 5.65-1.45 6.35z"/>
+                    </svg>
+                <?php endfor; ?>
             </div>
-        <?php endforeach; ?>
-    </div>
-</main>
+
+            <!-- Mostrar el promedio de puntuaciones -->
+            <div class="average-rating text-sm text-gray-600 mb-4">
+                Promedio: <?= number_format(esc($producto['PromedioPuntuacion']), 2); ?>/5
+            </div>
+
+            <!-- Mostrar el total de puntuaciones -->
+            <div class="total-rating text-sm text-gray-600">
+                <?= esc($producto['TotalPuntuaciones']); ?> valoraciones
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
+
+
 
 </body>
 

@@ -37,7 +37,7 @@
                       </div>
                       <div>
                         <p class="font-semibold"><?php echo esc($producto['Nombre']); ?></p>
-                        <p class="text-xs text-gray-600 dark:text-gray-400"><?php echo esc($producto['ID_Producto']); ?></p>
+                        <!-- <p class="text-xs text-gray-600 dark:text-gray-400"><?php echo esc($producto['ID_Producto']); ?></p> -->
                       </div>
                     </div>
                   </td>
@@ -94,9 +94,7 @@
                     </header>
                     <div class="mt-4 mb-6">
                       <p class="mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300">Editar Producto</p>
-                      <p class="text-sm text-gray-700 dark:text-gray-400">Producto ID:
-                        <?php echo $producto['ID_Producto']; ?>
-                      </p>
+                      <!-- <p class="text-sm text-gray-700 dark:text-gray-400">Producto ID: <?php echo $producto['ID_Producto']; ?> </p> -->
 
                       <!-- Formulario para editar producto -->
                       <form
@@ -105,7 +103,7 @@
                         <input type="hidden" name="ID_Producto" value="<?php echo $producto['ID_Producto']; ?>">
 
                         <div class="mb-4">
-                          <label for="ID_Producto" class="block text-sm font-medium text-gray-700 dark:text-gray-400">ID
+                          <label for="ID_Producto" class="block text-sm font-medium text-gray-700 dark:text-gray-400">
                             Producto</label>
                           <select id="ID_Producto" name="ID_Producto" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 
               focus:outline-none focus:shadow-outline-purple dark:text-gray-300 form-select" required>

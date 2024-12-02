@@ -68,11 +68,12 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="mb-2">Productos</h6>
+                            <h6 class="mb-2">Compras</h6>
                             <h3 class="mb-0 fw-bold">
-                                <?= array_sum(array_column($detalles, 'Cantidad')) ?>
+                                <!-- <?= array_sum(array_column($compras, 'Cantidad')) ?> -->
+                                <?= count($compras) ?>
                             </h3>
-                            <small class="text-white-50">Items comprados</small>
+                            <small class="text-white-50">Compras</small>
                         </div>
                         <div class="stats-icon">
                             <i class="fas fa-box fa-lg"></i>
@@ -276,7 +277,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="modal-footer">
+                        <!-- <div class="modal-footer">
                             <div class="d-flex gap-2 mt-4">
                                 <?php if ($compra->Estado == 'PENDIENTE' || $compra->Estado == 'EN PROCESO'): ?>
                                     <form action="<?= base_url('compra/entregado') ?>" method="POST" class="d-inline">
@@ -300,7 +301,7 @@
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                                 <?php endif; ?>
                             </div>
-                        </div>
+                        </div> -->
 
                     </div>
                 </div>
@@ -461,15 +462,15 @@ function getProgressWidth($status)
     });
     // PDF export function
     document.addEventListener("DOMContentLoaded", function () {
-    // Delegación de eventos para todos los botones que tengan la clase '.export-pdf-btn'
-    document.body.addEventListener('click', function (event) {
-        if (event.target && event.target.classList.contains('export-pdf-btn')) {
-            const idCompra = event.target.getAttribute('name');
-            const baseUrl = "<?= base_url() ?>";
-            window.location.href = `${baseUrl}/pdf/exportarCompraPDF/${idCompra}`;
-        }
+        // Delegación de eventos para todos los botones que tengan la clase '.export-pdf-btn'
+        document.body.addEventListener('click', function (event) {
+            if (event.target && event.target.classList.contains('export-pdf-btn')) {
+                const idCompra = event.target.getAttribute('name');
+                const baseUrl = "<?= base_url() ?>";
+                window.location.href = `${baseUrl}/pdf/exportarCompraPDF/${idCompra}`;
+            }
+        });
     });
-});
 
 </script>
 

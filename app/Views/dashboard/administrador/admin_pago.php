@@ -25,11 +25,11 @@
                 <tr class="text-gray-700 dark:text-gray-400">
                   <td class="px-4 py-3 text-sm">
                     <?php if (!empty($pago['IMG_Comprobante'])): ?>
-                      <img src="<?php echo $pago['IMG_Comprobante']; ?>" alt="Comprobante de Pago" class="w-48 cursor-pointer"
-                        onclick="openModal('<?php echo $pago['IMG_Comprobante']; ?>')">
+                      <img src="<?php echo base_url().$pago['IMG_Comprobante']; ?>" alt="Comprobante de Pago" class="w-12 cursor-pointer"
+                        onclick="openModal('<?php echo base_url().$pago['IMG_Comprobante']; ?>')">
                       <p><?php echo esc($pago['Metodo_pago']); ?></p>
                     <?php else: ?>
-                      <p>No disponible</p>
+                      <p><?php echo esc($pago['Metodo_pago']); ?></p>
                     <?php endif; ?>
                   </td>
 

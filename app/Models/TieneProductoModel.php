@@ -70,14 +70,32 @@ class TieneProductoModel extends Model
 
     public function getProductosPuntuadosPorArtesano($idArtesano)
     {
-        return $this->select('tiene_producto.Descripcion, tiene_producto.Imagen_URL, tiene_producto.Stock, valoracion.Puntuacion')
+        // Realiza la consulta y guarda el resultado
+        $query = $this->select('ANY_VALUE(tiene_producto.Descripcion) AS Descripcion, 
+        ANY_VALUE(tiene_producto.Imagen_URL) AS Imagen_URL, 
+        ANY_VALUE(tiene_producto.Stock) AS Stock, 
+        MAX(valoracion.Puntuacion) AS MejorPuntuacion, 
+        AVG(valoracion.Puntuacion) AS PromedioPuntuacion,
+        COUNT(valoracion.Puntuacion) AS TotalPuntuaciones')
             ->join('valoracion', 'valoracion.ID_Producto = tiene_producto.ID_Producto')
             ->where('tiene_producto.ID_Artesano', $idArtesano)
             ->where('valoracion.ID_Artesano', $idArtesano)
-            ->orderBy('valoracion.Puntuacion', 'DESC') 
+            ->groupBy('tiene_producto.ID_Producto')
+            ->orderBy('MejorPuntuacion', 'DESC')
             ->findAll();
+
+
+        // Verifica si la consulta ha retornado algún resultado
+        if ($query !== false) {
+            return $query; // Retorna los resultados si es válido
+        } else {
+            // Si la consulta falla, puedes manejar el error o retornar un arreglo vacío
+            log_message('error', 'La consulta para obtener los productos puntuados falló.');
+            return []; // Devuelve un array vacío si no hay resultados
+        }
     }
-    
+
+
 
 }
 
