@@ -6,9 +6,12 @@ use App\Models\UsuarioModel;
 use App\Models\RolModel;
 use App\Models\ComunidadModel;
 use CodeIgniter\Controller;
+use CodeIgniter\RESTful\ResourceController;
+use CodeIgniter\API\ResponseTrait;
 
 class AuthController extends BaseController
 {
+    use ResponseTrait;
     protected $usuarioModel;
     protected $rolModel;
     protected $comunidadModel;
@@ -97,13 +100,13 @@ class AuthController extends BaseController
             ];
 
             if ($this->validate($rules)) {
-                $imagenURL = base_url('images/avatar/ava.png');
+                $imagenURL ='images/avatar/ava.png';
                 $data = [
                     'Nombre' => $this->request->getPost('Nombre'),
                     'Correo_electronico' => $this->request->getPost('Correo_electronico'),
                     'Contrasena' => $this->request->getPost('Contrasena'),
                     'ID_Rol' => $this->request->getPost('ID_Rol') ?: null,
-                    'ID_Comunidad' => $this->request->getPost('ID_Comunidad') ?: null,
+                    'ID_Comunidad' => $this->request->getPost('ID_Comunidad') ?: 30,
                     'Imagen_URL' => $imagenURL,
                     'Estado' => 'INACTIVO'
                 ];
@@ -173,6 +176,10 @@ class AuthController extends BaseController
             'Nombre' => $usuario['Nombre'],
             'ID_Rol' => $usuario['ID_Rol'],
             'Imagen_URL' => $usuario['Imagen_URL'],
+            'Direccion' => $usuario['Direccion'],
+            'ID_Comunidad' => $usuario['ID_Comunidad'],
+            'Latitud' => $usuario['Latitud'],
+            'Longitud' => $usuario['Longitud'],
             'isLoggedIn' => true,
         ];
 
@@ -200,64 +207,75 @@ class AuthController extends BaseController
         session()->destroy();
         return redirect()->to(base_url())->with('success', 'Has cerrado sesión exitosamente');
     }
-    public function perfil($ID){
+    public function perfil($ID)
+    {
         $usuarioModel = new UsuarioModel();
         $usuario = $usuarioModel->find($ID);
-        return view('auth/perfil', ['usuario' => $usuario]);
 
+        $comunidadModel = new ComunidadModel();
+        $comunidades = $comunidadModel->findAll();
+
+        // Enviamos tanto el usuario como las comunidades a la vista
+        return view('auth/perfil', [
+            'usuario' => $usuario,
+            'comunidades' => $comunidades
+        ]);
     }
+
     public function do_update($id)
     {
         $model = new UsuarioModel();
         helper(['form', 'url']); // Agregado 'url' helper para usar base_url()
-    
+
         // Buscar el usuario
         $usuario = $model->find($id);
         if (!$usuario) {
             return redirect()->back()->with('message', 'Usuario no encontrado.')->withInput();
         }
-    
+
         // Reglas de validación
         $rules = [
             'Nombre' => 'required|min_length[3]',
             'Correo_electronico' => 'required|valid_email',
-            'Telefono' => 'permit_empty'
+            'Telefono' => 'permit_empty',
         ];
-    
+
         // Validar la entrada
         if (!$this->validate($rules)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
-    
-        // Manejo de la imagen
+
+        // Manejo de la imagen (si se sube una nueva)
         $imagen = $this->request->getFile('Imagen_URL');
         $imagenURL = null;
-    
+
         if ($imagen && $imagen->isValid() && !$imagen->hasMoved()) {
             $nombreImagen = $imagen->getRandomName();
             $imagen->move(FCPATH . 'images/avatar/', $nombreImagen);
-            $imagenURL = base_url('images/avatar/' . $nombreImagen);
+            $imagenURL = 'images/avatar/' . $nombreImagen;
         }
-    
-        // Construir los datos para actualizar
+
+        // Obtener los valores del formulario
         $data = [
             'Nombre' => $this->request->getPost('Nombre'),
             'Correo_electronico' => $this->request->getPost('Correo_electronico'),
             'Telefono' => $this->request->getPost('Telefono') ?: null,
             'Direccion' => $this->request->getPost('Direccion') ?: null,
             'ID_Comunidad' => $this->request->getPost('ID_Comunidad') ?: null,
+            'Latitud' => $this->request->getPost('Latitud'), // Tomar latitud del formulario
+            'Longitud' => $this->request->getPost('Longitud'), // Tomar longitud del formulario
         ];
-    
-        // Si se subió una imagen, actualizar la URL de la imagen
+
+        // Si se subió una imagen, agregar la URL de la imagen
         if ($imagenURL) {
             $data['Imagen_URL'] = $imagenURL;
         }
-    
-        // Si se proporcionó una contraseña, encriptarla antes de guardar
+
+        // Si se proporcionó una nueva contraseña, encriptarla antes de guardarla
         if ($this->request->getPost('Contrasena')) {
-            $data['Contrasena'] = $this->request->getPost('Contrasena');
+            $data['Contrasena'] = password_hash($this->request->getPost('Contrasena'), PASSWORD_DEFAULT);
         }
-    
+
         // Actualizar el usuario
         if ($model->update($id, $data)) {
             return redirect()->back()->with('message', 'Usuario actualizado correctamente.');
@@ -265,9 +283,51 @@ class AuthController extends BaseController
             return redirect()->back()->with('message', 'Ocurrió un error al actualizar el usuario.')->withInput();
         }
     }
-    
-    
-    
 
+
+    public function getComunidades()
+    {
+        $comunidadModel = new ComunidadModel();
+        $comunidades = $comunidadModel->findAll();
+        return $this->response->setJSON($comunidades);
+    }
+    public function api_login()
+    {
+        $email = $this->request->getPost('Correo_electronico');
+        $password = $this->request->getPost('Contrasena');
+
+        $model = new UsuarioModel();
+        $user = $model->where('Correo_electronico', $email)->first();
+
+        if ($user && password_verify($password, $user['Contrasena'])) {
+            if ($user['Estado'] !== 'ACTIVO') {
+                return $this->respond([
+                    'status' => 'error',
+                    'message' => 'Tu cuenta no está activa. Contacta al administrador.'
+                ], 403);
+            }
+
+            return $this->respond([
+                'status' => 'success',
+                'message' => 'Inicio de sesión exitoso',
+                'data' => [
+                    'ID' => $user['ID'],
+                    'Nombre' => $user['Nombre'],
+                    'Correo_electronico' => $user['Correo_electronico'],
+                    'ID_Rol' => $user['ID_Rol'],
+                    'Imagen_URL' => $user['Imagen_URL'],
+                    'Direccion' => $user['Direccion'],
+                    'ID_Comunidad' => $user['ID_Comunidad'],
+                    'Latitud' => $user['Latitud'],
+                    'Longitud' => $user['Longitud']
+                ]
+            ]);
+        } else {
+            return $this->respond([
+                'status' => 'error',
+                'message' => 'Credenciales incorrectas'
+            ], 401);
+        }
+    }
 
 }

@@ -30,7 +30,8 @@
                   <td class="px-4 py-3 text-sm">
                     <div class="flex items-center text-sm">
                       <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                        <img class="object-cover w-full h-full " src="<?php echo esc(base_url().$producto['Imagen_URL']); ?>"
+                        <img class="object-cover w-full h-full "
+                          src="<?php echo esc(base_url() . $producto['Imagen_URL']); ?>"
                           alt="<?php echo esc($producto['Nombre']); ?>" />
                         <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
                       </div>
@@ -218,9 +219,11 @@
           <select id="ID_Producto" name="ID_Producto" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 
               focus:outline-none focus:shadow-outline-purple dark:text-gray-300 form-select" required>
             <?php foreach ($productos_list as $prod): ?>
-              <option value="<?= esc($prod['ID']); ?>">
-                <?= esc($prod['Nombre']); ?>
-              </option>
+              <?php if (!in_array($prod['Nombre'], array_column($productos, 'Nombre'))): // Compara el nombre ?>
+                <option value="<?= esc($prod['ID']); ?>">
+                  <?= esc($prod['Nombre']); ?>
+                </option>
+              <?php endif; ?>
             <?php endforeach; ?>
           </select>
         </div>

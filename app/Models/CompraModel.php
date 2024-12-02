@@ -22,5 +22,14 @@ class CompraModel extends Model
                         ->where('ID', $idC)
                         ->update($data); // Actualizar datos
     }
+    function getProductosCompra($idCompra){
+        return $this->db->table('tiene_producto')
+        ->select('tiene_producto.*, producto.Nombre, detalle_compra.Cantidad')
+        ->join('producto', 'tiene_producto.ID_Producto = producto.ID')
+        ->join('detalle_compra', 'detalle_compra.ID_Producto = tiene_producto.ID_Producto')
+        ->where('detalle_compra.ID_Compra', $idCompra)
+        ->get()->getResultArray();
+    
+    }
 }
 

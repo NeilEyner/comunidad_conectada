@@ -189,7 +189,7 @@ endforeach;
                             <div class="dropdown">
                                 <a class="nav-icon text-decoration-none" href="#" id="userDropdown" role="button"
                                     data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center;">
-                                    <img src="<?= session()->get('Imagen_URL') ?>" alt="Usuario"
+                                    <img src="<?=base_url().session()->get('Imagen_URL') ?>" alt="Usuario"
                                         class="img-fluid rounded-circle" style="width: 30px; height: 30px; margin-right: 8px;">
                                     <div style="font-size: 14px; font-weight: 500;"><?= session()->get('Nombre') ?></div>
                                 </a>

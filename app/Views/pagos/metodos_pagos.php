@@ -1,11 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        #map {
+            height: 300px;
+        }
+
+        .product-img {
+            object-fit: cover;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .delivery-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .delivery-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e9ecef;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 0.25rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid #198754;
+        }
+    </style>
+</head>
+
 <body>
     <div class="container mt-5">
         <div class="row g-4">
-            <!-- Columna izquierda: Productos en el carrito -->
+            <!-- Left Column: Cart Items -->
             <div class="col-lg-8">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-success text-white">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                         <h4 class="mb-0">Carrito de Compras</h4>
+                        
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -15,8 +72,6 @@
                                         <th>Producto</th>
                                         <th>Cantidad</th>
                                         <th>Subtotal</th>
-                                        <th>Distancia</th>
-                                        <th>Costo Envío</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -29,18 +84,22 @@
                                         <tr data-lat="<?= $prod['Latitud'] ?>" data-lon="<?= $prod['Longitud'] ?>"
                                             id="producto_<?= $prod['ID_Producto'] ?>">
                                             <td class="d-flex align-items-center">
-                                                <img src="<?= base_url($producto['Imagen_URL']) ?>" class="rounded me-3"
-                                                    style="width: 60px; height: 60px;" alt="Producto">
+                                                <img src="<?= base_url($producto['Imagen_URL']) ?>"
+                                                    class="rounded me-3 product-img" style="width: 60px; height: 60px;"
+                                                    alt="Producto">
                                                 <div>
                                                     <h6 class="mb-1"><?= $producto['Nombre'] ?></h6>
-                                                    <small
-                                                        class="text-muted">Bs.<?= number_format($producto['Precio'], 2) ?></small>
+                                                    <small class="text-muted">
+                                                        <i class="ri-price-tag-3-line"></i>
+                                                        Bs.<?= number_format($producto['Precio'], 2) ?>
+                                                    </small>
                                                 </div>
                                             </td>
-                                            <td><?= $prod['Cantidad'] ?></td>
+                                            <td>
+                                                <p class="form-control-sm text-center"><?= $prod['Cantidad'] ?> </p>
+                                            </td>
                                             <td class="fw-bold">Bs.<?= number_format($subtotal, 2) ?></td>
-                                            <td class="distancia_calculada">0 km</td>
-                                            <td class="costo_envio">Bs.0.00</td>
+
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -51,32 +110,56 @@
                             <h5>Bs.<?= number_format($total, 2) ?></h5>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <h5>Costo Envío Total</h5>
-                            <h5 id="costo_envio_total">Bs.0.00</h5>
-                        </div>
-                        <div class="d-flex justify-content-between">
                             <h4>Total a Pagar</h4>
                             <h4 id="total_pagar">Bs.<?= number_format($total, 2) ?></h4>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Columna derecha: Opciones de Envío y Pago -->
+                <!-- Delivery Status Timeline -->
+                <!-- <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0">Estado del Envío</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="delivery-timeline">
+                            <div class="timeline-item">
+                                <h6 class="mb-1">Preparando</h6>
+                                <small class="text-muted">Tu pedido está siendo preparado</small>
+                            </div>
+                            <div class="timeline-item">
+                                <h6 class="mb-1">En Tránsito</h6>
+                                <small class="text-muted">El pedido está en camino</small>
+                            </div>
+                            <div class="timeline-item">
+                                <h6 class="mb-1">Entregado</h6>
+                                <small class="text-muted">Pedido entregado con éxito</small>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+            <br>
+            <!-- Right Column: Delivery Options -->
             <div class="col-lg-4">
                 <div class="card shadow-sm">
                     <div class="card-header bg-success text-white">
                         <h4 class="mb-0">Opciones de Envío</h4>
                     </div>
                     <div class="card-body">
-                        <form action="<?= site_url('pago/procesar') ?>" method="post" enctype="multipart/form-data">
+                        <form action="<?= site_url('pago/procesar/').$ID?>" method="post" enctype="multipart/form-data">
                             <div class="mb-3">
-                                <label for="Comunidad_Destino" class="form-label">Comunidad de Destino</label>
+                                <label class="form-label">
+                                    <i class="ri-map-pin-line"></i> Comunidad de Destino
+                                </label>
                                 <select id="Comunidad_Destino" name="Comunidad_Destino" class="form-select">
-                                    <option value="">Seleccione una comunidad</option>
+                                    <!-- Opción predeterminada si no se selecciona una comunidad -->
+                                    <option value="0">Seleccione una comunidad</option>
+
                                     <?php foreach ($comunidades as $comunidad): ?>
                                         <option value="<?= $comunidad['ID']; ?>" data-lat="<?= $comunidad['Latitud']; ?>"
-                                            data-lon="<?= $comunidad['Longitud']; ?>">
+                                            data-lon="<?= $comunidad['Longitud']; ?>"
+                                            <?= $comunidad['ID'] == session()->get('ID_Comunidad') ? 'selected' : ''; ?>>
                                             <?= $comunidad['Nombre']; ?>
                                         </option>
                                     <?php endforeach; ?>
@@ -84,28 +167,42 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="Direccion_Destino" class="form-label">Dirección de Destino</label>
+                                <label class="form-label">
+                                    <i class="ri-home-line"></i> Dirección de Destino
+                                </label>
                                 <input type="text" id="Direccion_Destino" name="Direccion_Destino" class="form-control"
-                                    required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="tipo_transporte" class="form-label">Tipo de Transporte</label>
-                                <select id="tipo_transporte" name="tipo_transporte" class="form-select">
-                                    <option value="">Seleccione el tipo de transporte</option>
-                                    <?php foreach ($transportes as $transporte): ?>
-                                        <option value="<?= $transporte['ID']; ?>"
-                                            data-costo="<?= $transporte['Costo_por_km']; ?>">
-                                            <?= $transporte['Tipo']; ?> (Bs.<?= $transporte['Costo_por_km']; ?>/km)
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
+                                    value="<?= session()->get('Direccion') ?>" required>
                             </div>
 
-                            <input type="hidden" name="costo_envio" id="costo_envio" value="0.00">
+
+                            <!-- Map -->
+                            <div class="mb-3">
+                                <label for="map" class="form-label d-flex align-items-center">
+                                    <i class="ri-map-2-line me-2"></i> Seleccionar Ubicación
+                                </label>
+
+                                <!-- Mapa -->
+                                <div id="map" class="rounded-3 border border-light" style="height: 300px;"></div>
+
+                                <!-- Contenedor de campos para latitud y longitud -->
+                                <div class="d-flex justify-content-between mt-3">
+                                    <div class="w-48">
+                                        <label for="latitud" class="form-label">Latitud</label>
+                                        <input class="form-control form-control-sm rounded-3" type="text" name="latitud"
+                                            id="latitud" placeholder="Latitud" value="" readonly>
+                                    </div>
+                                    <div class="w-48">
+                                        <label for="longitud" class="form-label">Longitud</label>
+                                        <input class="form-control form-control-sm rounded-3" type="text"
+                                            name="longitud" id="longitud" placeholder="Longitud" value="" readonly>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="mb-3">
-                                <label for="metodo_pago" class="form-label">Método de Pago</label>
+                                <label class="form-label">
+                                    <i class="ri-bank-card-line"></i> Método de Pago
+                                </label>
                                 <select name="metodo_pago" id="metodo_pago" class="form-select" required>
                                     <option value="">Escoja una opción</option>
                                     <option value="TRANSFERENCIA">Transferencia Bancaria</option>
@@ -115,117 +212,75 @@
 
                             <div id="informacion_pago" style="display:none;">
                                 <div id="info_transferencia" style="display:none;">
-                                    <h5>Datos para Transferencia Bancaria</h5>
-                                    <?= $transferencia ? $transferencia['Contenido'] : '<p>No disponible.</p>' ?>
+                                    <div class="alert alert-info">
+                                        <h5><i class="ri-bank-line"></i> Datos para Transferencia</h5>
+                                        <?= $transferencia ? $transferencia['Contenido'] : '<p>No disponible.</p>' ?>
+                                    </div>
                                 </div>
 
                                 <div id="info_qr" style="display:none;">
-                                    <h5>Código QR</h5>
-                                    <?= $qr ? '<img src="' . $qr['Imagen'] . '" style="width:200px;">' : '<p>No disponible.</p>' ?>
+                                    <div class="alert alert-info">
+                                        <h5><i class="ri-qr-code-line"></i> Código QR</h5>
+                                        <?= $qr ? '<img src="' . $qr['Imagen'] . '" class="img-fluid">' : '<p>No disponible.</p>' ?>
+                                    </div>
                                 </div>
 
-                                <div id="comprobante" style="display:none;">
-                                    <label for="comprobante">Subir Comprobante:</label>
+                                <div id="comprobante" class="mb-3">
+                                    <label class="form-label">
+                                        <i class="ri-file-upload-line"></i> Subir Comprobante:
+                                    </label>
                                     <input type="file" name="comprobante" class="form-control"
                                         accept=".jpg,.jpeg,.png,.pdf">
                                 </div>
                             </div>
-                            <!-- <input type="hidden" name="id_compra" value="<?php echo ($ID); ?>"> -->
-
                             <input type="hidden" name="id_compra" value="<?= $ID ?>">
-                            <button type="submit" class="btn btn-primary w-100 mt-3">Procesar Envío</button>
+                            <button type="submit" class="btn btn-primary w-100" onclick="exportToPDF()">
+                                <i class="ri-send-plane-line"></i> Procesar Envío
+                            </button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <br><br><br>
+    <br>
+    <script>
+        var map = L.map('map').setView([-16.5, -68.15], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
 
+        var marker;
+        map.on('click', function (e) {
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = L.marker(e.latlng).addTo(map);
+            document.getElementById('latitud').value = e.latlng.lat;
+            document.getElementById('longitud').value = e.latlng.lng;
+            document.getElementById('latitud').setAttribute('value', e.latlng.lat);
+            document.getElementById('longitud').setAttribute('value', e.latlng.lng);
+        });
 
+        document.getElementById('metodo_pago').addEventListener('change', function () {
+            const infoPago = document.getElementById('informacion_pago');
+            const infoTransferencia = document.getElementById('info_transferencia');
+            const infoQR = document.getElementById('info_qr');
+            const comprobante = document.getElementById('comprobante');
+
+            infoPago.style.display = this.value ? 'block' : 'none';
+            infoTransferencia.style.display = this.value === 'TRANSFERENCIA' ? 'block' : 'none';
+            infoQR.style.display = this.value === 'QR' ? 'block' : 'none';
+            comprobante.style.display = this.value ? 'block' : 'none';
+        });
+
+        // PDF export function
+        function exportToPDF() {
+            const idCompra = document.querySelector('input[name="id_compra"]').value;
+            const baseUrl = "<?= base_url() ?>";
+            window.location.href = `${baseUrl}/pdf/exportarCompraPDF/${idCompra}`;
+        }
+    </script>
 </body>
 
-<script>
-    document.querySelector('#metodo_pago').addEventListener('change', function () {
-        var metodo = this.value;
-        var informacionPago = document.getElementById('informacion_pago');
-        var transferencia = document.getElementById('info_transferencia');
-        var qr = document.getElementById('info_qr');
-        var comprobante = document.getElementById('comprobante');
-
-        informacionPago.style.display = 'block';
-
-        if (metodo === 'TRANSFERENCIA') {
-            transferencia.style.display = 'block';
-            qr.style.display = 'none';
-            comprobante.style.display = 'block';
-        } else if (metodo === 'QR') {
-            transferencia.style.display = 'none';
-            qr.style.display = 'block';
-            comprobante.style.display = 'block';
-        } else {
-            transferencia.style.display = 'none';
-            qr.style.display = 'none';
-            comprobante.style.display = 'none';
-            informacionPago.style.display = 'none';
-        }
-    });
-
-    function toRad(value) {
-        return value * Math.PI / 180;
-    }
-
-    function calcularDistancia(lat1, lon1, lat2, lon2) {
-        const R = 6371; // Radio de la Tierra en km
-        const dLat = toRad(lat2 - lat1);
-        const dLon = toRad(lon2 - lon1);
-        const a = Math.sin(dLat / 2) ** 2 +
-            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-            Math.sin(dLon / 2) ** 2;
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
-    }
-
-    function actualizarTotales() {
-        let totalEnvio = 0;
-        document.querySelectorAll(".costo_envio").forEach(costo => {
-            totalEnvio += parseFloat(costo.innerText.replace("Bs.", "")) || 0;
-        });
-
-        const totalProductos = <?= $total ?>;
-        const totalPagar = totalProductos + totalEnvio;
-
-        document.getElementById("costo_envio_total").innerText = `Bs.${totalEnvio.toFixed(2)}`;
-        document.getElementById("costo_envio").value = totalEnvio.toFixed(2);
-        document.getElementById("total_pagar").innerText = `Bs.${totalPagar.toFixed(2)}`;
-    }
-
-    function calcularYMostrarDistanciaPorProducto() {
-        const comunidadDestino = document.getElementById("Comunidad_Destino").selectedOptions[0];
-        const latDestino = parseFloat(comunidadDestino.getAttribute("data-lat")) || 0;
-        const lonDestino = parseFloat(comunidadDestino.getAttribute("data-lon")) || 0;
-
-        const transporte = document.getElementById("tipo_transporte").selectedOptions[0];
-        const costoPorKm = parseFloat(transporte.getAttribute("data-costo")) || 0;
-
-        document.querySelectorAll("tbody tr").forEach(producto => {
-            const latOrigen = parseFloat(producto.getAttribute("data-lat")) || 0;
-            const lonOrigen = parseFloat(producto.getAttribute("data-lon")) || 0;
-
-            if (latOrigen && lonOrigen) {
-                const distancia = calcularDistancia(latOrigen, lonOrigen, latDestino, lonDestino).toFixed(2);
-                const costoEnvio = (distancia * costoPorKm).toFixed(2);
-
-                producto.querySelector(".distancia_calculada").innerText = `${distancia} km`;
-                producto.querySelector(".costo_envio").innerText = `Bs.${costoEnvio}`;
-            }
-        });
-
-        actualizarTotales();
-    }
-
-    // Eventos de cambio
-    document.getElementById("Comunidad_Destino").addEventListener("change", calcularYMostrarDistanciaPorProducto);
-    document.getElementById("tipo_transporte").addEventListener("change", calcularYMostrarDistanciaPorProducto);
-
-</script>
+</html>

@@ -143,7 +143,7 @@
                           <!-- Avatar with inset shadow -->
                           <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
                           <img class="object-cover w-full h-full rounded-full"
-                          src="<?php echo esc($usuario['Imagen_URL']); ?>" alt="<?php echo esc($usuario['Nombre']); ?>" />
+                          src="<?php echo esc(base_url().$usuario['Imagen_URL']); ?>" alt="<?php echo esc($usuario['Nombre']); ?>" />
             
                           </div>
                           <div>

@@ -73,7 +73,8 @@ class TieneProductoModel extends Model
         return $this->select('tiene_producto.Descripcion, tiene_producto.Imagen_URL, tiene_producto.Stock, valoracion.Puntuacion')
             ->join('valoracion', 'valoracion.ID_Producto = tiene_producto.ID_Producto')
             ->where('tiene_producto.ID_Artesano', $idArtesano)
-            ->orderBy('valoracion.Puntuacion', 'DESC') // Ordenar por puntuación, de mayor a menor
+            ->where('valoracion.ID_Artesano', $idArtesano)
+            ->orderBy('valoracion.Puntuacion', 'DESC') 
             ->findAll();
     }
     

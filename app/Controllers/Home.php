@@ -203,6 +203,7 @@ class Home extends BaseController{
                     'ID_Artesano'=>$idA,
                     'Cantidad'=>$cant,
                 ];
+                
                 $idDet=$detalleCompraModel->insert($dataC);
              }
              

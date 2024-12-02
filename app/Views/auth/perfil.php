@@ -1,82 +1,198 @@
 <!DOCTYPE html>
-<html lang="en" :class="{ 'theme-dark': dark }" x-data="data()">
+<html lang="es">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Editar Perfil - E-Commerce Comunidades</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet" />
-    <link rel="stylesheet" href="<?= base_url() ?>assets_dash/css/tailwind.output.css" />
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
-    <script src="<?= base_url() ?>assets_dash/js/init-alpine.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Usuario</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <!-- Reemplazamos Google Maps por Leaflet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <!-- Añadimos el plugin de búsqueda para Leaflet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-search/3.0.9/leaflet-search.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-search/3.0.9/leaflet-search.min.js"></script>
+    <style>
+        .profile-header {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .profile-picture {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+        }
+
+        .profile-picture img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid white;
+            object-fit: cover;
+        }
+
+        .profile-picture .edit-icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #fff;
+            border-radius: 50%;
+            padding: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        #map {
+            height: 300px;
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .form-floating {
+            margin-bottom: 1rem;
+        }
+
+        .community-selector {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .community-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .community-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .community-card.selected {
+            border-color: #6366f1;
+        }
+
+        .community-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        #map {
+            height: 300px;
+            width: 100%;
+            border-radius: 8px;
+            z-index: 1;
+            /* Asegura que el mapa esté por debajo de los elementos flotantes */
+        }
+
+        .location-search {
+            margin-bottom: 10px;
+        }
+
+        .coordinates-display {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
-        <div class="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
-            <div class="flex flex-col overflow-y-auto ">
 
-                <!-- Profile Image Section --> <!-- Form Section -->
-                <div class="flex items-center justify-center p-6 sm:p-12">
-                    <div class="w-full">
-                        <h1 class="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">Editar Perfil</h1>
+    <div class="profile-header text-white text-center">
+        <div class="container">
+            <div class="profile-picture mb-3">
+                <img src="<?= base_url().$usuario['Imagen_URL'] ?? '/images/default-avatar.png' ?>" alt="Foto de perfil"
+                    id="profileImage">
 
-                        <form action="<?= base_url('update_perfil/' . session()->get('ID')) ?>" method="post"
-                            enctype="multipart/form-data" class="space-y-4">
-                            <?= csrf_field() ?>
+            </div>
+            <h2><?= $usuario['Nombre'] ?></h2>
+            <p class="mb-0"><i class="ri-mail-line me-2"></i><?= $usuario['Correo_electronico'] ?></p>
+        </div>
+    </div>
 
-                            <!-- Name -->
-                            <label class="block text-sm">
-                                <span class="text-gray-700 dark:text-gray-400">Nombre</span>
-                                <input
-                                    class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                                    type="text" name="Nombre" id="Nombre" value="<?= esc($usuario['Nombre']) ?>"
-                                    required />
-                            </label>
+    <div class="container pb-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">
+                            <i class="ri-user-settings-line me-2"></i>
+                            Editar Perfil
+                        </h4>
 
-                            <!-- Email -->
-                            <label class="block text-sm">
-                                <span class="text-gray-700 dark:text-gray-400">Correo Electrónico</span>
-                                <input
-                                    class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                                    type="email" name="Correo_electronico" id="Correo_electronico"
-                                    value="<?= esc($usuario['Correo_electronico']) ?>" required />
-                            </label>
+                        <form action="<?= base_url('update_perfil/' . $usuario['ID']) ?>" method="POST"
+                            enctype="multipart/form-data" id="profileForm">
 
-                            <!-- Phone -->
-                            <label class="block text-sm">
-                                <span class="text-gray-700 dark:text-gray-400">Teléfono</span>
-                                <input
-                                    class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                                    type="text" name="Telefono" id="Telefono"
-                                    value="<?= esc($usuario['Telefono']) ?>" />
-                            </label>
+                            <!-- Campos básicos -->
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="nombre" name="Nombre" placeholder="Nombre"
+                                    value="<?= $usuario['Nombre'] ?>">
+                                <label for="nombre">Nombre completo</label>
+                            </div>
 
-                            <!-- Password -->
-                            <label class="block text-sm">
-                                <span class="text-gray-700 dark:text-gray-400">Contraseña</span>
-                                <input
-                                    class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                                    type="password" name="Contrasena" id="Contrasena"
-                                    placeholder="Dejar en blanco para mantener la contraseña actual" />
-                                <small class="text-gray-500 dark:text-gray-400">Deje en blanco si no desea cambiar la
-                                    contraseña</small>
-                            </label>
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="email" name="Correo_electronico"
+                                    placeholder="Email" value="<?= $usuario['Correo_electronico'] ?>">
+                                <label for="email">Correo electrónico</label>
+                            </div>
 
-                            <!-- Address -->
-                            <label class="block text-sm">
-                                <span class="text-gray-700 dark:text-gray-400">Dirección</span>
-                                <textarea
-                                    class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                                    name="Direccion" id="Direccion"><?= esc($usuario['Direccion']) ?></textarea>
-                            </label>
-                            <div class="flex justify-center h-32 md:h-auto rounded-lg">
-                                <img aria-hidden="true" class="object-cover w-32 h-32 py-3  "
-                                    src="<?= $usuario['Imagen_URL'] ?>" alt="Profile Edit Image" />
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="telefono" name="Telefono"
+                                    placeholder="Teléfono" value="<?= $usuario['Telefono'] ?>">
+                                <label for="telefono">Teléfono</label>
+                            </div>
+                            <!-- Selector de Comunidad -->
+                            <div class="community-selector">
+                                <h5 class="mb-3">
+                                    <i class="ri-community-line me-2"></i>
+                                    Selecciona tu Comunidad
+                                </h5>
+                                <div class="mb-3">
+                                    <select class="form-select" name="ID_Comunidad" id="selectedCommunity">
+                                        <option value="">Seleccione una comunidad</option>
+                                        <?php foreach ($comunidades as $comunidad): ?>
+                                            <option value="<?= $comunidad['ID'] ?>"
+                                                <?= $usuario['ID_Comunidad'] == $comunidad['ID'] ? 'selected' : '' ?>>
+                                                <?= $comunidad['Nombre'] ?> - <?= $comunidad['Ubicacion'] ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+
+
+
+
+
+                            <!-- Ubicación -->
+                            <!-- Sección del mapa modificada -->
+                            <div class="mb-3">
+
+                                <div id="map" class="mb-2"></div>
+                                <div class="coordinates-display" id="coordinatesDisplay">
+                                    Latitud: <span id="latDisplay">-</span>, Longitud: <span id="lngDisplay">-</span>
+                                </div>
+                                <input type="hidden" name="Latitud" id="lat" value="<?= $usuario['Latitud'] ?>">
+                                <input type="hidden" name="Longitud" id="lng" value="<?= $usuario['Longitud'] ?>">
+                                <textarea class="form-control mt-2" name="Direccion" id="direccion" rows="2"
+                                    placeholder="Dirección detallada"><?= $usuario['Direccion'] ?></textarea>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control" id="password" name="Contrasena"
+                                    placeholder="Contraseña">
+                                <label for="password">Nueva contraseña (dejar en blanco para mantener la actual)</label>
                             </div>
                             <!-- Profile Image -->
-                            <label class="block text-sm">
+                            <label class="form-floating mb-3">
                                 <span class="text-gray-700 dark:text-gray-400">Imagen de Perfil</span>
                                 <input
                                     class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-purple-600 file:text-white hover:file:bg-purple-700 focus:border-purple-400"
@@ -84,25 +200,251 @@
 
                             </label>
 
-                            <!-- Save Button -->
-                            <div class="flex justify-center mt-6">
-                                <button
-                                    class="w-full px-4 py-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                                    Guardar Cambios
-                                </button>
-                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="ri-save-line me-2"></i>Guardar cambios
+                            </button>
                         </form>
-                        <div class="flex justify-center mt-6">
-                            <a href="<?php echo base_url(); ?>"
-                                class="w-full px-4 py-2 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-                                volver
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</body>
 
-</html>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let map, marker;
+
+        function initMap() {
+            // Coordenadas iniciales (usar las del usuario o coordenadas por defecto)
+            const lat = parseFloat(document.getElementById('lat').value) || -33.4489;
+            const lng = parseFloat(document.getElementById('lng').value) || -70.6693;
+
+            // Inicializar el mapa
+            map = L.map('map').setView([lat, lng], 13);
+
+            // Añadir capa de OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Añadir marcador arrastrable
+            marker = L.marker([lat, lng], {
+                draggable: true
+            }).addTo(map);
+
+            // Actualizar coordenadas cuando se arrastra el marcador
+            marker.on('dragend', function (e) {
+                const position = marker.getLatLng();
+                updateCoordinates(position.lat, position.lng);
+                reverseGeocode(position.lat, position.lng);
+            });
+
+            // Click en el mapa para mover el marcador
+            map.on('click', function (e) {
+                marker.setLatLng(e.latlng);
+                updateCoordinates(e.latlng.lat, e.latlng.lng);
+                reverseGeocode(e.latlng.lat, e.latlng.lng);
+            });
+
+            // Inicializar búsqueda
+            initializeSearch();
+        }
+
+        function updateCoordinates(lat, lng) {
+            document.getElementById('lat').value = lat;
+            document.getElementById('lng').value = lng;
+            document.getElementById('latDisplay').textContent = lat.toFixed(6);
+            document.getElementById('lngDisplay').textContent = lng.toFixed(6);
+        }
+
+        function initializeSearch() {
+            const searchInput = document.getElementById('searchLocation');
+            const searchButton = document.getElementById('searchButton');
+
+            searchButton.addEventListener('click', function () {
+                const query = searchInput.value;
+                if (query) {
+                    searchLocation(query);
+                }
+            });
+
+            searchInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const query = this.value;
+                    if (query) {
+                        searchLocation(query);
+                    }
+                }
+            });
+        }
+
+        function searchLocation(query) {
+            // Usar Nominatim API para buscar ubicaciones
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        const location = data[0];
+                        const lat = parseFloat(location.lat);
+                        const lng = parseFloat(location.lon);
+
+                        map.setView([lat, lng], 16);
+                        marker.setLatLng([lat, lng]);
+                        updateCoordinates(lat, lng);
+                        document.getElementById('direccion').value = location.display_name;
+                    } else {
+                        alert('No se encontraron resultados para esta búsqueda.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error en la búsqueda:', error);
+                    alert('Error al realizar la búsqueda. Por favor, intente nuevamente.');
+                });
+        }
+
+        function reverseGeocode(lat, lng) {
+            // Obtener dirección desde coordenadas
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.display_name) {
+                        document.getElementById('direccion').value = data.display_name;
+                    }
+                })
+                .catch(error => console.error('Error en geocodificación inversa:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            initMap();
+            loadCommunities();
+        });
+
+        // Cargar comunidades
+        async function loadCommunities() {
+            try {
+                // Realizamos la petición a la API
+                const response = await fetch('<?= base_url('api/comunidades') ?>');
+                const communities = await response.json();
+
+                const container = document.getElementById('communitiesContainer');
+                const selectedCommunityId = document.getElementById('selectedCommunity').value;
+
+                communities.forEach(community => {
+                    // Crear la tarjeta de comunidad
+                    const card = document.createElement('div');
+                    card.className = 'col-md-6 col-lg-2';
+
+                    // Construcción del HTML con variables (con seguridad y uso de fallback para la imagen)
+                    const imageUrl = community.Imagen ? `<?= base_url() ?>${community.Imagen}` : '/images/default-community.jpg';
+                    const isSelected = community.ID === selectedCommunityId ? 'selected' : '';
+
+                    // Usamos `textContent` o `createElement` para evitar posibles inyecciones de HTML
+                    card.innerHTML = `
+                <div class="card community-card ${isSelected}" data-community-id="${community.ID}">
+                    <img src="${imageUrl}" class="community-image" alt="${community.Nombre}">
+                    <div class="card-body">
+                        <h6 class="card-title">${community.Nombre || 'Nombre no disponible'}</h6>
+                        <p class="card-text small text-muted">${community.Ubicacion || 'Ubicación no disponible'}</p>
+                    </div>
+                </div>
+            `;
+
+                    // Agregar el evento al hacer clic en la tarjeta
+                    card.querySelector('.community-card').addEventListener('click', function () {
+                        // Remover la selección anterior
+                        document.querySelectorAll('.community-card').forEach(c => c.classList.remove('selected'));
+
+                        // Seleccionar la nueva comunidad
+                        this.classList.add('selected');
+                        document.getElementById('selectedCommunity').value = this.dataset.communityId;
+
+                        // Centrar el mapa en la ubicación de la comunidad seleccionada
+                        const newLocation = {
+                            lat: parseFloat(community.Latitud),
+                            lng: parseFloat(community.Longitud)
+                        };
+
+                        if (!isNaN(newLocation.lat) && !isNaN(newLocation.lng)) {
+                            map.setCenter(newLocation); // Aseguramos que las coordenadas sean válidas
+                            marker.setPosition(newLocation);
+                            document.getElementById('lat').value = community.Latitud;
+                            document.getElementById('lng').value = community.Longitud;
+                            document.getElementById('direccion').value = community.Ubicacion;
+                        } else {
+                            console.warn('Coordenadas no válidas:', community.Latitud, community.Longitud);
+                        }
+                    });
+
+                    // Agregar la tarjeta al contenedor
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error cargando comunidades:', error);
+            }
+        }
+
+
+        // Preview de imagen
+        document.getElementById('imageInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('profileImage').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Validación del formulario
+        document.getElementById('profileForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Validar campos requeridos
+            const nombre = document.getElementById('nombre').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const comunidad = document.getElementById('selectedCommunity').value;
+
+            if (!nombre) {
+                alert('Por favor, ingrese su nombre');
+                return;
+            }
+
+            if (!email) {
+                alert('Por favor, ingrese su correo electrónico');
+                return;
+            }
+
+            if (!comunidad) {
+                alert('Por favor, seleccione una comunidad');
+                return;
+            }
+
+            // Si todo está bien, enviar el formulario
+            this.submit();
+        });
+
+        // Inicializar mapa y cargar comunidades cuando se carga la página
+        window.initMap = initMap;
+        document.addEventListener('DOMContentLoaded', loadCommunities);
+    </script>
+
+    <script>
+        // Script para manejar la selección de comunidad
+        document.addEventListener('DOMContentLoaded', function () {
+            const communityButtons = document.querySelectorAll('.community-option');
+            const selectedCommunityInput = document.getElementById('selectedCommunity');
+
+            communityButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    // Asignamos el valor del ID de la comunidad seleccionada al input oculto
+                    selectedCommunityInput.value = this.getAttribute('data-id');
+
+                    // Opcional: Puedes agregar una clase activa para mostrar la selección visualmente
+                    communityButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>

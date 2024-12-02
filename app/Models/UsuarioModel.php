@@ -20,7 +20,9 @@ class UsuarioModel extends Model
         'Estado',
         'Ultima_conexion',
         'ID_Comunidad',
-        'Imagen_URL'
+        'Imagen_URL',
+        'Latitud',
+        'Longitud'
     ];
     
     protected $useTimestamps = true; // Si usas created_at y updated_at
@@ -30,6 +32,7 @@ class UsuarioModel extends Model
 
     protected $beforeInsert = ['hashPassword'];
     protected $beforeUpdate = ['hashPassword'];
+    protected $returnType = 'array';
 
     protected function hashPassword(array $data)
     {

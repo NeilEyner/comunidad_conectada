@@ -53,16 +53,9 @@ class PagoController extends BaseController
             $usuario = session()->get('ID_Rol');
             $carrito = $detalleCompraModel->where('ID_Compra', $id_compra)->obtenerDetallesCompra(session()->get('ID'));
         }
-        // SELECT d.* , c.Nombre, c.Latitud, c.Longitud FROM detalle_compra d
-        // JOIN usuario u ON d.ID_Artesano = u.ID
-        // JOIN comunidad c ON c.ID = u.ID_Comunidad WHERE d.ID_Compra = $id_compra;
 
         $comunidades = new ComunidadModel();
         $comunidad = $comunidades->findAll();
-
-        $transport = new TransporteModel();
-        $transporte = $transport->findAll();
-
         $data = [
             'ID' => $id_compra,
             'compra' => $compra,
@@ -76,29 +69,67 @@ class PagoController extends BaseController
             'tieneProductoModel' => $tieneProductoModel,
             'contenido' => $content,
             'comunidades' => $comunidad,
-            'transportes' => $transporte,
         ];
         // return view('pagos/metodos_pagos', $data);
         return view('global/header', $data) . view('pagos/metodos_pagos', $data) . view('global/footer');
     }
 
-    public function procesar_pago()
+    public function procesar_pago($id_compra)
     {
         $envioModel = new EnvioModel();
         $pagoModel = new PagoModel();
         $compraModel = new CompraModel();
+        // Cargar los modelos
+        $compraModel = new CompraModel();
+        $detalleCompraModel = new DetalleCompraModel();  // Asegúrate de que este modelo exista
+        $tieneProductoModel = new TieneProductoModel();  // Asegúrate de que este modelo exista
 
+        // Obtener la compra con el ID proporcionado
+        $compra = $compraModel->find($id_compra);
+
+        if ($compra) {
+            $detalleCompra = $detalleCompraModel->where('ID_Compra', $id_compra)->findAll();
+            $db = \Config\Database::connect();
+            $db->transBegin();
+
+            try {
+                foreach ($detalleCompra as $detalle) {
+                    $idArtesano = $detalle['ID_Artesano'];
+                    $idProducto = $detalle['ID_Producto'];
+                    $cantidadVendida = $detalle['Cantidad'];
+                    $productoArtesano = $tieneProductoModel->where([
+                        'ID_Artesano' => $idArtesano,
+                        'ID_Producto' => $idProducto
+                    ])->first();
+
+                    if ($productoArtesano) {
+                        $nuevoStock = max(0, $productoArtesano['Stock'] - $cantidadVendida);
+                        $tieneProductoModel->where([
+                            'ID_Artesano' => $productoArtesano['ID_Artesano'],
+                            'ID_Producto' => $productoArtesano['ID_Producto']
+                        ])
+                        ->set('Stock', $nuevoStock)
+                        ->update();
+                        
+                    }
+                }
+                $db->transCommit();
+            } catch (\Exception $e) {
+                $db->transRollback();
+                throw $e;
+            }
+        }
         // Procesar los datos del formulario de envío
         $dataEnvio = [
             'ID_Compra' => $this->request->getPost('id_compra'),
             'ID_Transporte' => $this->request->getPost('tipo_transporte'),
             'Comunidad_Destino' => $this->request->getPost('Comunidad_Destino'),
             'Direccion_Destino' => $this->request->getPost('Direccion_Destino'),
-            'Costo_envio' => $this->request->getPost('costo_envio'),
+            'Latitud' => $this->request->getPost('latitud'),
+            'Longitud' => $this->request->getPost('longitud'),
             'Estado' => 'PREPARANDO',
         ];
 
-        // Validar que se pueda insertar el envío
         if (!$envioModel->insert($dataEnvio)) {
             return redirect()->back()->withInput()->with('error', 'No se pudo procesar el envío.');
         }

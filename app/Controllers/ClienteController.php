@@ -27,7 +27,13 @@ class ClienteController extends Controller
         $db = \Config\Database::connect();
         $compras = $db->query("SELECT c.Fecha, c.Estado, c.Total, c.ID FROM compra c WHERE c.ID_Cliente = ?", [session()->get('ID')])->getResult();
         $data['compras'] = $compras;
-        $detalles = $db->query("SELECT d.ID_Compra, d.Cantidad, p.Nombre FROM detalle_compra d JOIN producto p ON p.ID = d.ID_Producto")->getResult();
+        $detalles = $db->query("
+        SELECT d.ID_Compra, d.Cantidad, p.Nombre, t.Imagen_URL, t.Descripcion 
+        FROM detalle_compra d 
+        JOIN producto p ON p.ID = d.ID_Producto 
+        JOIN tiene_producto t ON t.ID_Producto = p.ID
+        WHERE d.ID_Artesano = t.ID_Artesano
+        ")->getResult();
         $data['detalles'] = $detalles;
 
         $envios = $db->query("SELECT e.ID_Compra, t.Tipo, u.Nombre AS Nombre_Delivery, c.Nombre AS Nombre_Comunidad, e.Direccion_Destino, e.Fecha_Envio, e.Fecha_Entrega, e.Estado, e.Costo_envio FROM envio e JOIN usuario u ON u.ID = e.ID_Delivery JOIN transporte t ON t.ID = e.ID_Transporte JOIN comunidad c ON c.ID = e.Comunidad_Destino")->getResult();
