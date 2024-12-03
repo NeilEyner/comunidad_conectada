@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `categoria` (
   `Nombre` varchar(50) NOT NULL,
   `Descripcion` text,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+)  
 
 DELETE FROM `categoria`;
 INSERT INTO `categoria` (`ID`, `Nombre`, `Descripcion`) VALUES
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `compra` (
   PRIMARY KEY (`ID`),
   KEY `ID_Cliente` (`ID_Cliente`),
   CONSTRAINT `compra_ibfk_1` FOREIGN KEY (`ID_Cliente`) REFERENCES `usuario` (`ID`) ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+)  
 
 DELETE FROM `compra`;
 INSERT INTO `compra` (`ID`, `Fecha`, `Estado`, `ID_Cliente`, `Total`) VALUES
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `comunidad` (
   `Fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Imagen` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+)  
 
 DELETE FROM `comunidad`;
 INSERT INTO `comunidad` (`ID`, `Nombre`, `Descripcion`, `Ubicacion`, `Latitud`, `Longitud`, `Fecha_registro`, `Imagen`) VALUES
@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `contenido_pagina` (
   PRIMARY KEY (`ID`),
   KEY `ID_Usuario` (`ID_Usuario`),
   CONSTRAINT `contenido_pagina_ibfk_1` FOREIGN KEY (`ID_Usuario`) REFERENCES `usuario` (`ID`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+)  
 
 DELETE FROM `contenido_pagina`;
 INSERT INTO `contenido_pagina` (`ID`, `Tipo_contenido`, `Titulo`, `Contenido`, `ID_Usuario`, `Subtitulo`, `Imagen`, `Fecha_creacion`, `Fecha_actualizacion`) VALUES
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `detalle_compra` (
   CONSTRAINT `detalle_compra_ibfk_1` FOREIGN KEY (`ID_Compra`) REFERENCES `compra` (`ID`) ON DELETE CASCADE,
   CONSTRAINT `detalle_compra_ibfk_2` FOREIGN KEY (`ID_Producto`) REFERENCES `producto` (`ID`) ON DELETE RESTRICT,
   CONSTRAINT `detalle_compra_ibfk_3` FOREIGN KEY (`ID_Artesano`) REFERENCES `usuario` (`ID`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+)  
 
 DELETE FROM `detalle_compra`;
 INSERT INTO `detalle_compra` (`ID_Compra`, `ID_Producto`, `ID_Artesano`, `Cantidad`) VALUES
@@ -230,7 +230,7 @@ CREATE TABLE IF NOT EXISTS `envio` (
   CONSTRAINT `envio_ibfk_2` FOREIGN KEY (`ID_Delivery`) REFERENCES `usuario` (`ID`) ON DELETE SET NULL,
   CONSTRAINT `envio_ibfk_3` FOREIGN KEY (`ID_Transporte`) REFERENCES `transporte` (`ID`) ON DELETE SET NULL,
   CONSTRAINT `envio_ibfk_4` FOREIGN KEY (`Comunidad_Destino`) REFERENCES `comunidad` (`ID`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+)  
 
 DELETE FROM `envio`;
 INSERT INTO `envio` (`ID`, `ID_Compra`, `ID_Delivery`, `ID_Transporte`, `Comunidad_Destino`, `Direccion_Destino`, `Fecha_Envio`, `Fecha_Entrega`, `Estado`, `Distancia`, `Costo_envio`, `Latitud`, `Longitud`) VALUES
@@ -252,7 +252,7 @@ CREATE TABLE IF NOT EXISTS `pago` (
   KEY `ID_Compra` (`ID_Compra`),
   CONSTRAINT `pago_ibfk_1` FOREIGN KEY (`ID_Cliente`) REFERENCES `usuario` (`ID`) ON DELETE RESTRICT,
   CONSTRAINT `pago_ibfk_2` FOREIGN KEY (`ID_Compra`) REFERENCES `compra` (`ID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+)  
 
 DELETE FROM `pago`;
 INSERT INTO `pago` (`ID`, `Fecha`, `Metodo_pago`, `Estado`, `IMG_Comprobante`, `ID_Cliente`, `ID_Compra`) VALUES
@@ -265,7 +265,7 @@ CREATE TABLE IF NOT EXISTS `producto` (
   `Fecha_creacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Fecha_actualizacion` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+)  
 
 DELETE FROM `producto`;
 INSERT INTO `producto` (`ID`, `Nombre`, `Fecha_creacion`, `Fecha_actualizacion`) VALUES
@@ -297,7 +297,7 @@ CREATE TABLE IF NOT EXISTS `producto_categoria` (
   KEY `ID_Categoria` (`ID_Categoria`),
   CONSTRAINT `producto_categoria_ibfk_1` FOREIGN KEY (`ID_Producto`) REFERENCES `producto` (`ID`) ON DELETE CASCADE,
   CONSTRAINT `producto_categoria_ibfk_2` FOREIGN KEY (`ID_Categoria`) REFERENCES `categoria` (`ID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+)  
 
 DELETE FROM `producto_categoria`;
 INSERT INTO `producto_categoria` (`ID_Producto`, `ID_Categoria`) VALUES
@@ -336,7 +336,7 @@ CREATE TABLE IF NOT EXISTS `rol` (
   `Descripcion` text,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `Nombre` (`Nombre`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+)  
 
 DELETE FROM `rol`;
 INSERT INTO `rol` (`ID`, `Nombre`, `Descripcion`) VALUES
@@ -357,7 +357,7 @@ CREATE TABLE IF NOT EXISTS `tiene_producto` (
   KEY `ID_Producto` (`ID_Producto`),
   CONSTRAINT `tiene_producto_ibfk_1` FOREIGN KEY (`ID_Artesano`) REFERENCES `usuario` (`ID`) ON DELETE SET NULL,
   CONSTRAINT `tiene_producto_ibfk_2` FOREIGN KEY (`ID_Producto`) REFERENCES `producto` (`ID`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+)  
 
 DELETE FROM `tiene_producto`;
 INSERT INTO `tiene_producto` (`ID_Artesano`, `ID_Producto`, `Precio`, `Stock`, `Disponibilidad`, `Imagen_URL`, `Descripcion`) VALUES
@@ -394,7 +394,7 @@ CREATE TABLE IF NOT EXISTS `transporte` (
   `Capacidad` decimal(10,2) NOT NULL,
   `Estado` enum('DISPONIBLE','EN USO','EN MANTENIMIENTO') DEFAULT 'DISPONIBLE',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+)  
 
 DELETE FROM `transporte`;
 INSERT INTO `transporte` (`ID`, `Tipo`, `Descripcion`, `Costo_por_km`, `Capacidad`, `Estado`) VALUES
@@ -425,7 +425,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   KEY `ID_Comunidad` (`ID_Comunidad`),
   CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`ID_Rol`) REFERENCES `rol` (`ID`) ON DELETE RESTRICT,
   CONSTRAINT `usuario_ibfk_2` FOREIGN KEY (`ID_Comunidad`) REFERENCES `comunidad` (`ID`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+)  
 
 DELETE FROM `usuario`;
 INSERT INTO `usuario` (`ID`, `Nombre`, `Correo_electronico`, `Telefono`, `Contrasena`, `ID_Rol`, `Direccion`, `Fecha_registro`, `Estado`, `Ultima_conexion`, `ID_Comunidad`, `Imagen_URL`, `Latitud`, `Longitud`) VALUES
@@ -458,7 +458,7 @@ CREATE TABLE IF NOT EXISTS `valoracion` (
   CONSTRAINT `valoracion_ibfk_2` FOREIGN KEY (`ID_Producto`) REFERENCES `producto` (`ID`) ON DELETE CASCADE,
   CONSTRAINT `valoracion_ibfk_3` FOREIGN KEY (`ID_Artesano`) REFERENCES `usuario` (`ID`) ON DELETE CASCADE,
   CONSTRAINT `valoracion_chk_1` CHECK ((`Puntuacion` between 1 and 5))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+)  
 
 DELETE FROM `valoracion`;
 INSERT INTO `valoracion` (`ID_Usuario`, `ID_Producto`, `Puntuacion`, `Comentario`, `Fecha`, `ID_Artesano`) VALUES

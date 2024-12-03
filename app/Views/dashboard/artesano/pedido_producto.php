@@ -44,7 +44,7 @@
                             <?= $venta['Cliente'] ?>
                         </td>
                         <td class="px-2 py-2 text-sm text-gray-500 flex items-center space-x-2">
-                            <img src="<?= esc(base_url() . $venta['imagen']); ?>" class="w-16 h-16 object-cover rounded-md">
+                            <img src="<?= esc(base_url() . $venta['imagen']); ?>" class="w-16 h-16 object-cover rounded-md" style="width:50px;">
                             <span> <?= $venta['Producto'] ?></span>
                         </td>
 

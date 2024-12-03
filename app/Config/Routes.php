@@ -115,5 +115,21 @@ $routes->get('pdf/exportarCompraPDF/(:num)', 'PdfController::exportarCompraPDF/$
 
 
 // API ANDROID
-$routes->get('/api/usuarios', 'UsuarioController::listarUsuarios');
-$routes->post('/api/login', 'AuthController::api_login');
+
+
+// Ruta para login
+$routes->post('api/login', 'AuthController::api_login'); // Login de usuario
+
+
+$routes->get('api/usuarios', 'ApiController::listarUsuarios'); // Listar todos los usuarios
+
+$routes->get('api/usuario/(:num)', 'ApiController::obtenerUsuario/$1'); // Obtener detalles de un usuario
+$routes->get('api/productos/artesano/(:num)', 'ApiController::listarProductosPorArtesano/$1'); // Listar productos por artesano
+$routes->get('api/compras/cliente/(:num)', 'ApiController::listarComprasPorCliente/$1'); // Listar compras de un cliente
+$routes->get('api/compra/detalle/(:num)', 'ApiController::obtenerDetalleCompra/$1'); // Obtener detalles de una compra
+$routes->get('api/categorias', 'ApiController::listarCategorias'); // Listar categorías con la cantidad de productos
+$routes->get('api/comunidades', 'ApiController::listarComunidades'); // Listar comunidades
+$routes->post('api/registro', 'ApiController::registrarUsuario');
+$routes->get('api/productos', 'ApiController::listarProductos');
+$routes->post('api/compra', 'ApiController::realizarCompra');
+$routes->get('api/compras/(:num)', 'ApiController::listarComprasUsuario/$1');
