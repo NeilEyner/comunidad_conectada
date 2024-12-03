@@ -157,15 +157,17 @@ function editCarr(ruta,idC,idP,idA,stock,cantidad,precio,diferencia){
         //  carrito=JSON.stringify(data.carrito);
         // console.log(data.carrito.Total);
         ruta='\''+ruta+'\'';
-        console.log(ruta);
-        console.log(data.cantProd);
+        // console.log(ruta);
+        // console.log(data.cantProd);
         
             document.getElementById('total').innerHTML=data.carrito.Total+' Bs.';
             document.getElementById('pre-'+idP+'-'+idA).innerHTML=data.carrito.Cantidad*data.carrito.Precio+' Bs.';
             document.getElementById('pre2-'+idP+'-'+idA).innerHTML=data.carrito.Cantidad*data.carrito.Precio+' Bs.';
             document.getElementById('var-val-'+idP+'-'+idA).innerHTML=data.carrito.Cantidad;
-            document.getElementById('carr-btn-menos-'+idP+'-'+idA).setAttribute('onclick','editCarr('+ruta+','+idC+','+idP+ ','+idA+','+stock+','+data.carrito.Cantidad+','+data.carrito.Precio+',-1)');
-            document.getElementById('carr-btn-mas-'+idP+'-'+idA).setAttribute('onclick','editCarr('+ruta+','+idC+','+idP+ ','+idA+','+stock+','+data.carrito.Cantidad+','+data.carrito.Precio+',1)');
+            console.log(data.carrito.Stock);
+            console.log(data);
+            document.getElementById('carr-btn-menos-'+idP+'-'+idA).setAttribute('onclick','editCarr('+ruta+','+idC+','+idP+ ','+idA+','+data.carrito.Stock+','+data.carrito.Cantidad+','+data.carrito.Precio+',-1)');
+            document.getElementById('carr-btn-mas-'+idP+'-'+idA).setAttribute('onclick','editCarr('+ruta+','+idC+','+idP+ ','+idA+','+data.carrito.Stock+','+data.carrito.Cantidad+','+data.carrito.Precio+',1)');
         
     })
     .catch(error => {
