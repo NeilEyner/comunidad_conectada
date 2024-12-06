@@ -14,6 +14,8 @@ use App\Models\ProductoModel;
 use App\Models\CompraModel;
 use App\Models\TieneProductoModel;
 use App\Models\CategoriaModel;
+use App\Models\NotificacionModel;
+use App\Models\AuditoriaModel;
 
 class ArtesanoController extends Controller
 {
@@ -75,6 +77,17 @@ class ArtesanoController extends Controller
 
     public function artesano_editar_producto($idArtesano, $idProducto)
     {
+
+        $usuarioID = session()->get('ID');
+        $usuarioNombre = session()->get('Nombre');
+        $tipoEvento = 'SISTEMA'; 
+        $location = 'LA PAZ'; 
+        $descripcion = session()->get('Nombre')."EDITO PRODUCTO";
+        $auditoriaEventoModel = new AuditoriaModel();
+        $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
+        $this->request->getUserAgent(), $location, $descripcion);
+
+
         $model = new TieneProductoModel();
         helper(['form']);
         $producto = $model->where('ID_Artesano', $idArtesano)->where('ID_Producto', $idProducto)->first();
@@ -114,6 +127,23 @@ class ArtesanoController extends Controller
 
     public function artesano_agregar_producto()
     {
+        $usuarioID = session()->get('ID');
+        $usuarioNombre = session()->get('Nombre');
+        $tipoEvento = 'SISTEMA'; 
+        $location = 'LA PAZ'; 
+        $descripcion = session()->get('Nombre')."AGREGO NUEVO PRODUCTO";
+        $auditoriaEventoModel = new AuditoriaModel();
+        $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
+        $this->request->getUserAgent(), $location, $descripcion);
+
+
+        $usuarioID = session()->get('ID');
+        $tipo = 'PRODUCTO'; 
+        $mensaje = "Tu producto ha sido agregado."; 
+        $notificacionModel = new NotificacionModel();
+        $notificacionModel->registrarNotificacion($usuarioID, $tipo, $mensaje);
+
+
         helper(['form']);
         $model = new TieneProductoModel();
         $idArtesano = session()->get('ID');

@@ -8,7 +8,7 @@ class TieneProductoModel extends Model
 {
     protected $table = 'tiene_producto';
     protected $primaryKey = ['ID_Artesano', 'ID_Producto'];
-    protected $allowedFields = ['ID_Artesano', 'ID_Producto', 'Precio', 'Stock', 'Disponibilidad', 'Imagen_URL', 'Descripcion'];
+    protected $allowedFields = ['ID_Artesano', 'ID_Producto', 'Precio', 'Stock', 'Disponibilidad', 'Imagen_URL', 'Descripcion','Fecha_Creacion'];
     protected $useTimestamps = false;
 
     // Método opcional para obtener productos con detalles de la tabla producto

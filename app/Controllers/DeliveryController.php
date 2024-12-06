@@ -16,7 +16,8 @@ use App\Models\CategoriaModel;
 use App\Models\ContenidoModel;
 use App\Models\DetalleCompraModel;
 use App\Models\TransporteModel;
-
+use App\Models\NotificacionModel;
+use App\Models\AuditoriaModel;
 
 class DeliveryController extends Controller
 {
@@ -223,6 +224,18 @@ class DeliveryController extends Controller
 
     public function procesar_asignacion()
     {
+        $usuarioID = session()->get('ID');
+        $usuarioNombre = session()->get('Nombre');
+        $tipoEvento = 'SISTEMA'; 
+        $location = 'LA PAZ'; 
+        $descripcion = session()->get('Nombre')."HA ACEPTADO EL ENVIO";
+        $auditoriaEventoModel = new AuditoriaModel();
+        $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
+        $this->request->getUserAgent(), $location, $descripcion);
+
+
+
+
         $id_compra = $this->request->getPost('id_compra');
         $transporte_id = $this->request->getPost('transporte_id');
         $costo_envio = $this->request->getPost('costo_envio');
@@ -239,6 +252,13 @@ class DeliveryController extends Controller
             'Fecha_Envio' => date('Y-m-d'),
             'Estado' => 'EN TRÁNSITO',
         ];
+        $compra = new CompraModel();
+        $usuarioID = $compra->obtenerIDUsuarioDeCompra($id_compra)['ID_Cliente'];
+        $tipo = 'ENVIO'; 
+        $mensaje = "Tu envio se ha sido aceptado."; 
+        $notificacionModel = new NotificacionModel();
+        $notificacionModel->registrarNotificacion($usuarioID, $tipo, $mensaje);
+
         $resultado = $envioModel->updateEstado($id_compra, $data);
         if ($resultado) {
             session()->setFlashdata('mensaje', 'El envío ha sido asignado correctamente.');
@@ -250,10 +270,25 @@ class DeliveryController extends Controller
 
     public function procesar_entrega()
     {
-        $id_compra = $this->request->getPost('id_compra');
+        $usuarioID = session()->get('ID');
+        $usuarioNombre = session()->get('Nombre');
+        $tipoEvento = 'SISTEMA'; 
+        $location = 'LA PAZ'; 
+        $descripcion = session()->get('Nombre')."HA ENTREGADO EL ENVIO";
+        $auditoriaEventoModel = new AuditoriaModel();
+        $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
+        $this->request->getUserAgent(), $location, $descripcion);
 
+
+        $id_compra = $this->request->getPost('id_compra');
         $compra = new CompraModel();
         $compra->update($id_compra, ['Estado' => 'ENTREGADO']);
+
+        $usuarioID = $compra->obtenerIDUsuarioDeCompra($id_compra)['ID_Cliente'];
+        $tipo = 'ENVIO'; 
+        $mensaje = "Tu envio se ha entregado exitosamente."; 
+        $notificacionModel = new NotificacionModel();
+        $notificacionModel->registrarNotificacion($usuarioID, $tipo, $mensaje);
 
         $envioModel = new EnvioModel();
         $data = [

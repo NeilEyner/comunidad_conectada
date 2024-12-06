@@ -7,6 +7,8 @@ use App\Models\RolModel;
 use App\Models\ComunidadModel;
 use CodeIgniter\Controller;
 use CodeIgniter\RESTful\ResourceController;
+use App\Models\NotificacionModel;
+use App\Models\AuditoriaModel;
 use CodeIgniter\API\ResponseTrait;
 
 class AuthController extends BaseController
@@ -100,7 +102,7 @@ class AuthController extends BaseController
             ];
 
             if ($this->validate($rules)) {
-                $imagenURL ='images/avatar/ava.png';
+                $imagenURL = 'images/avatar/ava.png';
                 $data = [
                     'Nombre' => $this->request->getPost('Nombre'),
                     'Correo_electronico' => $this->request->getPost('Correo_electronico'),
@@ -128,6 +130,9 @@ class AuthController extends BaseController
     }
     public function do_login()
     {
+
+
+
         helper(['form']);
 
         if ($this->request->getMethod() == 'POST') {
@@ -183,6 +188,26 @@ class AuthController extends BaseController
             'isLoggedIn' => true,
         ];
 
+        $ipAddress = $this->request->getIPAddress();
+        $userAgent = $this->request->getUserAgent();
+        $device = 'Desconocido';
+        if ($userAgent->isMobile()) {
+            $device = 'Móvil';
+        } elseif ($userAgent->isBrowser()) {
+            $device = 'PC';
+        }
+        $location = 'LA PAZ';
+        $auditoriaData = [
+            'ID_Usuario' => $usuario['ID'],
+            'Tipo_Evento' => 'LOGIN',
+            'Descripcion' => "El {$usuario['Nombre']} ha iniciado sesión.",
+            'Direccion_IP' => $ipAddress,
+            'Dispositivo' => $device,
+            'Ubicacion' => $location,
+        ];
+        $auditoriaEventoModel = new AuditoriaModel();
+        $auditoriaEventoModel->insert($auditoriaData);
+
         session()->set($data);
         return true;
     }
@@ -204,18 +229,20 @@ class AuthController extends BaseController
     }
     public function logout()
     {
+        $auditoriaEventoModel = new AuditoriaModel();
+        $auditoriaEventoModel->registrarEvento('LOGOUT', session()->get('ID'), 
+        session()->get('Nombre'), $this->request->getIPAddress(), 
+        $this->request->getUserAgent(), 'LA PAZ');
         session()->destroy();
         return redirect()->to(base_url())->with('success', 'Has cerrado sesión exitosamente');
     }
     public function perfil($ID)
     {
+
         $usuarioModel = new UsuarioModel();
         $usuario = $usuarioModel->find($ID);
-
         $comunidadModel = new ComunidadModel();
         $comunidades = $comunidadModel->findAll();
-
-        // Enviamos tanto el usuario como las comunidades a la vista
         return view('auth/perfil', [
             'usuario' => $usuario,
             'comunidades' => $comunidades
@@ -224,28 +251,25 @@ class AuthController extends BaseController
 
     public function do_update($id)
     {
-        $model = new UsuarioModel();
-        helper(['form', 'url']); // Agregado 'url' helper para usar base_url()
+        $auditoriaEventoModel = new AuditoriaModel();
+        $auditoriaEventoModel->registrarEvento('CAMBIO_PERFIL', session()->get('ID'), 
+        session()->get('Nombre'), $this->request->getIPAddress(), 
+        $this->request->getUserAgent(), 'LA PAZ');
 
-        // Buscar el usuario
+        $model = new UsuarioModel();
+        helper(['form', 'url']);
         $usuario = $model->find($id);
         if (!$usuario) {
             return redirect()->back()->with('message', 'Usuario no encontrado.')->withInput();
         }
-
-        // Reglas de validación
         $rules = [
             'Nombre' => 'required|min_length[3]',
             'Correo_electronico' => 'required|valid_email',
             'Telefono' => 'permit_empty',
         ];
-
-        // Validar la entrada
         if (!$this->validate($rules)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
-
-        // Manejo de la imagen (si se sube una nueva)
         $imagen = $this->request->getFile('Imagen_URL');
         $imagenURL = null;
 
@@ -254,29 +278,21 @@ class AuthController extends BaseController
             $imagen->move(FCPATH . 'images/avatar/', $nombreImagen);
             $imagenURL = 'images/avatar/' . $nombreImagen;
         }
-
-        // Obtener los valores del formulario
         $data = [
             'Nombre' => $this->request->getPost('Nombre'),
             'Correo_electronico' => $this->request->getPost('Correo_electronico'),
             'Telefono' => $this->request->getPost('Telefono') ?: null,
             'Direccion' => $this->request->getPost('Direccion') ?: null,
             'ID_Comunidad' => $this->request->getPost('ID_Comunidad') ?: null,
-            'Latitud' => $this->request->getPost('Latitud'), // Tomar latitud del formulario
-            'Longitud' => $this->request->getPost('Longitud'), // Tomar longitud del formulario
+            'Latitud' => $this->request->getPost('Latitud'),
+            'Longitud' => $this->request->getPost('Longitud'),
         ];
-
-        // Si se subió una imagen, agregar la URL de la imagen
         if ($imagenURL) {
             $data['Imagen_URL'] = $imagenURL;
         }
-
-        // Si se proporcionó una nueva contraseña, encriptarla antes de guardarla
         if ($this->request->getPost('Contrasena')) {
             $data['Contrasena'] = password_hash($this->request->getPost('Contrasena'), PASSWORD_DEFAULT);
         }
-
-        // Actualizar el usuario
         if ($model->update($id, $data)) {
             return redirect()->back()->with('message', 'Usuario actualizado correctamente.');
         } else {

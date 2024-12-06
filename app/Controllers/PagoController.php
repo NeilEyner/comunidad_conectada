@@ -14,7 +14,8 @@ use App\Models\TieneProductoModel;
 use App\Models\CategoriaModel;
 use App\Models\DetalleCompraModel;
 use App\Models\ContenidoModel;
-
+use App\Models\NotificacionModel;
+use App\Models\AuditoriaModel;
 use App\Models\TransporteModel;
 
 class PagoController extends BaseController
@@ -76,13 +77,36 @@ class PagoController extends BaseController
 
     public function procesar_pago($id_compra)
     {
+        $usuarioID = session()->get('ID');
+        $usuarioNombre = session()->get('Nombre');
+        $tipoEvento = 'COMPRA';
+        $location = 'LA PAZ';
+        $descripcion = session()->get('Nombre') . "HA REALIZADO UNA COMPRA";
+        $auditoriaEventoModel = new AuditoriaModel();
+        $auditoriaEventoModel->registrarEvento(
+            $tipoEvento,
+            $usuarioID,
+            $usuarioNombre,
+            $this->request->getIPAddress(),
+            $this->request->getUserAgent(),
+            $location,
+            $descripcion
+        );
+
+
+        $usuarioID = session()->get('ID'); 
+        $tipo = 'COMPRA'; 
+        $mensaje = "Tu compra se ha realizado exitosamente."; 
+        $notificacionModel = new NotificacionModel();
+        $notificacionModel->registrarNotificacion($usuarioID, $tipo, $mensaje);
+
         $envioModel = new EnvioModel();
         $pagoModel = new PagoModel();
         $compraModel = new CompraModel();
-    
+
         $compraModel = new CompraModel();
-        $detalleCompraModel = new DetalleCompraModel();  
-        $tieneProductoModel = new TieneProductoModel();  
+        $detalleCompraModel = new DetalleCompraModel();
+        $tieneProductoModel = new TieneProductoModel();
 
         // Obtener la compra con el ID proporcionado
         $compra = $compraModel->find($id_compra);
@@ -106,8 +130,8 @@ class PagoController extends BaseController
                             'ID_Artesano' => $productoArtesano['ID_Artesano'],
                             'ID_Producto' => $productoArtesano['ID_Producto']
                         ])
-                        ->set('Stock', $nuevoStock)
-                        ->update();                       
+                            ->set('Stock', $nuevoStock)
+                            ->update();
                     }
                 }
                 $db->transCommit();
@@ -165,21 +189,25 @@ class PagoController extends BaseController
             'IMG_Comprobante' => $comprobanteURL
         ];
 
-        // Validar la compra existente
         $compra = $compraModel->find($this->request->getPost('id_compra'));
+        $tiene = new $detalleCompraModel();
+        $com = $tiene->where('ID_Compra', $id_compra)->findAll();
+        foreach ($com as $c) {
+            $tipo = 'PRODUCTO'; 
+            $mensaje = "Tu producto ha sido comprado."; 
+            $notificacionModel = new NotificacionModel();
+            $notificacionModel->registrarNotificacion($c['ID_Artesano'], $tipo, $mensaje);
+        }
 
         if (!$compra) {
             return redirect()->back()->with('error', 'Compra no encontrada.');
         }
         $compra['Estado'] = 'EN PROCESO';
         $compraModel->update($compra['ID'], ['Estado' => 'EN PROCESO']);
-
-
-        // Insertar el pago
         if ($pagoModel->insert($pagoData)) {
             return redirect()->to(base_url())->with('success', 'Pago procesado. En espera de verificación.');
         } else {
-            $error = $pagoModel->errors();  // Captura errores del modelo de pago
+            $error = $pagoModel->errors(); 
             return redirect()->back()->withInput()->with('error', 'Error al procesar el pago: ' . json_encode($error));
         }
 

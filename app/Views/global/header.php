@@ -153,7 +153,7 @@ endforeach;
                                 case 4: // Administrador
                                     $ruta = base_url('dashboard/administrador/admin_dashboard');
                                     $opciones = [
-                                        ['text' => 'Dashboard', 'link' => base_url('dashboard/administrador/admin_dashboard')],
+                                        ['text' => 'Panel de Control', 'link' => base_url('dashboard/administrador/admin_dashboard')],
                                         ['text' => 'Mis Compras', 'link' => base_url('dashboard/cliente/cli_dashboard')],
                                         ['text' => 'Perfil', 'link' => base_url('perfil/' . session()->get('ID'))],
                                     ];
@@ -179,8 +179,8 @@ endforeach;
                                         ['text' => 'Mis Compras', 'link' => base_url('dashboard/cliente/cli_dashboard')],
                                         ['text' => 'Realizar Envio', 'link' => base_url('dashboard/delivery/deli_dashboard')],
                                         ['text' => 'Envios', 'link' => base_url('dashboard/delivery/envio')],
-                                         ['text' => 'Perfil', 'link' => base_url('perfil/' . session()->get('ID'))],
-                                       
+                                        ['text' => 'Perfil', 'link' => base_url('perfil/' . session()->get('ID'))],
+
                                     ];
                                     break;
                             }
@@ -189,14 +189,14 @@ endforeach;
                             <div class="dropdown">
                                 <a class="nav-icon text-decoration-none" href="#" id="userDropdown" role="button"
                                     data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center;">
-                                    <img src="<?=base_url().session()->get('Imagen_URL') ?>" alt="Usuario"
+                                    <img src="<?= base_url() . session()->get('Imagen_URL') ?>" alt="Usuario"
                                         class="img-fluid rounded-circle" style="width: 30px; height: 30px; margin-right: 8px;">
                                     <div style="font-size: 14px; font-weight: 500;"><?= session()->get('Nombre') ?></div>
                                 </a>
 
                                 <!-- Menú desplegable -->
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                    
+
                                     <?php foreach ($opciones as $opcion): ?>
                                         <li><a class="dropdown-item" href="<?= $opcion['link'] ?>"><?= $opcion['text'] ?></a></li>
                                     <?php endforeach; ?>
@@ -205,6 +205,54 @@ endforeach;
                                     </li>
                                     <li><a class="dropdown-item text-danger" href="<?php echo base_url(); ?>logout">Cerrar
                                             Sesión</a></li>
+                                </ul>
+                            </div>
+                            <?php
+                            // Cargar el modelo directamente en la vista
+                            $notificacionesModel = new \App\Models\NotificacionModel();
+
+                            // Obtener el ID del usuario de la sesión
+                            $usuarioID = session()->get('ID');
+
+                            // Obtener las notificaciones no leídas del usuario
+                            $notificacionesNoLeidas = $notificacionesModel->obtenerNotificacionesNoLeidas($usuarioID);
+                            ?>
+
+                            <!-- Dropdown para el icono de notificaciones -->
+                            <div class="dropdown">
+                                <a class="nav-icon text-decoration-none" href="#" id="notificationDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center;">
+                                    <i class="bi bi-bell" style="font-size: 24px; color: #333;"></i> <!-- Icono de campana -->
+                                    <span class="badge bg-danger"
+                                        style="position: absolute; top: 0; right: 0; font-size: 12px;">
+                                        <?= is_array($notificacionesNoLeidas) ? count($notificacionesNoLeidas) : 0 ?>
+                                    </span> <!-- Contador de notificaciones no leídas -->
+                                </a>
+
+                                <!-- Menú desplegable -->
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+                                    <li>
+                                        <h6 class="dropdown-header">Notificaciones</h6>
+                                    </li>
+
+                                    <!-- Mostrar las notificaciones no leídas -->
+                                    <?php if (is_array($notificacionesNoLeidas) && count($notificacionesNoLeidas) > 0): ?>
+                                        <?php foreach ($notificacionesNoLeidas as $notificacion): ?>
+                                            <li>
+                                                <!-- <a class="dropdown-item" href="<?= base_url('notificaciones/ver/' . $notificacion['ID']) ?>"> -->
+                                                <strong><?= $notificacion['Tipo'] ?></strong><br>
+                                                <?= substr($notificacion['Mensaje'], 0, 50) . (strlen($notificacion['Mensaje']) > 50 ? '...' : '') ?>
+                                                <!-- </a> -->
+                                            </li>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <li><a class="dropdown-item text-muted" href="#">No tienes notificaciones</a></li>
+                                    <?php endif; ?>
+
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <!-- <li><a class="dropdown-item" href="<?= base_url('notificaciones') ?>">Ver todas las notificaciones</a></li> -->
                                 </ul>
                             </div>
 

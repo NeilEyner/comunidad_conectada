@@ -14,6 +14,8 @@ use App\Models\CompraModel;
 use App\Models\TieneProductoModel;
 use App\Models\DetalleCompraModel;
 use App\Models\TransporteModel;
+use App\Models\NotificacionModel;
+use App\Models\AuditoriaModel;
 
 
 class AdministradorController extends Controller
@@ -51,6 +53,8 @@ class AdministradorController extends Controller
         if (session()->get('ID_Rol') != 4) {
             return redirect()->to(base_url('login'));
         }
+        $auditoriaEventoModel = new AuditoriaModel();
+        $data['eventosAuditoria'] = $auditoriaEventoModel->orderBy('Fecha', 'DESC')->findAll();
         $model = new UsuarioModel();
         $data['usuarios'] = $model->findAll();
         return view('dashboard/administrador/admin_dashboard', $data);
@@ -59,6 +63,13 @@ class AdministradorController extends Controller
     // ADMINISTRADOR USUARIO
     public function admin_user()
     {
+
+        $notificacionModel = new NotificacionModel();
+        $notificaciones = $notificacionModel->where('ID_Usuario', 1)->where('Leido', 0)->findAll();
+
+
+        $auditoriaEventoModel = new AuditoriaModel();
+        $data['eventosAuditoria'] = $auditoriaEventoModel->findAll();
         $model = new UsuarioModel();
         $rolModel = new RolModel();
         $comunidadModel = new ComunidadModel();
@@ -69,6 +80,15 @@ class AdministradorController extends Controller
     }
     public function admin_editar_usuario($id)
     {
+        $usuarioID = session()->get('ID');
+        $usuarioNombre = session()->get('Nombre');
+        $tipoEvento = 'SISTEMA'; 
+        $location = 'LA PAZ'; 
+        $descripcion = "ADMINISTRADOR EDITO UN USUARIO.";
+        $auditoriaEventoModel = new AuditoriaModel();
+        $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
+        $this->request->getUserAgent(), $location, $descripcion);
+
         $model = new UsuarioModel();
         helper(['form']);
         $usuario = $model->find($id);
@@ -88,7 +108,7 @@ class AdministradorController extends Controller
         if ($imagen && $imagen->isValid() && !$imagen->hasMoved()) {
             $nombreImagen = $imagen->getRandomName();
             $imagen->move(FCPATH . 'images/avatar/', $nombreImagen);
-            $imagenURL = base_url('images/avatar/' . $nombreImagen);
+            $imagenURL = 'images/avatar/' . $nombreImagen;
         }
         $data = [
             'Nombre' => $this->request->getPost('Nombre'),
@@ -111,6 +131,15 @@ class AdministradorController extends Controller
     }
     public function admin_agregar_usuario()
     {
+        $usuarioID = session()->get('ID');
+        $usuarioNombre = session()->get('Nombre');
+        $tipoEvento = 'SISTEMA'; 
+        $location = 'LA PAZ'; 
+        $descripcion = "ADMINISTRADOR AGREGO USUARIO.";
+        $auditoriaEventoModel = new AuditoriaModel();
+        $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
+        $this->request->getUserAgent(), $location, $descripcion);
+
         helper(['form']);
         $usuarioModel = new UsuarioModel();
         if ($this->request->getMethod() == 'POST') {
@@ -129,9 +158,9 @@ class AdministradorController extends Controller
                 if ($imagen && $imagen->isValid() && !$imagen->hasMoved()) {
                     $nombreImagen = $imagen->getRandomName();
                     $imagen->move(FCPATH . 'images/avatar/', $nombreImagen);
-                    $imagenURL = base_url('images/avatar/' . $nombreImagen);
+                    $imagenURL = 'images/avatar/' . $nombreImagen;
                 } else {
-                    $imagenURL = base_url('images/avatar/ava.png');
+                    $imagenURL = 'images/avatar/ava.png';
                     ;
                 }
                 $hasheadoContrasena = $this->request->getPost('Contrasena');
@@ -159,6 +188,15 @@ class AdministradorController extends Controller
     }
     public function admin_eliminar_usuario($id)
     {
+        $usuarioID = session()->get('ID');
+        $usuarioNombre = session()->get('Nombre');
+        $tipoEvento = 'SISTEMA'; 
+        $location = 'LA PAZ'; 
+        $descripcion = "ADMINISTRADOR ELIMINO USUARIO.";
+        $auditoriaEventoModel = new AuditoriaModel();
+        $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
+        $this->request->getUserAgent(), $location, $descripcion);
+
         $model = new UsuarioModel();
         $compraModel = new CompraModel();
         $tieneproducto = new TieneproductoModel();
@@ -171,7 +209,7 @@ class AdministradorController extends Controller
             return redirect()->back()->with('error', 'Usuario no encontrado.');
         }
     }
-    
+
     //ADMINISTRADOR COMUNIDAD
 
     public function admin_comunidad()
@@ -344,6 +382,15 @@ class AdministradorController extends Controller
 
     public function admin_agregar_contenido_pagina()
     {
+        $usuarioID = session()->get('ID');
+        $usuarioNombre = session()->get('Nombre');
+        $tipoEvento = 'SISTEMA'; 
+        $location = 'LA PAZ'; 
+        $descripcion = "ADMINISTRADOR MODIFICO CONTENIDO.";
+        $auditoriaEventoModel = new AuditoriaModel();
+        $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
+        $this->request->getUserAgent(), $location, $descripcion);
+
         helper(['form']);
         $model = new ContenidoPaginaModel();
 
@@ -376,30 +423,68 @@ class AdministradorController extends Controller
 
     public function admin_editar_contenido_pagina($id)
     {
+        $usuarioID = session()->get('ID');
+        $usuarioNombre = session()->get('Nombre');
+        $tipoEvento = 'SISTEMA'; 
+        $location = 'LA PAZ'; 
+        $descripcion = "ADMINISTRADOR MODIFICO CONTENIDO.";
+        $auditoriaEventoModel = new AuditoriaModel();
+        $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
+        $this->request->getUserAgent(), $location, $descripcion);
         helper(['form']);
         $model = new ContenidoPaginaModel();
         $contenido = $model->find($id);
+
         if (!$contenido) {
             return redirect()->back();
         }
+
+        // Verificación de formulario con reglas
         if ($this->request->getMethod() == 'POST') {
             $rules = [
                 'Titulo' => 'required|max_length[255]',
                 'Contenido' => 'required',
             ];
+
+            // Validar el formulario
             if ($this->validate($rules)) {
+                // Obtener el archivo de imagen
+                $imagen = $this->request->getFile('Imagen');
+
+                // Preparar los datos
                 $data = [
                     'Titulo' => $this->request->getPost('Titulo'),
                     'Contenido' => $this->request->getPost('Contenido'),
                     'Fecha_actualizacion' => date('Y-m-d H:i:s')
                 ];
+
+                // Si se sube una nueva imagen
+                if ($imagen && $imagen->isValid() && !$imagen->hasMoved()) {
+                    // Generar un nombre aleatorio para la imagen
+                    $nombreImagen = $imagen->getRandomName();
+
+                    // Mover la imagen a la carpeta deseada (en este caso, 'images/contenido')
+                    $imagen->move(FCPATH . 'images/contenido/', $nombreImagen);
+
+                    // Obtener la URL de la imagen (puedes cambiar la carpeta según sea necesario)
+                    $imagenURL = 'images/contenido/' . $nombreImagen;
+
+                    // Agregar la URL de la imagen a los datos
+                    $data['Imagen'] = $imagenURL;
+                }
+
+                // Actualizar el contenido en la base de datos
                 $model->update($id, $data);
+
+                // Redirigir después de la actualización
                 return redirect()->to(base_url('dashboard/administrador/admin_contenidopagina'));
             } else {
                 return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
             }
         }
-        // return redirect()->back();
+
+        // Si el método es GET, puedes cargar la vista de edición aquí
+        // return view('admin/editar_contenido_pagina', ['contenido' => $contenido]);
     }
 
     public function admin_eliminar_contenido_pagina($id)

@@ -31,5 +31,11 @@ class CompraModel extends Model
         ->get()->getResultArray();
     
     }
+    public function obtenerIDUsuarioDeCompra($idCompra)
+    {
+        return $this->select('ID_Cliente')  // Seleccionar solo el ID del Usuario
+                    ->where('ID', $idCompra)  // Filtrar por el ID de la compra
+                    ->first(); // Devuelve el primer resultado (en este caso debería ser único)
+    }
 }
 

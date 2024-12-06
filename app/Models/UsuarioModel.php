@@ -22,7 +22,9 @@ class UsuarioModel extends Model
         'ID_Comunidad',
         'Imagen_URL',
         'Latitud',
-        'Longitud'
+        'Longitud',
+        'Fecha_nacimiento',
+        'Genero',
     ];
     
     protected $useTimestamps = true; // Si usas created_at y updated_at

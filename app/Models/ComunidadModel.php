@@ -16,7 +16,9 @@ class ComunidadModel extends Model
         'Ubicacion',
         'Latitud',
         'Longitud',
-        'Fecha_registro'
+        'Fecha_registro',
+        'Tipo_comunidad',
+        'Idioma'
     ];
     
     // Habilita los timestamps automáticos para created_at y updated_at

@@ -231,7 +231,7 @@
                                 <div id="info_qr" style="display:none; width:50%;">
                                     <div class="alert alert-info">
                                         <h5><i class="ri-qr-code-line"></i> Código QR</h5>
-                                        <?= $qr ? '<img src="' . $qr['Imagen'] . '" class="img-fluid">' : '<p>No disponible.</p>' ?>
+                                        <?= $qr ? '<img src="' . base_url().$qr['Imagen'] . '" class="img-fluid">' : '<p>No disponible.</p>' ?>
                                     </div>
                                 </div>
 

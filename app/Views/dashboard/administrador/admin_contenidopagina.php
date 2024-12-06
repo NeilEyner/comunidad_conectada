@@ -2,9 +2,6 @@
 <main class="h-full overflow-y-auto">
   <div class="container px-6 mx-auto grid">
     <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">CONTENIDO DE LA PÁGINA</h2>
-
-    <h4 class="mb-4 text-lg font-semibold text-gray-600 dark:text-gray-300">LISTA</h4>
-
     <div class="w-full overflow-hidden rounded-lg shadow-xs">
       <div class="w-full overflow-x-auto">
         <table class="w-full table-fixed">
@@ -78,7 +75,7 @@
                       </button>
                     </header>
                     <form action="<?= base_url('administrador/editar_contenido_pagina/' . $contenido['ID']) ?>"
-                      method="post">
+                      method="post" enctype="multipart/form-data">
                       <div class="mt-4 mb-6">
                         <div class="mb-3">
                           <label for="Titulo" class="block text-sm text-gray-700 dark:text-gray-400">Titulo</label>
@@ -91,6 +88,18 @@
                             class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 
                             focus:outline-none focus:shadow-outline-purple dark:text-gray-300 form-input" required>
                         </div>
+
+                        <div class="mb-3">
+                          <label for="Imagen" class="block text-sm text-gray-700 dark:text-gray-400">Subir
+                            Imagen</label>
+                          <input type="file" id="Imagen" name="Imagen" accept="image/*" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 
+             focus:outline-none focus:shadow-outline-purple dark:text-gray-300 form-input">
+                          <?php if (!empty($contenido['Imagen'])): ?>
+                            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">Imagen actual: <a
+                                href="<?= base_url($contenido['Imagen']); ?>" target="_blank">Ver Imagen</a></p>
+                          <?php endif; ?>
+                        </div>
+
                         <footer class="flex justify-end px-6 py-3 bg-gray-50 dark:bg-gray-800">
                           <button type="submit" class="w-full px-5 py-3 text-sm font-medium text-white bg-purple-600 rounded-lg 
                             sm:w-auto sm:px-4 sm:py-2 hover:bg-purple-700 focus:outline-none">

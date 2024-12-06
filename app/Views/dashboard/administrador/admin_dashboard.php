@@ -127,51 +127,52 @@
                     <tr
                       class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800"
                     >
-                      <th class="px-4 py-3">Nombre</th>
-                      <th class="px-4 py-3">Correo</th>
-                      <th class="px-4 py-3">Estado</th>
-                      <th class="px-4 py-3">Ultima Conexion</th>
+                      <th class="px-4 py-3">Tipo de Evento</th>
+                      <th class="px-4 py-3">Descripción</th>
+                      <th class="px-4 py-3">Dirección IP</th>
+                      <th class="px-4 py-3">Dispositivo</th>
+                      <th class="px-4 py-3">Ubicación</th>
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800" >
 
-                    <?php if (!empty($usuarios) && is_array($usuarios)): ?>
-                <?php foreach ($usuarios as $usuario): ?>
+                  <?php if (!empty($eventosAuditoria)): ?>
+                    <?php foreach ($eventosAuditoria as $evento): ?>
                   <tr class="text-gray-700 dark:text-gray-400">
                       <td class="px-4 py-3">
                         <div class="flex items-center text-sm">
                           <!-- Avatar with inset shadow -->
                           <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
-                          <img class="object-cover w-full h-full rounded-full"
-                          src="<?php echo esc(base_url().$usuario['Imagen_URL']); ?>" alt="<?php echo esc($usuario['Nombre']); ?>" />
-            
-                          </div>
+                  
                           <div>
-                            <p class="font-semibold"><?php echo esc($usuario['Nombre']); ?></p>
+                            <p class="font-semibold"><?= esc($evento['Tipo_Evento']) ?></p>
                             <p class="text-xs text-gray-600 dark:text-gray-400">
-                            <?php echo esc($usuario['Telefono']); ?>
+                            <?= esc($evento['Fecha']) ?>
                             </p>
                           </div>
                         </div>
-                      </td>
-                      <td class="px-4 py-3 text-sm">
-                      <?php echo esc($usuario['Correo_electronico']); ?>
                       </td>
                       <td class="px-4 py-3 text-xs">
                         <span
                           class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full dark:bg-green-700 dark:text-green-100"
                         >
-                        <?php echo esc($usuario['Estado']); ?>
+                        <?= esc($evento['Descripcion']) ?>
                         </span>
                       </td>
                       <td class="px-4 py-3 text-sm">
-                      <?php echo esc($usuario['Ultima_conexion']); ?>
+                      <?= esc($evento['Direccion_IP']) ?>
+                      </td>
+                      <td class="px-4 py-3 text-sm">
+                      <?= esc($evento['Dispositivo']) ?>
+                      </td>
+                      <td class="px-4 py-3 text-sm">
+                      <?= esc($evento['Ubicacion']) ?>
                       </td>
                     </tr>
                 <?php endforeach;?>
             <?php else: ?>
                 <tr>
-                    <td colspan="9">No se encontraron usuarios.</td>
+                    <td colspan="9">No se encontraron eventos.</td>
                 </tr>
             <?php endif;?>
 
