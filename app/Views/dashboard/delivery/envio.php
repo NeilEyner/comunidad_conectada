@@ -27,8 +27,11 @@ function calcularDistancia($lat1, $lon1, $lat2, $lon2)
         --danger-color: #d50000;
     }
 
+
     .modal-content {
-        max-width: 600px;
+        right: 200px !important;
+        max-width: 1200px;
+        width: 1200px !important;
         margin: auto;
     }
 
@@ -182,7 +185,7 @@ function calcularDistancia($lat1, $lon1, $lat2, $lon2)
                                             </div>
                                             <div>
                                                 <small class="text-muted">Entregar en</small>
-                                                <p class="mb-0"><?= $envio['Direccion_Destino'] ?></p>
+                                                <!-- <p class="mb-0"><?= $envio['Direccion_Destino'] ?></p> -->
                                                 <small class="text-muted"><?= $envio['Comunidad'] ?></small>
                                             </div>
                                         </div>
@@ -279,59 +282,95 @@ function calcularDistancia($lat1, $lon1, $lat2, $lon2)
                                             </button>
                                         </div>
                                     </div>
+
                                 </div>
-                            </div>
-                            <!-- Modal -->
-                            <div class="modal fade" id="mapModal_<?= $envio['ID_Compra'] ?>_<?= $producto['ID_Producto'] ?>"
-                                tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="mapModalLabel">Ubicación en el Mapa</h5>
+                                <div class="col-md-6">
+                                    <div class="card bg-light shadow-lg rounded-3">
+                                        <!-- Mapa de seguimiento de envío -->
+                                        <div id="map_<?= $envio['ID_Compra'] ?>_<?= $producto['ID_Producto'] ?>"
+                                            class="delivery-map" data-lat="<?= esc($envio['Latitud']) ?>"
+                                            data-lng="<?= esc($envio['Longitud']) ?>"
+                                            data-productos='<?= json_encode($envio['productos']) ?>'>
                                         </div>
-                                        <div class="modal-body">
-                                            <div id="map_<?= $envio['ID_Compra'] ?>_<?= $producto['ID_Producto'] ?>"
-                                                style="width: 100%; height: 300px;"></div>
-                                        </div>
+
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                                function initDeliveryMap(mapElement) {
+                                                    const latPrincipal = parseFloat(mapElement.dataset.lat);
+                                                    const lngPrincipal = parseFloat(mapElement.dataset.lng);
+                                                    const productos = JSON.parse(mapElement.dataset.productos);
+
+                                                    // Configuración del mapa
+                                                    const map = L.map(mapElement, {
+                                                        center: [latPrincipal, lngPrincipal],
+                                                        zoom: 9,
+                                                        zoomControl: true,
+                                                        attributionControl: false
+                                                    });
+
+                                                    // Capas de mapas
+                                                    const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                        attribution: '© OpenStreetMap contributors'
+                                                    });
+
+                                                    const stadiaLayer = L.tileLayer('https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png', {
+                                                        attribution: '© Stadia Maps'
+                                                    });
+
+                                                    // Añadir capas
+                                                    map.addLayer(osmLayer);
+                                                    map.addLayer(stadiaLayer);
+
+                                                    // Marcador de entrega principal
+                                                    const principalMarker = L.marker([latPrincipal, lngPrincipal])
+                                                        .addTo(map)
+                                                        .bindPopup('<strong>Punto de Entrega</strong>')
+                                                        .openPopup();
+
+                                                    // Marcadores de productos
+                                                    productos.forEach(producto => {
+                                                        const latSecundaria = parseFloat(producto.Latitud || 0);
+                                                        const lngSecundaria = parseFloat(producto.Longitud || 0);
+
+                                                        if (latSecundaria !== 0 && lngSecundaria !== 0) {
+                                                            const secondaryMarker = L.marker([latSecundaria, lngSecundaria])
+                                                                .addTo(map)
+                                                                .bindPopup(`<strong>${producto.Producto}</strong>`);
+
+                                                            // Línea de conexión
+                                                            L.polyline(
+                                                                [[latPrincipal, lngPrincipal], [latSecundaria, lngSecundaria]],
+                                                                { color: 'blue', weight: 3, dashArray: '10, 10' }
+                                                            ).addTo(map);
+                                                        }
+                                                    });
+
+                                                    // Ajustar mapa al contenedor
+                                                    map.invalidateSize();
+                                                }
+
+                                                // Inicializar mapas en modales
+                                                document.querySelectorAll('.delivery-map').forEach(mapElement => {
+                                                    const modalId = mapElement.closest('.modal').id;
+
+                                                    $(`#${modalId}`).on('shown.bs.modal', () => initDeliveryMap(mapElement));
+                                                });
+                                            });
+                                        </script>
+
+                                        <style>
+                                            .delivery-map {
+                                                width: 100%;
+                                                height: 300px;
+                                                margin: 0;
+                                                padding: 0;
+                                                border: none;
+                                            }
+                                        </style>
                                     </div>
                                 </div>
                             </div>
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function () {
-                                    const modalId = '#mapModal_<?= $envio['ID_Compra'] ?>_<?= $producto['ID_Producto'] ?>';
-                                    const mapId = 'map_<?= $envio['ID_Compra'] ?>_<?= $producto['ID_Producto'] ?>';
-                                    const latPrincipal = <?= esc($envio['Latitud']) ?>;
-                                    const lngPrincipal = <?= esc($envio['Longitud']) ?>;
-                                    const productos = <?= json_encode($envio['productos']) ?>;
-                                    let map;
-                                    let isMapLoaded = false;
-                                    $(modalId).on('shown.bs.modal', function () {
-                                        if (!isMapLoaded) {
-                                            map = L.map(mapId).setView([latPrincipal, lngPrincipal], 13);
-                                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                            }).addTo(map);
-                                            const principalMarker = L.marker([latPrincipal, lngPrincipal]).addTo(map);
-                                            principalMarker.bindPopup('ENTREGA').openPopup();
-                                            productos.forEach(producto => {
-                                                const latSecundaria = producto['Latitud'] ? parseFloat(producto['Latitud']) : 0;
-                                                const lngSecundaria = producto['Longitud'] ? parseFloat(producto['Longitud']) : 0;
-                                                if (latSecundaria !== 0 && lngSecundaria !== 0) {
-                                                    const secondaryMarker = L.marker([latSecundaria, lngSecundaria]).addTo(map);
-                                                    const polyline = L.polyline(
-                                                        [[latPrincipal, lngPrincipal], [latSecundaria, lngSecundaria]],
-                                                        { color: 'blue', weight: 2 }
-                                                    ).addTo(map);
-                                                }
-                                            });
-                                            isMapLoaded = true;
-                                        }
-                                    });
-                                    $(modalId).on('hidden.bs.modal', function () {
 
-                                    });
-                                });
-                            </script>
 
                             <div class="table-responsive card bg-light shadow-lg rounded-3">
                                 <table class="table">
@@ -339,7 +378,7 @@ function calcularDistancia($lat1, $lon1, $lat2, $lon2)
                                         <tr>
                                             <th>Producto</th>
                                             <th>Direccion</th>
-                                            <th>Mapa</th>
+                                            <th>Estado</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -369,88 +408,54 @@ function calcularDistancia($lat1, $lon1, $lat2, $lon2)
                                                 </td>
                                                 <td>
                                                     <?php
-                                                    $lat = isset($producto['Latitud']) ? $producto['Latitud'] : '0';
-                                                    $lng = isset($producto['Longitud']) ? $producto['Longitud'] : '0';
-                                                    $mapId = "map_" . $producto['ID_Producto'] . "_" . $envio['ID_Compra'];
+                                                    $estado = esc($producto['Estado']);
+                                                    $estadoIcono = '';
+                                                    $estadoClass = '';
+
+                                                    switch ($estado) {
+                                                        case 'PREPARANDO':
+                                                            $estadoIcono = 'ri-loader-2-line';
+                                                            $estadoClass = 'btn-warning';
+                                                            break;
+                                                        case 'RECOGIDO':
+                                                            $estadoIcono = 'ri-truck-line';
+                                                            $estadoClass = 'btn-primary';
+                                                            break;
+                                                        case 'EN TRÁNSITO':
+                                                            $estadoIcono = 'ri-road-line';
+                                                            $estadoClass = 'btn-info';
+                                                            break;
+                                                        case 'ENTREGADO':
+                                                            $estadoIcono = 'ri-check-line';
+                                                            $estadoClass = 'btn-success';
+                                                            break;
+                                                    }
                                                     ?>
-                                                    <button class="btn btn-outline-primary btn-sm w-100" data-bs-toggle="modal"
-                                                        data-bs-target="#mapModal_<?= $producto['ID_Producto'] ?>_<?= $envio['ID_Compra'] ?>">
-                                                        <i class="bi bi-map-fill me-1"></i> Ver Mapa
-                                                    </button>
-                                                    <div class="modal fade"
-                                                        id="mapModal_<?= $producto['ID_Producto'] ?>_<?= $envio['ID_Compra'] ?>"
-                                                        tabindex="-1">
-                                                        <div class="modal-dialog modal-dialog-centered">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title">Ubicación del Producto</h5>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <div id="<?= $mapId ?>" style="width: 100%; height: 300px;">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+
+                                                    <!-- Estado actual -->
+                                                    <span class="btn <?= $estadoClass ?> btn-sm">
+                                                        <i class="ri <?= $estadoIcono ?>"></i> <?= $estado ?>
+                                                    </span>
+
+                                                    <!-- Enlaces para cambiar el estado -->
+                                                    <div class="btn-group mt-2">
+                                                        <a href="<?= base_url('producto/cambiarEstado/' . $producto['ID_Producto'] .'/'. $producto['ID_Compra']. '/PREPARANDO') ?>"
+                                                            class="btn btn-outline-warning btn-sm">
+                                                            PREPARANDO
+                                                        </a>
+                                                        <a href="<?= base_url('producto/cambiarEstado/' . $producto['ID_Producto'] .'/'. $producto['ID_Compra']. '/RECOGIDO') ?>"
+                                                            class="btn btn-outline-primary btn-sm">
+                                                            RECOGIDO
+                                                        </a>
+                                                        <a href="<?= base_url('producto/cambiarEstado/' . $producto['ID_Producto'] .'/'. $producto['ID_Compra']. '/ENTRANSITO') ?>"
+                                                            class="btn btn-outline-info btn-sm">
+                                                            EN TRÁNSITO
+                                                        </a>
+                                                        <a href="<?= base_url('producto/cambiarEstado/' . $producto['ID_Producto'] .'/'. $producto['ID_Compra']. '/ENTREGADO') ?>"
+                                                            class="btn btn-outline-success btn-sm">
+                                                            ENTREGADO
+                                                        </a>
                                                     </div>
-                                                    <?php
-                                                    $lat_usuario = session()->get('Latitud');
-                                                    $lng_usuario = session()->get('Longitud');
-                                                    $lat_producto = $producto['Latitud'];
-                                                    $lng_producto = $producto['Longitud'];
-                                                    ?>
-                                                    <script>
-                                                        document.addEventListener('DOMContentLoaded', function () {
-                                                            const modalId = 'mapModal_<?= $producto['ID_Producto'] ?>_<?= $envio['ID_Compra'] ?>';
-                                                            const mapId = '<?= $mapId ?>';
-                                                            let map_<?= $mapId ?> = null;
-                                                            function mostrarMapa(lat_usuario, lng_usuario, lat_producto, lng_producto) {
-                                                                map_<?= $mapId ?> = L.map(mapId).setView([lat_usuario, lng_usuario], 13);
-                                                                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                                                }).addTo(map_<?= $mapId ?>);
-                                                                L.marker([lat_usuario, lng_usuario]).addTo(map_<?= $mapId ?>)
-                                                                    .bindPopup("TU")
-                                                                    .openPopup();
-                                                                L.marker([lat_producto, lng_producto]).addTo(map_<?= $mapId ?>)
-                                                                    .bindPopup("<?= esc($producto['Producto']) ?>")
-                                                                    .openPopup();
-                                                                const latlngs = [
-                                                                    [lat_usuario, lng_usuario],
-                                                                    [lat_producto, lng_producto]
-                                                                ];
-
-                                                                L.polyline(latlngs, { color: 'blue' }).addTo(map_<?= $mapId ?>);
-                                                            }
-
-                                                            document.getElementById(modalId).addEventListener('shown.bs.modal', function () {
-                                                                if (!map_<?= $mapId ?>) {
-                                                                    const lat_usuario = <?= json_encode($lat_usuario) ?>;
-                                                                    const lng_usuario = <?= json_encode($lng_usuario) ?>;
-                                                                    const lat_producto = <?= json_encode($lat_producto) ?>;
-                                                                    const lng_producto = <?= json_encode($lng_producto) ?>;
-                                                                    if (lat_usuario && lng_usuario && lat_producto && lng_producto) {
-                                                                        mostrarMapa(lat_usuario, lng_usuario, lat_producto, lng_producto);
-                                                                    } else {
-                                                                        alert("No se pudieron obtener las ubicaciones.");
-                                                                        mostrarMapa(40.7128, -74.0060, 40.7128, -74.0060);
-                                                                    }
-                                                                }
-                                                            });
-
-                                                            // if ("geolocation" in navigator) {
-                                                            //     navigator.geolocation.getCurrentPosition(function (position) {
-                                                            //         const lat = position.coords.latitude;
-                                                            //         const lng = position.coords.longitude;
-                                                            //         mostrarMapa(lat, lng, <?= json_encode($lat_producto) ?>, <?= json_encode($lng_producto) ?>);
-                                                            //     }, function (error) {
-                                                            //         console.error("Error al obtener la ubicación: ", error);
-                                                            //         alert("No se pudo obtener la ubicación.");
-                                                            //     });
-                                                            // } else {
-                                                            //     alert("La geolocalización no es compatible con este navegador.");
-                                                            // }
-                                                        });
-                                                    </script>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>

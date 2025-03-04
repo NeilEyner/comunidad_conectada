@@ -20,58 +20,51 @@ use App\Models\TransporteModel;
 
 class PagoController extends BaseController
 {
-    public function mostrar_metodos_pago($id_compra)
+    public function mostrarMetodosPago($idCompra)
     {
-
         $compraModel = new CompraModel();
-        $compra = $compraModel->find($id_compra);
+        $compra = $compraModel->find($idCompra);
 
-        $contenidoModel = new ContenidoPaginaModel();
-
-        $transferencia = $contenidoModel->where('Tipo_contenido', 'OTRO')
+        $contenidoPaginaModel = new ContenidoPaginaModel();
+        $transferenciaBancaria = $contenidoPaginaModel->where('Tipo_contenido', 'OTRO')
             ->where('Titulo', 'Transferencia Bancaria')
             ->first();
-
-        // Fetch QR code information
-        $qr = $contenidoModel->where('Tipo_contenido', 'OTRO')
+        $codigoQR = $contenidoPaginaModel->where('Tipo_contenido', 'OTRO')
             ->where('Titulo', 'QR')
             ->first();
-        $content = $contenidoModel->findAll();
-
-        $tieneProductoModel = new TieneProductoModel();
-        $resultado = $tieneProductoModel->findAll();
-
-
+        $contenidoGeneral = $contenidoPaginaModel->findAll();
         $categoriaModel = new CategoriaModel();
-        $resultado2 = $categoriaModel->findAll();
-        $detalleCompraModel = new DetalleCompraModel();
-        $contenidoModel = new ContenidoModel();
-        $resultado3 = $contenidoModel->findAll();
+        $categoriasDisponibles = $categoriaModel->findAll();
+
+        $compraModel = new CompraModel();
+        $usuario = session()->get('ID');
+        $tieneProductoModel = new DetalleCompraModel();
+        $productosDisponibles = $compraModel->obtenerDetallesComprasID($idCompra);
         $carrito = '';
         if (session()->get('ID_Rol') == null) {
             $usuario = 0;
         } else {
-            $usuario = session()->get('ID_Rol');
-            $carrito = $detalleCompraModel->where('ID_Compra', $id_compra)->obtenerDetallesCompra(session()->get('ID'));
+            $usuario = session()->get('ID');
+            $carrito = $compraModel->obtenerDetallesCompras($usuario);
         }
 
-        $comunidades = new ComunidadModel();
-        $comunidad = $comunidades->findAll();
+        $comunidadModel = new ComunidadModel();
+        $comunidadesDisponibles = $comunidadModel->findAll();
+
         $data = [
-            'ID' => $id_compra,
+            'ID' => $idCompra,
             'compra' => $compra,
             'titulo' => 'Pagos',
-            'productos' => $resultado,
-            'categorias' => $resultado2,
-            'usuario' => $usuario,
+            'productos' => $productosDisponibles,
+            'categorias' => $categoriasDisponibles,
             'carrito' => $carrito,
-            'transferencia' => $transferencia,
-            'qr' => $qr,
+            'transferencia' => $transferenciaBancaria,
+            'qr' => $codigoQR,
             'tieneProductoModel' => $tieneProductoModel,
-            'contenido' => $content,
-            'comunidades' => $comunidad,
+            'contenido' => $contenidoGeneral,
+            'comunidades' => $comunidadesDisponibles,
         ];
-        // return view('pagos/metodos_pagos', $data);
+
         return view('global/header', $data) . view('pagos/metodos_pagos', $data) . view('global/footer');
     }
 
@@ -94,9 +87,9 @@ class PagoController extends BaseController
         );
 
 
-        $usuarioID = session()->get('ID'); 
-        $tipo = 'COMPRA'; 
-        $mensaje = "Tu compra se ha realizado exitosamente."; 
+        $usuarioID = session()->get('ID');
+        $tipo = 'COMPRA';
+        $mensaje = "Tu compra se ha realizado exitosamente.";
         $notificacionModel = new NotificacionModel();
         $notificacionModel->registrarNotificacion($usuarioID, $tipo, $mensaje);
 
@@ -108,38 +101,38 @@ class PagoController extends BaseController
         $detalleCompraModel = new DetalleCompraModel();
         $tieneProductoModel = new TieneProductoModel();
 
-        // Obtener la compra con el ID proporcionado
-        $compra = $compraModel->find($id_compra);
-        if ($compra) {
-            $detalleCompra = $detalleCompraModel->where('ID_Compra', $id_compra)->findAll();
-            $db = \Config\Database::connect();
-            $db->transBegin();
-            try {
-                foreach ($detalleCompra as $detalle) {
-                    $idArtesano = $detalle['ID_Artesano'];
-                    $idProducto = $detalle['ID_Producto'];
-                    $cantidadVendida = $detalle['Cantidad'];
-                    $productoArtesano = $tieneProductoModel->where([
-                        'ID_Artesano' => $idArtesano,
-                        'ID_Producto' => $idProducto
-                    ])->first();
+        // // Obtener la compra con el ID proporcionado
+        // $compra = $compraModel->find($id_compra);
+        // if ($compra) {
+        //     $detalleCompra = $detalleCompraModel->where('ID_Compra', $id_compra)->findAll();
+        //     $db = \Config\Database::connect();
+        //     $db->transBegin();
+        //     try {
+        //         foreach ($detalleCompra as $detalle) {
+        //             $idArtesano = $detalle['ID_Artesano'];
+        //             $idProducto = $detalle['ID_Producto'];
+        //             $cantidadVendida = $detalle['Cantidad'];
+        //             $productoArtesano = $tieneProductoModel->where([
+        //                 'ID_Artesano' => $idArtesano,
+        //                 'ID' => $idProducto
+        //             ])->first();
 
-                    if ($productoArtesano) {
-                        $nuevoStock = max(0, $productoArtesano['Stock'] - $cantidadVendida);
-                        $tieneProductoModel->where([
-                            'ID_Artesano' => $productoArtesano['ID_Artesano'],
-                            'ID_Producto' => $productoArtesano['ID_Producto']
-                        ])
-                            ->set('Stock', $nuevoStock)
-                            ->update();
-                    }
-                }
-                $db->transCommit();
-            } catch (\Exception $e) {
-                $db->transRollback();
-                throw $e;
-            }
-        }
+        //             if ($productoArtesano) {
+        //                 $nuevoStock = max(0, $productoArtesano['Stock'] - $cantidadVendida);
+        //                 $tieneProductoModel->where([
+        //                     'ID_Artesano' => $productoArtesano['ID_Artesano'],
+        //                     'ID' => $productoArtesano['ID_Producto']
+        //                 ])
+        //                     ->set('Stock', $nuevoStock)
+        //                     ->update();
+        //             }
+        //         }
+        //         $db->transCommit();
+        //     } catch (\Exception $e) {
+        //         $db->transRollback();
+        //         throw $e;
+        //     }
+        // }
         // Procesar los datos del formulario de envío
         $dataEnvio = [
             'ID_Compra' => $this->request->getPost('id_compra'),
@@ -193,8 +186,8 @@ class PagoController extends BaseController
         $tiene = new $detalleCompraModel();
         $com = $tiene->where('ID_Compra', $id_compra)->findAll();
         foreach ($com as $c) {
-            $tipo = 'PRODUCTO'; 
-            $mensaje = "Tu producto ha sido comprado."; 
+            $tipo = 'PRODUCTO';
+            $mensaje = "Tu producto ha sido comprado.";
             $notificacionModel = new NotificacionModel();
             $notificacionModel->registrarNotificacion($c['ID_Artesano'], $tipo, $mensaje);
         }
@@ -207,7 +200,7 @@ class PagoController extends BaseController
         if ($pagoModel->insert($pagoData)) {
             return redirect()->to(base_url())->with('success', 'Pago procesado. En espera de verificación.');
         } else {
-            $error = $pagoModel->errors(); 
+            $error = $pagoModel->errors();
             return redirect()->back()->withInput()->with('error', 'Error al procesar el pago: ' . json_encode($error));
         }
 

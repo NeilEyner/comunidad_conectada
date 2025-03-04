@@ -110,7 +110,7 @@
     <div class="profile-header text-white text-center">
         <div class="container">
             <div class="profile-picture mb-3">
-                <img src="<?= base_url().$usuario['Imagen_URL'] ?? '/images/default-avatar.png' ?>" alt="Foto de perfil"
+                <img src="<?= base_url() . $usuario['Imagen_URL'] ?? '/images/default-avatar.png' ?>" alt="Foto de perfil"
                     id="profileImage">
 
             </div>
@@ -150,6 +150,25 @@
                                     placeholder="Teléfono" value="<?= $usuario['Telefono'] ?>">
                                 <label for="telefono">Teléfono</label>
                             </div>
+                            <!-- Campo de Género -->
+                            <div class="form-floating">
+                                <select class="form-control" id="genero" name="Genero">
+                                    <option value="MASCULINO" <?= $usuario['Genero'] == 'masculino' ? 'selected' : '' ?>>
+                                        Masculino</option>
+                                    <option value="FEMENINO" <?= $usuario['Genero'] == 'femenino' ? 'selected' : '' ?>>
+                                        Femenino</option>
+                                    <option value="OTRO" <?= $usuario['Genero'] == 'otro' ? 'selected' : '' ?>>Otro
+                                    </option>
+                                </select>
+                                <label for="genero">Género</label>
+                            </div>
+
+                            <!-- Campo de Fecha de Nacimiento -->
+                            <div class="form-floating">
+                                <input type="date" class="form-control" id="fecha_nacimiento" name="Fecha_nacimiento"
+                                    placeholder="Fecha de Nacimiento" value="<?= $usuario['Fecha_nacimiento'] ?>">
+                                <label for="fecha_nacimiento">Fecha de Nacimiento</label>
+                            </div>
                             <!-- Selector de Comunidad -->
                             <div class="community-selector">
                                 <h5 class="mb-3">
@@ -168,11 +187,6 @@
                                     </select>
                                 </div>
                             </div>
-
-
-
-
-
                             <!-- Ubicación -->
                             <!-- Sección del mapa modificada -->
                             <div class="mb-3">

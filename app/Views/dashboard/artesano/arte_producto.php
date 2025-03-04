@@ -24,7 +24,7 @@
             </tr>
           </thead>
           <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-            <?php if (!empty($productos) && is_array($productos)): ?>
+            <?php if (!empty($productos)): ?>
               <?php foreach ($productos as $producto): ?>
                 <tr class="text-gray-700 dark:text-gray-400">
                   <td class="px-4 py-3 text-sm">
@@ -36,22 +36,20 @@
                         <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
                       </div>
                       <div>
-                        <p class="font-semibold"><?php echo esc($producto['Nombre']); ?></p>
-                        <!-- <p class="text-xs text-gray-600 dark:text-gray-400"><?php echo esc($producto['ID_Producto']); ?></p> -->
+                        <p class="font-semibold uppercase"><?php echo esc($producto['Nombre']); ?></p>
                       </div>
                     </div>
                   </td>
                   <td class="px-4 py-3 text-sm"><?php echo esc($producto['Descripcion']); ?></td>
                   <td class="px-4 py-3 text-sm"><?php echo esc($producto['Precio']); ?></td>
                   <td class="px-4 py-3 text-sm"><?php echo esc($producto['Stock']); ?></td>
-                  <td class="px-4 py-3 text-sm">
-                    <?php echo $producto['Disponibilidad'] ? 'Disponible' : 'No disponible'; ?>
+                  <td class="px-4 py-3 text-sm"><?php echo $producto['Disponibilidad'] ? 'Disponible' : 'No disponible'; ?>
                   </td>
                   <td class="px-4 py-3">
                     <div class="flex items-center space-x-4 text-sm">
                       <button
                         class="openModalButton flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-purple-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
-                        aria-label="Edit" data-producto-id="<?php echo $producto['ID_Producto']; ?>">
+                        aria-label="Edit" data-producto-id="<?php echo $producto['ID']; ?>">
                         <svg class="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
                           <path
                             d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z">
@@ -59,7 +57,7 @@
                         </svg>
                       </button>
                       <form
-                        action="<?= base_url('artesano/eliminar_producto/' . $producto['ID_Artesano'] . '/' . $producto['ID_Producto']) ?>"
+                        action="<?= base_url('artesano/eliminar_producto/' . $producto['ID_Artesano'] . '/' . $producto['ID']) ?>"
                         method="post">
                         <button type="submit"
                           class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-red-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
@@ -77,14 +75,14 @@
                 <!-- Modal para cada producto -->
                 <div
                   class="modal hidden fixed inset-0 z-30 flex items-end bg-black bg-opacity-50 sm:items-center sm:justify-center"
-                  id="modal-<?php echo $producto['ID_Producto']; ?>">
+                  id="modal-<?php echo $producto['ID']; ?>">
                   <div
                     class="modal-content w-full px-6 py-4 overflow-hidden bg-white rounded-t-lg dark:bg-gray-800 sm:rounded-lg sm:m-4 sm:max-w-xl"
                     role="dialog">
                     <header class="flex justify-end">
                       <button
                         class="closeModalButton inline-flex items-center justify-center w-6 h-6 text-gray-400 transition-colors duration-150 rounded dark:hover:text-gray-200 hover:text-gray-700"
-                        aria-label="close" data-producto-id="<?php echo $producto['ID_Producto']; ?>">
+                        aria-label="close" data-producto-id="<?php echo $producto['ID']; ?>">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" role="img" aria-hidden="true">
                           <path
                             d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -94,13 +92,11 @@
                     </header>
                     <div class="mt-4 mb-6">
                       <p class="mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300">Editar Producto</p>
-                      <!-- <p class="text-sm text-gray-700 dark:text-gray-400">Producto ID: <?php echo $producto['ID_Producto']; ?> </p> -->
-
                       <!-- Formulario para editar producto -->
                       <form
-                        action="<?= base_url('artesano/editar_productos/' . $producto['ID_Artesano'] . '/' . $producto['ID_Producto']) ?>"
+                        action="<?= base_url('artesano/editar_productos/' . $producto['ID_Artesano'] . '/' . $producto['ID']) ?>"
                         method="POST" enctype="multipart/form-data">
-                        <input type="hidden" name="ID_Producto" value="<?php echo $producto['ID_Producto']; ?>">
+                        <input type="hidden" name="ID" value="<?php echo $producto['ID']; ?>">
 
                         <div class="mb-4">
                           <label for="ID_Producto" class="block text-sm font-medium text-gray-700 dark:text-gray-400">
@@ -217,11 +213,11 @@
           <select id="ID_Producto" name="ID_Producto" class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 
               focus:outline-none focus:shadow-outline-purple dark:text-gray-300 form-select" required>
             <?php foreach ($productos_list as $prod): ?>
-              <?php if (!in_array($prod['Nombre'], array_column($productos, 'Nombre'))): // Compara el nombre ?>
+              <?php //if (!in_array($prod['Nombre'], array_column($productos, 'Nombre'))): // Compara el nombre ?>
                 <option value="<?= esc($prod['ID']); ?>">
                   <?= esc($prod['Nombre']); ?>
                 </option>
-              <?php endif; ?>
+              <?php //endif; ?>
             <?php endforeach; ?>
           </select>
         </div>

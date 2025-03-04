@@ -199,8 +199,8 @@ class AuthController extends BaseController
         $location = 'LA PAZ';
         $auditoriaData = [
             'ID_Usuario' => $usuario['ID'],
-            'Tipo_Evento' => 'LOGIN',
-            'Descripcion' => "El {$usuario['Nombre']} ha iniciado sesión.",
+            'Tipo_Evento' => 'INICIO_SESION',
+            'Descripcion' => "El usuario {$usuario['Nombre']} ha iniciado sesión.",
             'Direccion_IP' => $ipAddress,
             'Dispositivo' => $device,
             'Ubicacion' => $location,
@@ -230,7 +230,7 @@ class AuthController extends BaseController
     public function logout()
     {
         $auditoriaEventoModel = new AuditoriaModel();
-        $auditoriaEventoModel->registrarEvento('LOGOUT', session()->get('ID'), 
+        $auditoriaEventoModel->registrarEvento('CIERRE_SESION', session()->get('ID'), 
         session()->get('Nombre'), $this->request->getIPAddress(), 
         $this->request->getUserAgent(), 'LA PAZ');
         session()->destroy();
@@ -238,7 +238,6 @@ class AuthController extends BaseController
     }
     public function perfil($ID)
     {
-
         $usuarioModel = new UsuarioModel();
         $usuario = $usuarioModel->find($ID);
         $comunidadModel = new ComunidadModel();
@@ -282,6 +281,8 @@ class AuthController extends BaseController
             'Nombre' => $this->request->getPost('Nombre'),
             'Correo_electronico' => $this->request->getPost('Correo_electronico'),
             'Telefono' => $this->request->getPost('Telefono') ?: null,
+            'Genero' => $this->request->getPost('Genero')?: null,
+            'Fecha_nacimiento' => $this->request->getPost('Fecha_nacimiento')?: null,
             'Direccion' => $this->request->getPost('Direccion') ?: null,
             'ID_Comunidad' => $this->request->getPost('ID_Comunidad') ?: null,
             'Latitud' => $this->request->getPost('Latitud'),

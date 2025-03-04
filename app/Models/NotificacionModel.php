@@ -59,6 +59,8 @@ class NotificacionModel extends Model
     {
         return $this->where('ID_Usuario', $usuarioID)
                     ->where('Leido', 0)
+                    ->orderBy('fecha', 'DESC')
+                    ->limit(4)
                     ->findAll();
     }
 

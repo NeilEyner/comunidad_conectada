@@ -70,8 +70,8 @@ class DeliveryController extends Controller
                 $productosQuery = $db->query("
                     SELECT 
                         d.ID_Compra,
+                        tp.ID as ID_Producto,
                         p.Nombre as Producto,
-                        p.ID as ID_Producto,
                         COALESCE(tp.Imagen_URL, '/assets/img/default-product.jpg') as Imagen_URL,
                         d.Cantidad,
                         c.Nombre as Comunidad_Artesano,
@@ -80,8 +80,8 @@ class DeliveryController extends Controller
                         u.Direccion,
                         u.ID as ID_Artesano
                     FROM detalle_compra d
-                    JOIN producto p ON p.ID = d.ID_Producto
-                    LEFT JOIN tiene_producto tp ON tp.ID_Producto = p.ID AND tp.ID_Artesano = d.ID_Artesano
+                    JOIN tiene_producto tp ON tp.ID= d.ID_Producto
+                    JOIN producto p ON p.ID = tp.ID_Producto
                     JOIN usuario u ON u.ID = d.ID_Artesano
                     JOIN comunidad c ON u.ID_Comunidad = c.ID
                     WHERE d.ID_Compra = ?
@@ -121,7 +121,7 @@ class DeliveryController extends Controller
         if (session()->get('ID_Rol') != 3) {
             return redirect()->to(base_url('login'));
         }
-        
+
         $db = \Config\Database::connect();
         $userId = session()->get('ID');
 
@@ -160,10 +160,11 @@ class DeliveryController extends Controller
             // Obtener detalles de productos para cada compra
             foreach ($envios as &$envio) {
                 $productosQuery = $db->query("
-                    SELECT 
+                   SELECT 
                         d.ID_Compra,
+                        tp.ID as ID_Producto,
+                        d.Estado as Estado,
                         p.Nombre as Producto,
-                        p.ID as ID_Producto,
                         COALESCE(tp.Imagen_URL, '/assets/img/default-product.jpg') as Imagen_URL,
                         d.Cantidad,
                         c.Nombre as Comunidad_Artesano,
@@ -172,8 +173,8 @@ class DeliveryController extends Controller
                         u.Direccion,
                         u.ID as ID_Artesano
                     FROM detalle_compra d
-                    JOIN producto p ON p.ID = d.ID_Producto
-                    LEFT JOIN tiene_producto tp ON tp.ID_Producto = p.ID AND tp.ID_Artesano = d.ID_Artesano
+                    JOIN tiene_producto tp ON tp.ID= d.ID_Producto
+                    JOIN producto p ON p.ID = tp.ID_Producto
                     JOIN usuario u ON u.ID = d.ID_Artesano
                     JOIN comunidad c ON u.ID_Comunidad = c.ID
                     WHERE d.ID_Compra = ?
@@ -226,14 +227,19 @@ class DeliveryController extends Controller
     {
         $usuarioID = session()->get('ID');
         $usuarioNombre = session()->get('Nombre');
-        $tipoEvento = 'SISTEMA'; 
-        $location = 'LA PAZ'; 
-        $descripcion = session()->get('Nombre')."HA ACEPTADO EL ENVIO";
+        $tipoEvento = 'SISTEMA';
+        $location = 'LA PAZ';
+        $descripcion = session()->get('Nombre') . "HA ACEPTADO EL ENVIO";
         $auditoriaEventoModel = new AuditoriaModel();
-        $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
-        $this->request->getUserAgent(), $location, $descripcion);
-
-
+        $auditoriaEventoModel->registrarEvento(
+            $tipoEvento,
+            $usuarioID,
+            $usuarioNombre,
+            $this->request->getIPAddress(),
+            $this->request->getUserAgent(),
+            $location,
+            $descripcion
+        );
 
 
         $id_compra = $this->request->getPost('id_compra');
@@ -254,8 +260,8 @@ class DeliveryController extends Controller
         ];
         $compra = new CompraModel();
         $usuarioID = $compra->obtenerIDUsuarioDeCompra($id_compra)['ID_Cliente'];
-        $tipo = 'ENVIO'; 
-        $mensaje = "Tu envio se ha sido aceptado."; 
+        $tipo = 'ENVIO';
+        $mensaje = "Tu envio se ha sido aceptado.";
         $notificacionModel = new NotificacionModel();
         $notificacionModel->registrarNotificacion($usuarioID, $tipo, $mensaje);
 
@@ -272,12 +278,19 @@ class DeliveryController extends Controller
     {
         $usuarioID = session()->get('ID');
         $usuarioNombre = session()->get('Nombre');
-        $tipoEvento = 'SISTEMA'; 
-        $location = 'LA PAZ'; 
-        $descripcion = session()->get('Nombre')."HA ENTREGADO EL ENVIO";
+        $tipoEvento = 'SISTEMA';
+        $location = 'LA PAZ';
+        $descripcion = session()->get('Nombre') . "HA ENTREGADO EL ENVIO";
         $auditoriaEventoModel = new AuditoriaModel();
-        $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
-        $this->request->getUserAgent(), $location, $descripcion);
+        $auditoriaEventoModel->registrarEvento(
+            $tipoEvento,
+            $usuarioID,
+            $usuarioNombre,
+            $this->request->getIPAddress(),
+            $this->request->getUserAgent(),
+            $location,
+            $descripcion
+        );
 
 
         $id_compra = $this->request->getPost('id_compra');
@@ -285,8 +298,8 @@ class DeliveryController extends Controller
         $compra->update($id_compra, ['Estado' => 'ENTREGADO']);
 
         $usuarioID = $compra->obtenerIDUsuarioDeCompra($id_compra)['ID_Cliente'];
-        $tipo = 'ENVIO'; 
-        $mensaje = "Tu envio se ha entregado exitosamente."; 
+        $tipo = 'ENVIO';
+        $mensaje = "Tu envio se ha entregado exitosamente.";
         $notificacionModel = new NotificacionModel();
         $notificacionModel->registrarNotificacion($usuarioID, $tipo, $mensaje);
 
@@ -303,5 +316,15 @@ class DeliveryController extends Controller
         }
         return redirect()->back();
     }
+    public function cambiarEstado($idProducto, $idCompra, $nuevoEstado)
+    {
+        $detallecompra = new DetalleCompraModel();
+        $detallecompra->cambiarEstadoProducto($idProducto, $idCompra, $nuevoEstado);
+
+        return redirect()->back();
+    }
+
+
+
 
 }

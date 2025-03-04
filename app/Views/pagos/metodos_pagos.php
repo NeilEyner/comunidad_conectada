@@ -62,7 +62,6 @@
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                         <h4 class="mb-0">Carrito de Compras</h4>
-
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -76,29 +75,25 @@
                                 </thead>
                                 <tbody>
                                     <?php $total = 0; ?>
-                                    <?php foreach ($carrito as $prod):
-                                        $producto = $tieneProductoModel->ProductosDet($prod['ID_Artesano'], $prod['ID_Producto']);
-                                        $subtotal = $producto['Precio'] * $prod['Cantidad'];
-                                        $total += $subtotal;
+                                    <?php foreach ($productos as $prod):
                                         ?>
-                                        <tr data-lat="<?= $prod['Latitud'] ?>" data-lon="<?= $prod['Longitud'] ?>"
-                                            id="producto_<?= $prod['ID_Producto'] ?>">
+                                        <tr>
                                             <td class="d-flex align-items-center">
-                                                <img src="<?= base_url($producto['Imagen_URL']) ?>"
+                                                <img src="<?= base_url($prod['Imagen_URL']) ?>"
                                                     class="rounded me-3 product-img" style="width: 60px; height: 60px;"
                                                     alt="Producto">
                                                 <div>
-                                                    <h6 class="mb-1"><?= $producto['Nombre'] ?></h6>
+                                                    <h6 class="mb-1"><?= $prod['Nombre'] ?></h6>
                                                     <small class="text-muted">
                                                         <i class="ri-price-tag-3-line"></i>
-                                                        Bs.<?= number_format($producto['Precio'], 2) ?>
+                                                        Bs.<?= number_format($prod['Precio'], 2) ?>
                                                     </small>
                                                 </div>
                                             </td>
                                             <td>
                                                 <p class="form-control-sm text-center"><?= $prod['Cantidad'] ?> </p>
                                             </td>
-                                            <td class="fw-bold">Bs.<?= number_format($subtotal, 2) ?></td>
+                                            <td class="fw-bold">Bs.<?= number_format($prod['Cantidad']*$prod['Precio'] , 2) ?></td>
 
                                         </tr>
                                     <?php endforeach; ?>
@@ -107,11 +102,11 @@
                         </div>
                         <div class="d-flex justify-content-between border-top pt-3">
                             <h5>Total Productos</h5>
-                            <h5>Bs.<?= number_format($total, 2) ?></h5>
+                            <h5>Bs.<?= number_format($prod['Total'] , 2) ?></h5>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h4>Total a Pagar</h4>
-                            <h4 id="total_pagar">Bs.<?= number_format($total, 2) ?></h4>
+                            <h4 id="total_pagar">Bs.<?= number_format($prod['Total'] , 2) ?></h4>
                         </div>
                     </div>
                 </div>
@@ -176,7 +171,7 @@
                                             <i class="ri-home-line"></i> Dirección de Destino
                                         </label>
                                         <textarea id="Direccion_Destino" name="Direccion_Destino" class="form-control"
-                                            rows="5" required><?= session()->get('Direccion') ?></textarea>
+                                            rows="8" required><?= session()->get('Direccion') ?></textarea>
                                     </div>
 
                                 </div>

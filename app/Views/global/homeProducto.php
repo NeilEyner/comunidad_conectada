@@ -16,7 +16,7 @@
             use App\Models\UsuarioModel;
             use App\Models\ValoracionModel;
             $count = 0;
-            foreach ($productos as $producto):
+            foreach ($productoss as $producto):
                 if ($count == 3) {
                     break;
                 }

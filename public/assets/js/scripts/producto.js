@@ -73,7 +73,42 @@ function anadirProducto(ruta,idA,idP,cant,precio){
     });
     
 }
-
+function anadeProducto(ruta, idTieneProd,idA,idP, cant, precio){
+    var rutac=ruta+'anadeprod/'+idTieneProd+'/'+idA+'/'+idP+'/'+cant+'/'+precio;
+    var bodyData = 'idTieneProd=' + encodeURIComponent(idTieneProd) +
+                    '&cant=' + encodeURIComponent(cant);
+    fetch(rutac, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: ruta
+    })
+    .then(response => response.json())
+    .then(data => {
+         console.log(data.carrito)
+        if(data.status==0){
+            window.location.href = data.ruta;
+        }
+        if(location.pathname.substring(28,36)=='producto'){
+            window.location.reload()
+        }
+        recargaCarrito(data.carrito,ruta)
+        var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+        document.getElementById('btn-mod-cancelar').innerHTML='Aceptar';
+        if(data.status==2){
+            document.getElementById('mod-body').innerHTML='no hay suficiente Stock';
+        }else{
+            document.getElementById('mod-body').innerHTML='Un producto ha sido añadido al carrito';
+        }
+        document.getElementById('accept').setAttribute('hidden','true');
+        document.getElementById('exampleModalLabel').setAttribute('hidden','true');
+        myModal.show();
+    })
+    .catch(error => {
+        console.error('Error:', error); 
+    });
+}
 function recargaCarrito(carrito,ruta){
     console.log('recargado');
     console.log(carrito.length);

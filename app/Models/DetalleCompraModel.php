@@ -7,8 +7,8 @@ use CodeIgniter\Model;
 class DetalleCompraModel extends Model
 {
     protected $table = 'detalle_compra';
-    protected $primaryKey = ['ID_Compra', 'ID_Producto']; // Llave primaria compuesta
-    protected $allowedFields = ['ID_Compra', 'ID_Producto', 'ID_Artesano', 'Cantidad'];
+    protected $primaryKey = ['ID_Compra', 'ID_Producto'];
+    protected $allowedFields = ['ID_Compra', 'ID_Producto', 'ID_Artesano', 'Cantidad', 'Estado'];
     protected $useTimestamps = false;
 
     function verifDetalle($idC, $idP, $idA)
@@ -67,8 +67,8 @@ class DetalleCompraModel extends Model
             ->where('ID_Artesano', $idA)
             ->delete();
     }
-
-    public function obtenerDetallesCompra($idCliente)
+    //NUEVO
+    public function getObtenerDetallesCompra($idCliente)
     {
         return $this->select('compra.ID, compra.Total, detalle_compra.*, tiene_producto.*, producto.Nombre, comunidad.Latitud, comunidad.Longitud')
             ->join('compra', 'compra.ID = detalle_compra.ID_Compra')
@@ -82,7 +82,6 @@ class DetalleCompraModel extends Model
     }
     public function getProductosVendidosPorArtesano($idArtesano)
     {
-        // Fetch all products sold by the artisan with the given ID
         return $this->select('tiene_producto.Imagen_URL, tiene_producto.Descripcion, detalle_compra.Cantidad, tiene_producto.Precio')
             ->join('tiene_producto', 'tiene_producto.ID_Producto = detalle_compra.ID_Producto')
             ->where('tiene_producto.ID_Artesano', $idArtesano)
@@ -91,14 +90,40 @@ class DetalleCompraModel extends Model
     public function getDetallesByCompra($compraId)
     {
         return $this->asArray()
-                    ->select('d.ID_Compra, p.Nombre as Producto, p.ID as ID_Producto, COALESCE(tp.Imagen_URL, "/assets/img/default-product.jpg") as Imagen_URL, d.Cantidad, c.Nombre as Comunidad_Artesano, u.Latitud, u.Longitud, u.Direccion, u.ID as ID_Artesano')
-                    ->join('producto p', 'p.ID = d.ID_Producto')
-                    ->join('tiene_producto tp', 'tp.ID_Producto = p.ID AND tp.ID_Artesano = d.ID_Artesano', 'left')
-                    ->join('usuario u', 'u.ID = d.ID_Artesano')
-                    ->join('comunidad c', 'c.ID = u.ID_Comunidad')
-                    ->where('d.ID_Compra', $compraId)
-                    ->findAll();
+            ->select('d.ID_Compra, p.Nombre as Producto, p.ID as ID_Producto, COALESCE(tp.Imagen_URL, "/assets/img/default-product.jpg") as Imagen_URL, d.Cantidad, c.Nombre as Comunidad_Artesano, u.Latitud, u.Longitud, u.Direccion, u.ID as ID_Artesano')
+            ->join('producto p', 'p.ID = d.ID_Producto')
+            ->join('tiene_producto tp', 'tp.ID_Producto = p.ID AND tp.ID_Artesano = d.ID_Artesano', 'left')
+            ->join('usuario u', 'u.ID = d.ID_Artesano')
+            ->join('comunidad c', 'c.ID = u.ID_Comunidad')
+            ->where('d.ID_Compra', $compraId)
+            ->findAll();
     }
-    
 
+    public function cambiarEstadoProducto($idProducto, $idCompra, $nuevoEstado)
+    {
+        $estadosMapeados = [
+            'PREPARANDO' => 'PREPARANDO',
+            'RECOGIDO' => 'RECOGIDO',
+            'ENTRANSITO' => 'EN TRÁNSITO',
+            'ENTREGADO' => 'ENTREGADO'
+        ];
+        if (!array_key_exists($nuevoEstado, $estadosMapeados)) {
+            return false; 
+        }
+        $estadoCompleto = $estadosMapeados[$nuevoEstado];
+        return $this->where('ID_Producto', $idProducto)
+            ->where('ID_Compra', $idCompra)
+            ->set('Estado', $estadoCompleto) 
+            ->update(); 
+    }
+    public function getDetalleCompraByCompra($idCompra)
+    {
+        return $this->db->table('detalle_compra dc')
+                    ->select('tp.ID_Producto, p.Nombre, tp.Imagen_URL, dc.Estado, dc.Cantidad, u.Latitud, u.Longitud')
+                    ->join('tiene_producto tp', 'dc.ID_Producto = tp.ID')
+                    ->join('producto p', 'p.ID = tp.ID_Producto')
+                    ->join('usuario u', 'u.ID = tp.ID_Artesano')
+                    ->where('dc.ID_Compra', $idCompra)
+                    ->get()->getResultArray();
+    }
 }

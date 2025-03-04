@@ -12,6 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"defer ></script>
     <script src="<?=base_url()?>assets_dash/js/charts-lines.js" defer></script>
     <script src="<?=base_url()?>assets_dash/js/charts-pie.js" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body>
     <div class="flex h-screen bg-gray-50 dark:bg-gray-900"
@@ -60,6 +61,38 @@
             </li>
             <li class="relative px-6 py-3 ">
               <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                href="<?=base_url()?>dashboard/administrador/admin_producto" >
+                <svg class="w-5 h-5"
+                  aria-hidden="true"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor" >
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                </svg>
+                <span class="ml-4">Productos</span>
+              </a>
+            </li>
+            <li class="relative px-6 py-3 ">
+              <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                href="<?=base_url()?>dashboard/administrador/admin_producto_usuario" >
+                <svg class="w-5 h-5"
+                  aria-hidden="true"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor" >
+                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                </svg>
+                <span class="ml-4">Productos de Artesanos</span>
+              </a>
+            </li>
+            <li class="relative px-6 py-3 ">
+              <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                 href="<?=base_url()?>dashboard/administrador/admin_comunidades" >
                 <svg class="w-5 h-5"
                   aria-hidden="true"
@@ -74,7 +107,7 @@
                 <span class="ml-4">Comunidades</span>
               </a>
             </li>
-            <li class="relative px-6 py-3 ">
+            <!-- <li class="relative px-6 py-3 ">
               <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                 href="<?=base_url()?>dashboard/administrador/admin_rol" >
                 <svg class="w-5 h-5"
@@ -89,7 +122,7 @@
                 </svg>
                 <span class="ml-4">Roles</span>
               </a>
-            </li>
+            </li> -->
             <li class="relative px-6 py-3 ">
               <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                 href="<?=base_url()?>dashboard/administrador/admin_contenidopagina" >
@@ -138,39 +171,7 @@
                 <span class="ml-4">Pagos</span>
               </a>
             </li>
-  
-            <li class="relative px-6 py-3 ">
-              <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                href="<?=base_url()?>dashboard/administrador/admin_producto" >
-                <svg class="w-5 h-5"
-                  aria-hidden="true"
-                  fill="none"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor" >
-                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-                </svg>
-                <span class="ml-4">Productos</span>
-              </a>
-            </li>
-            <!-- <li class="relative px-6 py-3 ">
-              <a class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                href="<?=base_url()?>dashboard/administrador/admin_transporte" >
-                <svg class="w-5 h-5"
-                  aria-hidden="true"
-                  fill="none"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor" >
-                  <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-                </svg>
-                <span class="ml-4">Transporte</span>
-              </a>
-            </li> -->
+
           </ul>
         </div>
       </aside>

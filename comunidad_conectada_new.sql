@@ -76,11 +76,12 @@ CREATE TABLE IF NOT EXISTS `detalle_compra` (
   `ID_Producto` int NOT NULL,
   `ID_Artesano` int DEFAULT NULL,
   `Cantidad` int NOT NULL,
+  'Estado' enum('PREPARANDO','EN TRÁNSITO','ENTREGADO') DEFAULT 'PREPARANDO',
   KEY `ID_Compra` (`ID_Compra`),
   KEY `ID_Producto` (`ID_Producto`),
   KEY `ID_Artesano` (`ID_Artesano`),
   CONSTRAINT `detalle_compra_ibfk_1` FOREIGN KEY (`ID_Compra`) REFERENCES `compra` (`ID`) ON DELETE CASCADE,
-  CONSTRAINT `detalle_compra_ibfk_2` FOREIGN KEY (`ID_Producto`) REFERENCES `producto` (`ID`) ON DELETE RESTRICT,
+  CONSTRAINT `detalle_compra_ibfk_2` FOREIGN KEY (`ID_Producto`) REFERENCES `tiene_producto` (`ID`) ON DELETE RESTRICT,
   CONSTRAINT `detalle_compra_ibfk_3` FOREIGN KEY (`ID_Artesano`) REFERENCES `usuario` (`ID`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 

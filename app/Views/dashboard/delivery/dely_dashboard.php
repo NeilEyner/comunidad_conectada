@@ -1,16 +1,7 @@
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-
-
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
 <?php
 function calcularDistancia($lat1, $lon1, $lat2, $lon2)
 {
-    $radioTierra = 6371; // Radio de la Tierra en kilómetros
+    $radioTierra = 6371;
     $dLat = deg2rad($lat2 - $lat1);
     $dLon = deg2rad($lon2 - $lon1);
 
@@ -18,10 +9,8 @@ function calcularDistancia($lat1, $lon1, $lat2, $lon2)
         cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
         sin($dLon / 2) * sin($dLon / 2);
     $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-
-    return $radioTierra * $c; // Distancia en kilómetros
+    return $radioTierra * $c;
 }
-
 ?>
 <style>
     :root {
@@ -32,7 +21,9 @@ function calcularDistancia($lat1, $lon1, $lat2, $lon2)
     }
 
     .modal-content {
-        max-width: 600px;
+        right: 300px !important;
+        max-width: 1200px;
+        width: 1200px !important;
         margin: auto;
     }
 
@@ -231,14 +222,13 @@ function calcularDistancia($lat1, $lon1, $lat2, $lon2)
                                             </div>
                                             <div>
                                                 <small class="text-muted">Entregar en</small>
-                                                <p class="mb-0"><?= $envio['Direccion_Destino'] ?></p>
+                                                <!-- <p class="mb-0"><?= $envio['Direccion_Destino'] ?></p> -->
                                                 <small class="text-muted"><?= $envio['Comunidad'] ?></small>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="d-flex flex-column align-items-end">
-
                                             <small class="text-muted"><?= count($envio['productos']) ?> productos</small>
                                         </div>
                                     </div>
@@ -302,12 +292,88 @@ function calcularDistancia($lat1, $lon1, $lat2, $lon2)
                                                     <strong>Dirección:</strong> <?= esc($envio['Direccion_Destino']) ?>
                                                 </p>
                                             </div>
-                                            <!-- Botón con icono para abrir el modal del mapa -->
-                                            <button type="button" class="btn btn-outline-primary btn-sm w-100"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#mapModal_<?= $envio['ID_Compra'] ?>_<?= $producto['ID_Producto'] ?>">
-                                                <i class="bi bi-map-fill me-1"></i> Ver Ubicación en el Mapa
-                                            </button>
+                                            <!-- Mapa de seguimiento de envío -->
+                                            <div id="map_<?= $envio['ID_Compra'] ?>_<?= $producto['ID_Producto'] ?>"
+                                                class="delivery-map" data-lat="<?= esc($envio['Latitud']) ?>"
+                                                data-lng="<?= esc($envio['Longitud']) ?>"
+                                                data-productos='<?= json_encode($envio['productos']) ?>'>
+                                            </div>
+
+                                            <script>
+                                                document.addEventListener('DOMContentLoaded', function () {
+                                                    function initDeliveryMap(mapElement) {
+                                                        const latPrincipal = parseFloat(mapElement.dataset.lat);
+                                                        const lngPrincipal = parseFloat(mapElement.dataset.lng);
+                                                        const productos = JSON.parse(mapElement.dataset.productos);
+
+                                                        // Configuración del mapa
+                                                        const map = L.map(mapElement, {
+                                                            center: [latPrincipal, lngPrincipal],
+                                                            zoom: 8,
+                                                            zoomControl: true,
+                                                            attributionControl: false
+                                                        });
+
+                                                        // Capas de mapas
+                                                        const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                                            attribution: '© OpenStreetMap contributors'
+                                                        });
+
+                                                        const stadiaLayer = L.tileLayer('https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png', {
+                                                            attribution: '© Stadia Maps'
+                                                        });
+
+                                                        // Añadir capas
+                                                        map.addLayer(osmLayer);
+                                                        map.addLayer(stadiaLayer);
+
+                                                        // Marcador de entrega principal
+                                                        const principalMarker = L.marker([latPrincipal, lngPrincipal])
+                                                            .addTo(map)
+                                                            .bindPopup('<strong>Punto de Entrega</strong>')
+                                                            .openPopup();
+
+                                                        // Marcadores de productos
+                                                        productos.forEach(producto => {
+                                                            const latSecundaria = parseFloat(producto.Latitud || 0);
+                                                            const lngSecundaria = parseFloat(producto.Longitud || 0);
+
+                                                            if (latSecundaria !== 0 && lngSecundaria !== 0) {
+                                                                const secondaryMarker = L.marker([latSecundaria, lngSecundaria])
+                                                                    .addTo(map)
+                                                                    .bindPopup(`<strong>${producto.Producto}</strong>`);
+
+                                                                // Línea de conexión
+                                                                L.polyline(
+                                                                    [[latPrincipal, lngPrincipal], [latSecundaria, lngSecundaria]],
+                                                                    { color: 'blue', weight: 3, dashArray: '10, 10' }
+                                                                ).addTo(map);
+                                                            }
+                                                        });
+
+                                                        // Ajustar mapa al contenedor
+                                                        map.invalidateSize();
+                                                    }
+
+                                                    // Inicializar mapas en modales
+                                                    document.querySelectorAll('.delivery-map').forEach(mapElement => {
+                                                        const modalId = mapElement.closest('.modal').id;
+
+                                                        $(`#${modalId}`).on('shown.bs.modal', () => initDeliveryMap(mapElement));
+                                                    });
+                                                });
+                                            </script>
+
+                                            <style>
+                                                .delivery-map {
+                                                    width: 100%;
+                                                    height: 300px;
+                                                    margin: 0;
+                                                    padding: 0;
+                                                    border: none;
+                                                }
+                                            </style>
+
                                         </div>
                                     </div>
                                 </div>
@@ -388,66 +454,13 @@ function calcularDistancia($lat1, $lon1, $lat2, $lon2)
                                     </div>
                                 </div>
                             </div>
-                            <!-- Modal -->
-                            <div class="modal fade" id="mapModal_<?= $envio['ID_Compra'] ?>_<?= $producto['ID_Producto'] ?>"
-                                tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="mapModalLabel">Ubicación en el Mapa</h5>
-                                        </div>
-                                        <div class="modal-body">
 
-                                            <div id="map_<?= $envio['ID_Compra'] ?>_<?= $producto['ID_Producto'] ?>"
-                                                style="width: 100%; height: 300px;"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function () {
-                                    const modalId = '#mapModal_<?= $envio['ID_Compra'] ?>_<?= $producto['ID_Producto'] ?>';
-                                    const mapId = 'map_<?= $envio['ID_Compra'] ?>_<?= $producto['ID_Producto'] ?>';
-                                    const latPrincipal = <?= esc($envio['Latitud']) ?>;
-                                    const lngPrincipal = <?= esc($envio['Longitud']) ?>;
-                                    const productos = <?= json_encode($envio['productos']) ?>;
-                                    let map;
-                                    let isMapLoaded = false;
-                                    $(modalId).on('shown.bs.modal', function () {
-                                        if (!isMapLoaded) {
-                                            map = L.map(mapId).setView([latPrincipal, lngPrincipal], 13);
-                                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                            }).addTo(map);
-                                            const principalMarker = L.marker([latPrincipal, lngPrincipal]).addTo(map);
-                                            principalMarker.bindPopup('ENTREGA').openPopup();
-                                            productos.forEach(producto => {
-                                                const latSecundaria = producto['Latitud'] ? parseFloat(producto['Latitud']) : 0;
-                                                const lngSecundaria = producto['Longitud'] ? parseFloat(producto['Longitud']) : 0;
-                                                if (latSecundaria !== 0 && lngSecundaria !== 0) {
-                                                    const secondaryMarker = L.marker([latSecundaria, lngSecundaria]).addTo(map);
-                                                    const polyline = L.polyline(
-                                                        [[latPrincipal, lngPrincipal], [latSecundaria, lngSecundaria]],
-                                                        { color: 'blue', weight: 2 }
-                                                    ).addTo(map);
-                                                }
-                                            });
-                                            isMapLoaded = true;
-                                        }
-                                    });
-                                    $(modalId).on('hidden.bs.modal', function () {
-
-                                    });
-                                });
-                            </script>
-                            <!-- Lista de Productos -->
                             <div class="table-responsive card bg-light shadow-lg rounded-3">
                                 <table class="table">
                                     <thead>
                                         <tr>
                                             <th>Producto</th>
                                             <th>Direccion</th>
-                                            <th>Mapa</th>
                                         </tr>
                                     </thead>
 
@@ -462,8 +475,7 @@ function calcularDistancia($lat1, $lon1, $lat2, $lon2)
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <img src="<?= base_url($producto['Imagen_URL']) ?>"
-                                                            class="product-image me-2" alt="<?= esc($producto['Producto']) ?>"
-                                                            onerror="this.src='/api/placeholder/60/60'">
+                                                            class="product-image me-2" alt="<?= esc($producto['Producto']) ?>">
                                                         <div>
                                                             <p class="mb-0"><?= esc($producto['Producto']) ?></p>
                                                             <small class="text-muted">Cantidad:
@@ -475,105 +487,12 @@ function calcularDistancia($lat1, $lon1, $lat2, $lon2)
                                                 <td><?= esc($producto['Comunidad_Artesano']) ?> <br>
                                                     <?= esc($producto['Direccion']) ?> <br>
                                                     <?= number_format($distancia, 2) ?> KM. </td>
-                                                <!-- modal para el mapa -->
-                                                <td>
-                                                    <?php
-                                                    $lat = isset($producto['Latitud']) ? $producto['Latitud'] : '0';
-                                                    $lng = isset($producto['Longitud']) ? $producto['Longitud'] : '0';
-                                                    $mapId = "map_" . $producto['ID_Producto'] . "_" . $envio['ID_Compra'];
-                                                    ?>
-                                                    <!-- Botón para abrir el modal -->
-                                                    <button class="btn btn-outline-primary btn-sm w-100" data-bs-toggle="modal"
-                                                        data-bs-target="#mapModal_<?= $producto['ID_Producto'] ?>_<?= $envio['ID_Compra'] ?>">
-                                                        <i class="bi bi-map-fill me-1"></i> Ver Mapa
-                                                    </button>
+                                               
 
-                                                    <!-- Modal específico para cada producto -->
-                                                    <div class="modal fade"
-                                                        id="mapModal_<?= $producto['ID_Producto'] ?>_<?= $envio['ID_Compra'] ?>"
-                                                        tabindex="-1">
-                                                        <div class="modal-dialog modal-dialog-centered">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <h5 class="modal-title">Ubicación del Producto</h5>
-                                                                </div>
-                                                                <div class="modal-body">
-                                                                    <div id="<?= $mapId ?>" style="width: 100%; height: 300px;">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <?php
-                                                    $lat_usuario = session()->get('Latitud');
-                                                    $lng_usuario = session()->get('Longitud');
-                                                    $lat_producto = $producto['Latitud'];
-                                                    $lng_producto = $producto['Longitud'];
-                                                    ?>
-                                                    <script>
-                                                        document.addEventListener('DOMContentLoaded', function () {
-                                                            const modalId = 'mapModal_<?= $producto['ID_Producto'] ?>_<?= $envio['ID_Compra'] ?>';
-                                                            const mapId = '<?= $mapId ?>';
-                                                            let map_<?= $mapId ?> = null;
-                                                            function mostrarMapa(lat_usuario, lng_usuario, lat_producto, lng_producto) {
-                                                                map_<?= $mapId ?> = L.map(mapId).setView([lat_usuario, lng_usuario], 13);
-                                                                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                                                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                                                }).addTo(map_<?= $mapId ?>);
-                                                                L.marker([lat_usuario, lng_usuario]).addTo(map_<?= $mapId ?>)
-                                                                    .bindPopup("TU")
-                                                                    .openPopup();
-                                                                L.marker([lat_producto, lng_producto]).addTo(map_<?= $mapId ?>)
-                                                                    .bindPopup("<?= esc($producto['Producto']) ?>")
-                                                                    .openPopup();
-                                                                const latlngs = [
-                                                                    [lat_usuario, lng_usuario],
-                                                                    [lat_producto, lng_producto]
-                                                                ];
-
-                                                                L.polyline(latlngs, { color: 'blue' }).addTo(map_<?= $mapId ?>);
-                                                            }
-
-                                                            document.getElementById(modalId).addEventListener('shown.bs.modal', function () {
-                                                                if (!map_<?= $mapId ?>) {
-                                                                    const lat_usuario = <?= json_encode($lat_usuario) ?>;
-                                                                    const lng_usuario = <?= json_encode($lng_usuario) ?>;
-                                                                    const lat_producto = <?= json_encode($lat_producto) ?>;
-                                                                    const lng_producto = <?= json_encode($lng_producto) ?>;
-                                                                    if (lat_usuario && lng_usuario && lat_producto && lng_producto) {
-                                                                        mostrarMapa(lat_usuario, lng_usuario, lat_producto, lng_producto);
-                                                                    } else {
-                                                                        alert("No se pudieron obtener las ubicaciones.");
-                                                                        mostrarMapa(40.7128, -74.0060, 40.7128, -74.0060);
-                                                                    }
-                                                                }
-                                                            });
-
-                                                            // if ("geolocation" in navigator) {
-                                                            //     navigator.geolocation.getCurrentPosition(function (position) {
-                                                            //         const lat = position.coords.latitude;
-                                                            //         const lng = position.coords.longitude;
-                                                            //         mostrarMapa(lat, lng, <?= json_encode($lat_producto) ?>, <?= json_encode($lng_producto) ?>);
-                                                            //     }, function (error) {
-                                                            //         console.error("Error al obtener la ubicación: ", error);
-                                                            //         alert("No se pudo obtener la ubicación.");
-                                                            //     });
-                                                            // } else {
-                                                            //     alert("La geolocalización no es compatible con este navegador.");
-                                                            // }
-                                                        });
-                                                    </script>
-                                                </td>
                                             </tr>
 
                                         <?php endforeach; ?>
                                     </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="2" class="text-end"><strong>Total de distancias:</strong></td>
-                                            <td><strong><?= number_format($totalDistancia, 2) ?> km</strong></td>
-                                        </tr>
-                                    </tfoot>
                                 </table>
                             </div>
                         </div>

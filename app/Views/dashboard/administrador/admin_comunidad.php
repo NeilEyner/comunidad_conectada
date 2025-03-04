@@ -32,6 +32,9 @@
                 <tr class="text-gray-700 dark:text-gray-400">
                   <td class="px-4 py-3">
                     <div class="flex items-center text-sm">
+                      <img class="object-cover w-full h-full rounded-full mr-2"
+                        src="<?php echo esc(base_url() . $comunidad['Imagen']); ?>"
+                        alt="<?php echo esc($comunidad['Nombre']); ?>" style="width:80px; height: 80px;" />
                       <div>
                         <p class="font-semibold"><?php echo esc($comunidad['Nombre']); ?></p>
                         <p class="text-xs text-gray-600 dark:text-gray-400">
@@ -169,7 +172,8 @@
       role="dialog" id="modal">
       <!-- Remove header if you don't want a close icon. Use modal body to place modal tile. -->
       <header class="flex justify-end">
-        <button class="inline-flex items-center justify-center w-6 h-6 text-gray-400 transition-colors duration-150 rounded dark:hover:text-gray-200 hover: hover:text-gray-700"
+        <button
+          class="inline-flex items-center justify-center w-6 h-6 text-gray-400 transition-colors duration-150 rounded dark:hover:text-gray-200 hover: hover:text-gray-700"
           aria-label="close" @click="closeModal">
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" role="img" aria-hidden="true">
             <path

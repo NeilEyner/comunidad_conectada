@@ -31,7 +31,7 @@
 
                     <?php echo esc($producto['Nombre']); ?>
                   </td>
-             
+
                   <td class="px-4 py-3 text-sm"><?php echo esc($producto['Fecha_creacion']); ?></td>
                   <td class="px-4 py-3 text-sm"><?php echo esc($producto['Fecha_actualizacion']); ?></td>
                   <td class="px-4 py-3">
@@ -45,7 +45,7 @@
                           </path>
                         </svg>
                       </button>
-                      <form action="<?= base_url('admin/eliminar_producto/' .  $producto['ID'])?>" method="post">
+                      <form action="<?= base_url('admin/eliminar_producto/' . $producto['ID']) ?>" method="post">
                         <button type="submit"
                           class="flex items-center justify-between px-2 py-2 text-sm font-medium leading-5 text-red-600 rounded-lg dark:text-gray-400 focus:outline-none focus:shadow-outline-gray"
                           aria-label="Delete">
@@ -80,12 +80,12 @@
                     </header>
                     <div class="mt-4 mb-6">
                       <p class="mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300">Editar Producto</p>
-                      <p class="text-sm text-gray-700 dark:text-gray-400">Producto ID:
+                      <!-- <p class="text-sm text-gray-700 dark:text-gray-400">Producto ID:
                         <?php echo $producto['ID']; ?>
-                      </p>
+                      </p> -->
 
                       <!-- Formulario para editar producto -->
-                      <form action="<?= base_url('admin/editar_producto/'.  $producto['ID']) ?>" method="post">
+                      <form action="<?= base_url('admin/editar_producto/' . $producto['ID']) ?>" method="post">
                         <!-- ID del producto (oculto) -->
                         <input type="hidden" name="ID" value="<?php echo isset($producto['ID']) ? $producto['ID'] : ''; ?>">
 
@@ -97,14 +97,13 @@
                             value="<?php echo isset($producto['Nombre']) ? $producto['Nombre'] : ''; ?>"
                             placeholder="Ingrese el nombre del producto" required>
                         </div>
-
-                        <div class="mb-4">
+<!--                         <div class="mb-4">
                           <label for="Descripcion"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-400">Descripción</label>
                           <textarea name="Descripcion" id="Descripcion"
                             class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 form-textarea"
                             placeholder="Ingrese la descripción del producto"><?php echo isset($producto['Descripcion']) ? $producto['Descripcion'] : ''; ?></textarea>
-                        </div>
+                        </div> -->
 
                         <!-- Botones del formulario -->
                         <footer
@@ -161,7 +160,7 @@
       <!-- Modal body -->
       <form action="<?= base_url('admin/agregar_producto') ?>" method="post">
         <!-- ID del producto (oculto) -->
-        <input type="hidden" name="ID" >
+        <input type="hidden" name="ID">
 
         <div class="mb-4">
           <label for="Nombre" class="block text-sm font-medium text-gray-700 dark:text-gray-400">Nombre</label>

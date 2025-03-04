@@ -8,7 +8,8 @@
       <div class="w-full overflow-x-auto">
         <table class="min-w-full leading-normal">
           <thead>
-            <tr>
+            <tr
+              class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
               <th class="px-4 py-3">Comprobante</th>
               <!-- <th class="px-4 py-3">Fecha de Pago</th> -->
               <!-- <th class="px-4 py-3">Método de Pago</th> -->
@@ -23,16 +24,22 @@
             <?php if (!empty($pagos) && is_array($pagos)): ?>
               <?php foreach ($pagos as $pago): ?>
                 <tr class="text-gray-700 dark:text-gray-400">
-                  <td class="px-4 py-3 text-sm">
-                    <?php if (!empty($pago['IMG_Comprobante'])): ?>
-                      <img src="<?php echo base_url().$pago['IMG_Comprobante']; ?>" alt="Comprobante de Pago" class="w-12 cursor-pointer"
-                        onclick="openModal('<?php echo base_url().$pago['IMG_Comprobante']; ?>')">
-                      <p><?php echo esc($pago['Metodo_pago']); ?></p>
-                    <?php else: ?>
-                      <p><?php echo esc($pago['Metodo_pago']); ?></p>
-                    <?php endif; ?>
+                  <td class="px-4 py-3">
+                    <div class="flex items-center text-sm">
+                      <!-- Mostrar imagen solo si IMG_Comprobante no está vacío -->
+                      <?php if (!empty($pago['IMG_Comprobante'])): ?>
+                        <div class="relative w-8 h-8 mr-3 rounded-full md:block">
+                          <img class="object-cover w-full h-full rounded cursor-pointer"
+                            src="<?php echo base_url() . $pago['IMG_Comprobante']; ?>" alt="Comprobante de Pago"
+                            onclick="openModal('<?php echo base_url() . $pago['IMG_Comprobante']; ?>')">
+                        </div>
+                      <?php endif; ?>
+                      <div class="flex flex-col ml-2">
+                        <p class="font-semibold"><?php echo esc($pago['Metodo_pago']); ?></p>
+                        <p class="text-xs text-gray-600 dark:text-gray-400"><?php echo esc($pago['Fecha']); ?></p>
+                      </div>
+                    </div>
                   </td>
-
                   <!-- Modal -->
                   <div id="myModal"
                     class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 hidden z-50"
@@ -43,8 +50,6 @@
                       <img class="max-w-full max-h-screen" id="modalImg" src="">
                     </div>
                   </div>
-
-
                   <script>
                     function openModal(imgSrc) {
                       document.getElementById("myModal").classList.remove("hidden");
@@ -55,10 +60,7 @@
                       document.getElementById("myModal").classList.add("hidden");
                     }
                   </script>
-
-                  <!-- <td class="px-4 py-3 text-sm"><?php echo esc($pago['Fecha']); ?></td>
-                  <td class="px-4 py-3 text-sm"><?php echo esc($pago['Metodo_pago']); ?></td> -->
-
+                  <!-- <td class="px-4 py-3 text-sm"><?php echo esc($pago['Metodo_pago']); ?></td> -->
                   <td class="px-4 py-3 text-sm">
                     <div class="flex items-center space-x-2">
                       <!-- <div class="font-bold">
@@ -70,23 +72,30 @@
                           <a href="<?php echo base_url('verifica_comprobante_completado/' . $pago['ID']); ?>"
                             class="change-status-btn bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1.5 px-3 rounded-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50"
                             onclick="return confirm('¿Estás seguro de que deseas marcar este pago como completado?');">
-                            Completado
+                            COMPLETAR
                           </a>
                           <a href="<?php echo base_url('verifica_comprobante_fallido/' . $pago['ID']); ?>"
                             class="change-status-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1.5 px-3 rounded-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
                             onclick="return confirm('¿Estás seguro de que deseas marcar este pago como fallido?');">
-                            Fallido
+                            CANCELAR
                           </a>
                         </div>
                       <?php elseif ($pago['Estado'] == 'COMPLETADO'): ?>
+
                         <span
                           class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                          Completado
+                          COMPLETADO
                         </span>
+
+                        <a href="<?php echo base_url('verifica_comprobante_fallido/' . $pago['ID']); ?>"
+                          class="change-status-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1.5 px-3 rounded-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                          onclick="return confirm('¿Estás seguro de que deseas marcar este pago como fallido?');">
+                          CANCELAR PEDIDO
+                        </a>
                       <?php elseif ($pago['Estado'] == 'FALLIDO'): ?>
                         <span
                           class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-red-100 text-red-800">
-                          Fallido
+                          FALLO
                         </span>
                       <?php endif; ?>
                     </div>
@@ -108,7 +117,6 @@
                         <?php echo number_format($pago['compra']['Total'], 2); ?></span>
                     </div>
                   </td>
-
                 </tr>
               <?php endforeach; ?>
             <?php endif; ?>

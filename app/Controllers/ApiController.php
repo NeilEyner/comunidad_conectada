@@ -69,7 +69,7 @@ class ApiController extends ResourceController
         return $this->respond($usuarios);
     }
 
-    // Registrar usuario
+    // 
     public function registrarUsuario()
     {
         $data = $this->request->getJSON(true);
@@ -99,13 +99,12 @@ class ApiController extends ResourceController
         ]);
     }
 
-    // Listar productos
     public function listarProductos()
     {
         $db = \Config\Database::connect();
         $query = $db->query("
              SELECT 
-                ROW_NUMBER() OVER (ORDER BY p.Nombre) AS ID,
+                tp.ID AS ID,
                 p.Nombre, 
                 tp.Precio,
                 tp.Stock, 
@@ -113,7 +112,7 @@ class ApiController extends ResourceController
                 tp.Descripcion
             FROM tiene_producto tp
             JOIN producto p ON p.ID = tp.ID_Producto
-            WHERE tp.Disponibilidad = 1 AND tp.stock > 0;
+            WHERE tp.Disponibilidad = 1 AND tp.stock > 0 limit 20;
          ");
         $productos = $query->getResult();
 
@@ -122,176 +121,137 @@ class ApiController extends ResourceController
                 ? self::BASE_URL . $producto->Imagen_URL
                 : null;
         }
-
         return $this->respond($productos);
     }
 
-    // Realizar compra
-    public function realizarCompra()
-    {
-        $data = $this->request->getJSON(true);
-        $compraModel = new CompraModel();
-        $detalleCompraModel = new DetalleCompraModel();
-        $db = \Config\Database::connect();
-
-        $db->transStart();
-
-        try {
-            // Crear compra
-            $compraData = [
-                'ID_Cliente' => $data['ID_Cliente'],
-                'Total' => $data['Total'],
-                'Estado' => 'PENDIENTE'
-            ];
-            $compraId = $compraModel->insert($compraData);
-
-            // Guardar detalles de compra
-            foreach ($data['Productos'] as $producto) {
-                $detalleCompraModel->insert([
-                    'ID_Compra' => $compraId,
-                    'ID_Producto' => $producto['ID_Producto'],
-                    'Cantidad' => $producto['Cantidad']
-                ]);
-            }
-
-            $db->transComplete();
-
-            return $this->respondCreated([
-                'mensaje' => 'Compra realizada',
-                'compra_id' => $compraId
-            ]);
-        } catch (\Exception $e) {
-            $db->transRollback();
-            return $this->failServerError($e->getMessage());
-        }
-    }
-
-    // Listar compras de un usuario
-    public function listarComprasUsuario($usuarioId)
-    {
-        $db = \Config\Database::connect();
-        $query = $db->query("
-             SELECT c.*, p.Estado as Estado_Pago, 
-                    GROUP_CONCAT(pr.Nombre SEPARATOR ', ') as Productos
-             FROM compra c
-             LEFT JOIN pago p ON p.ID_Compra = c.ID
-             LEFT JOIN detalle_compra dc ON dc.ID_Compra = c.ID
-             LEFT JOIN producto pr ON pr.ID = dc.ID_Producto
-             WHERE c.ID_Cliente = $usuarioId
-             GROUP BY c.ID
-         ");
-        $compras = $query->getResult();
-
-        return $this->respond($compras);
-    }
-    // Método para listar usuarios con rol
-    public function listarUsuariosr()
-    {
-        $usuarioModel = new UsuarioModel();
-        $usuarios = $usuarioModel->select('usuario.ID, usuario.Nombre, usuario.Correo_electronico, usuario.Telefono, usuario.Direccion, usuario.Estado, usuario.Imagen_URL, rol.Nombre as Rol')
-            ->join('rol', 'rol.ID = usuario.ID_Rol')
-            ->findAll();
-
-        foreach ($usuarios as &$usuario) {
-            $usuario['imagen_url'] = self::BASE_URL . $usuario['Imagen_URL'];
-        }
-
-        return $this->respond($usuarios);
-    }
-
-    // Método para obtener detalles de un usuario
-    public function obtenerUsuario($id)
-    {
-        $usuarioModel = new UsuarioModel();
-        $usuario = $usuarioModel->select('usuario.ID, usuario.Nombre, usuario.Correo_electronico, usuario.Telefono, usuario.Direccion, usuario.Estado, usuario.Imagen_URL, rol.Nombre as Rol')
-            ->join('rol', 'rol.ID = usuario.ID_Rol')
-            ->where('usuario.ID', $id)
-            ->first();
-
-        if (!$usuario) {
-            return $this->failNotFound("Usuario no encontrado.");
-        }
-
-        $usuario['imagen_url'] = self::BASE_URL . $usuario['Imagen_URL'];
-
-        return $this->respond($usuario);
-    }
-
-    // Método para listar productos por artesano
     public function listarProductosPorArtesano($idArtesano)
     {
         $productoModel = new ProductoModel();
-        $productos = $productoModel->select('tiene_producto.ID_Producto, producto.Nombre, tiene_producto.Precio, tiene_producto.Stock, tiene_producto.Disponibilidad, tiene_producto.Imagen_URL, tiene_producto.Descripcion')
+        $productos = $productoModel->select('tiene_producto.ID, producto.Nombre, tiene_producto.Precio, 
+        tiene_producto.Stock, tiene_producto.Disponibilidad, tiene_producto.Imagen_URL, tiene_producto.Descripcion')
             ->join('tiene_producto', 'tiene_producto.ID_Producto = producto.ID')
             ->where('tiene_producto.ID_Artesano', $idArtesano)
             ->findAll();
-
         foreach ($productos as &$producto) {
             $producto['imagen_url'] = self::BASE_URL . $producto['Imagen_URL'];
         }
-
         return $this->respond($productos);
     }
-
-    // Método para listar compras de un cliente
-    public function listarComprasPorCliente($idCliente)
+    public function obtenerSobreNosotros()
     {
-        $compraModel = new \App\Models\CompraModel();
-        $compras = $compraModel->select('compra.ID, compra.Fecha, compra.Estado, compra.Total')
-            ->where('compra.ID_Cliente', $idCliente)
-            ->findAll();
+        $contenidoPaginaModel = new ContenidoPaginaModel();
+        $sobreNosotros = $contenidoPaginaModel
+            ->where('Titulo', 'Misión')
+            ->where('Tipo_contenido', 'MISION')
+            ->first();
 
+        if ($sobreNosotros) {
+            return $this->respond(['contenido' => $sobreNosotros['Contenido']]);
+        } else {
+            return $this->failNotFound('Contenido "Sobre Nosotros" no encontrado.');
+        }
+    }
+    public function obtenerCarousel()
+    {
+        $contenidoPaginaModel = new ContenidoPaginaModel();
+        $carousel = $contenidoPaginaModel
+            ->where('Tipo_contenido', 'CARROUSEL')
+            ->findAll();
+        foreach ($carousel as &$slide) {
+            $slide['Imagen'] = rtrim(self::BASE_URL, '/') . '/' . ltrim($slide['Imagen'], './');
+        }
+        return $this->respond([
+            'rows' => $carousel
+        ]);
+    }
+    public function cambiarEstado($id)
+    {
+        $usuarioModel = new UsuarioModel();
+        $usuario = $usuarioModel->find($id);
+        if (!$usuario) {
+            return $this->failNotFound('Usuario no encontrado');
+        }
+        $nuevoEstado = $usuario['Estado'] === 'ACTIVO' ? 'INACTIVO' : 'ACTIVO';
+        $usuarioModel->update($id, ['Estado' => $nuevoEstado]);
+        return $this->respond(['mensaje' => 'Estado cambiado exitosamente']);
+    }
+    public function aumentarStock($idProducto)
+    {
+        $tieneProductoModel = new TieneProductoModel();
+        $tieneProducto = $tieneProductoModel->find($idProducto);
+        if (!$tieneProducto) {
+            return $this->failNotFound('Producto no encontrado');
+        }
+        $nuevoStock = $tieneProducto['Stock'] + 1;
+        $tieneProductoModel->update($idProducto, ['Stock' => $nuevoStock]);
+        return $this->respond(['mensaje' => 'Stock aumentado exitosamente']);
+    }
+    public function reducirStock($idStock)
+    {
+        $tieneProductoModel = new TieneProductoModel();
+        $tieneProducto = $tieneProductoModel->find($idStock);
+        if (!$tieneProducto) {
+            return $this->failNotFound('Producto no encontrado');
+        }
+        $nuevoStock = $tieneProducto['Stock'] - 1;
+        $tieneProductoModel->update($idStock, ['Stock' => $nuevoStock]);
+        return $this->respond(['mensaje' => 'Stock reducido exitosamente']);
+    }
+    public function disponibleProducto($idProducto)
+    {
+        $tieneProductoModel = new TieneProductoModel();
+        $tieneProducto = $tieneProductoModel->find($idProducto);
+        if (!$tieneProducto) {
+            return $this->failNotFound('Producto no encontrado');
+        }
+        $nuevoEstado = $tieneProducto['Disponibilidad'] == 1 ? 0 : 1;
+        $tieneProductoModel->update($idProducto, ['Disponibilidad' => $nuevoEstado]);
+        return $this->respond(['mensaje' => 'Disponibilidad cambiada exitosamente']);
+    }
+
+    public function compraUsuario($idUsuario)
+    {
+        $compraModel = new CompraModel();
+        $detalleCompraModel = new DetalleCompraModel();
+        $compras = $compraModel->getComprasByUsuario($idUsuario);
+        if (empty($compras)) {
+            return $this->failNotFound('No hay compras para este usuario');
+        }
+        foreach ($compras as &$compra) {
+            $detalleCompra = $detalleCompraModel->getDetalleCompraByCompra($compra['ID']);
+            foreach ($detalleCompra as &$detalle) {
+                $detalle['Imagen_URL'] = rtrim(self::BASE_URL, '/') . '/' . ltrim($detalle['Imagen_URL'], './');
+            }
+            $compra['detalles'] = $detalleCompra;
+        }
         return $this->respond($compras);
     }
-
-    // Método para obtener detalles de una compra
-    public function obtenerDetalleCompra($idCompra)
+    public function envioUsuario($idUsuario)
     {
-        $detalleCompraModel = new \App\Models\DetalleCompraModel();
-        $detalleCompra = $detalleCompraModel->select([
-            'detalle_compra.ID_Compra',
-            'producto.Nombre as Producto',
-            'producto.Descripcion',
-            'detalle_compra.Cantidad',
-            'detalle_compra.Precio_Unitario',
-            'detalle_compra.Cantidad * detalle_compra.Precio_Unitario as Subtotal',
-            'compra.Fecha as Fecha_Compra',
-            'compra.Metodo_Pago',
-            'compra.Total as Total_Compra'
-        ])
-            ->join('producto', 'producto.ID_Producto = detalle_compra.ID_Producto')
-            ->join('compra', 'compra.ID_Compra = detalle_compra.ID_Compra')
-            ->where('detalle_compra.ID_Compra', $idCompra)
-            ->findAll();
-
-        return $this->respond($detalleCompra);
-    }
-
-
-    // Método para listar categorías con cantidad de productos
-    public function listarCategorias()
-    {
-        $categoriaModel = new \App\Models\CategoriaModel();
-        $categorias = $categoriaModel->select('categoria.ID, categoria.Nombre, categoria.Descripcion, COUNT(producto_categoria.ID_Producto) as CantidadProductos')
-            ->join('producto_categoria', 'producto_categoria.ID_Categoria = categoria.ID', 'left')
-            ->groupBy('categoria.ID')
-            ->findAll();
-
-        return $this->respond($categorias);
-    }
-
-    // Método para listar comunidades
-    public function listarComunidades()
-    {
-        $comunidadModel = new \App\Models\ComunidadModel();
-        $comunidades = $comunidadModel->select('ID, Nombre, Descripcion, Ubicacion, Latitud, Longitud, Imagen')
-            ->findAll();
-
-        foreach ($comunidades as &$comunidad) {
-            $comunidad['imagen_url'] = self::BASE_URL . $comunidad['Imagen'];
+        $envioModel = new EnvioModel();
+        $detalleEnvioModel = new DetalleCompraModel();
+        $envios = $envioModel->getDetalleEnvioByDelivery($idUsuario);
+        if (empty($envios)) {
+            return $this->failNotFound('No hay envíos para este usuario');
         }
-
-        return $this->respond($comunidades);
+        foreach ($envios as &$envio) {
+            $detalleEnvio = $detalleEnvioModel->getDetalleCompraByCompra($envio['ID_Compra']);
+            foreach ($detalleEnvio as &$detalle) {
+                $detalle['Imagen_URL'] = rtrim(self::BASE_URL, '/') . '/' . ltrim($detalle['Imagen_URL'], './');
+            }
+            $envio['detalles'] = $detalleEnvio;
+        }
+        return $this->respond($envios);
     }
+    public function confirmarEnvio($idEnvio){
+        $envioModel = new EnvioModel();
+        $envio = $envioModel->find($idEnvio);
+        if (!$envio) {
+            return $this->failNotFound('Envío no encontrado');
+        }
+        $envioModel->update($idEnvio, ['Estado' => 'ENTREGADO']);
+        return $this->respond(['mensaje' => 'Envío confirmado exitosamente']);
+    }
+
 
 }

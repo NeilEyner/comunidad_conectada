@@ -30,6 +30,7 @@ $routes->get('/comunidades', 'Home::comunidades');
 $routes->get('/carrito', 'Home::carrito');
 $routes->get('/producto/(:num)/(:num)', 'Home::producto/$1/$2');
 $routes->Post('/anadirprod/(:num)/(:num)/(:num)/(:num)', 'Home::anadirProd/$1/$2/$3/$4');
+$routes->Post('/anadeprod/(:num)/(:num)/(:num)/(:num)/(:num)', 'Home::anadeProd/$1/$2/$3/$4/$5');
 $routes->Post('/carritoedit/(:num)/(:num)/(:num)/(:num)/(:any)', 'CarritoController::editarCarrito/$1/$2/$3/$4/$5');
 $routes->Post('/carreliminarprod', 'CarritoController::eliminarProd');
 $routes->Post('/calificar/(:num)/(:num)/(:num)', 'Home::calificar/$1/$2/$3');
@@ -49,10 +50,21 @@ $routes->get('dashboard/cliente/cli_dashboard', 'ClienteController::cliente');
 $routes->get('dashboard/cliente/compra', 'ClienteController::compra');
 $routes->get('dashboard/cliente/recibido', 'ClienteController::recibido');
 
+$routes->post('calificacion/producto/(:num)', 'ClienteController::calificacion/$1');
+$routes->post('cliente/producto/(:num)', 'ClienteController::agregarProducto/$1');
+
+$routes->get('ver_carrito/(:num)', 'ClienteController::verCarrito/$1');
+$routes->get('disminuir/(:num)/(:num)', 'ClienteController::disminuirProducto/$1/$2');
+$routes->get('aumentar/(:num)/(:num)', 'ClienteController::aumentarProducto/$1/$2');
+
+$routes->get('eliminarProducto/(:num)/(:num)', 'ClienteController::eliminarUnProducto/$1/$2');
+$routes->get('eliminarCarrito/(:num)', 'ClienteController::vaciarCarrito/$1');
+
 //rutas delivery
 $routes->get('dashboard/delivery/deli_dashboard', 'DeliveryController::delivery');
 $routes->get('dashboard/delivery/envio', 'DeliveryController::envio');
 $routes->get('dashboard/delivery/entregado', 'DeliveryController::entregado');
+$routes->get('producto/cambiarEstado/(:num)/(:num)/(:any)', 'DeliveryController::cambiarEstado/$1/$2/$3');
 
 
 //rutas administrador
@@ -74,6 +86,11 @@ $routes->post('administrador/editar_contenido_pagina/(:num)', 'AdministradorCont
 $routes->post('administrador/eliminar_contenido_pagina/(:num)', 'AdministradorController::admin_eliminar_contenido_pagina/$1');
 $routes->post('administrador/agregar_contenido_pagina', 'AdministradorController::admin_agregar_contenido_pagina');
 
+$routes->get('dashboard/administrador/admin_producto_usuario', 'AdministradorController::admin_product_user');
+
+$routes->post('admin/disponible_producto_artesano/(:num)', 'AdministradorController::disponible_producto_artesano/$1');
+$routes->post('admin/eliminar_producto_artesano/(:num)', 'AdministradorController::eliminar_producto_artesano/$1');
+
 
 
 $routes->get('dashboard/administrador/admin_comunidades', 'AdministradorController::admin_comunidad');
@@ -81,7 +98,15 @@ $routes->get('dashboard/administrador/admin_rol', 'AdministradorController::admi
 $routes->get('dashboard/administrador/admin_contenidopagina', 'AdministradorController::admin_contenidopagina');
 $routes->get('dashboard/administrador/admin_envio', 'AdministradorController::admin_envio');
 $routes->get('dashboard/administrador/admin_pago', 'AdministradorController::admin_pago');
-//PRODCUTOS
+
+
+$routes->get('dashboard/administrador/admin_transporte', 'AdministradorController::transporte');
+$routes->get('administrador/transporte/agregar', 'AdministradorController::agregar_transporte');
+$routes->post('administrador/transporte/agregar', 'AdministradorController::agregar_transporte');
+$routes->get('administrador/transporte/editar/(:num)', 'AdministradorController::editar_transporte/$1');
+$routes->post('administrador/transporte/editar/(:num)', 'AdministradorController::editar_transporte/$1');
+$routes->get('administrador/transporte/eliminar/(:num)', 'AdministradorController::eliminar_transporte/$1');
+//PRODUCTOS
 $routes->get('dashboard/administrador/admin_producto', 'AdministradorController::admin_producto');
 $routes->post('admin/agregar_producto', 'AdministradorController::admin_agregar_producto');
 $routes->post( 'admin/editar_producto/(:num)', 'AdministradorController::admin_editar_producto/$1');
@@ -89,7 +114,7 @@ $routes->post('admin/eliminar_producto/(:num)', 'AdministradorController::admin_
 
 //PAGOS
 
-$routes->get('pagos/metodo_pago/(:num)', 'PagoController::mostrar_metodos_pago/$1');
+$routes->get('pagos/metodo_pago/(:num)', 'PagoController::mostrarMetodosPago/$1');
 $routes->post('pago/procesar/(:num)', 'PagoController::procesar_pago/$1');
 
 $routes->get('verifica_comprobante_completado/(:num)', 'AdministradorController::pago_completado/$1');
@@ -103,13 +128,7 @@ $routes->post('compra/entregado', 'ClienteController::procesar_entregado');
 $routes->post('compra/cancelado', 'ClienteController::procesar_cancelado');
 
 $routes->post('', 'AdministradorController::admin_compra');
-//transporte
-$routes->get('dashboard/administrador/admin_transporte', 'AdministradorController::transporte');
-$routes->get('administrador/transporte/agregar', 'AdministradorController::agregar_transporte');
-$routes->post('administrador/transporte/agregar', 'AdministradorController::agregar_transporte');
-$routes->get('administrador/transporte/editar/(:num)', 'AdministradorController::editar_transporte/$1');
-$routes->post('administrador/transporte/editar/(:num)', 'AdministradorController::editar_transporte/$1');
-$routes->get('administrador/transporte/eliminar/(:num)', 'AdministradorController::eliminar_transporte/$1');
+
 //comuini
 $routes->get('pdf/exportarCompraPDF/(:num)', 'PdfController::exportarCompraPDF/$1');
 
@@ -118,18 +137,20 @@ $routes->get('pdf/exportarCompraPDF/(:num)', 'PdfController::exportarCompraPDF/$
 
 
 // Ruta para login
-$routes->post('api/login', 'AuthController::api_login'); // Login de usuario
-
-
-$routes->get('api/usuarios', 'ApiController::listarUsuarios'); // Listar todos los usuarios
-
-$routes->get('api/usuario/(:num)', 'ApiController::obtenerUsuario/$1'); // Obtener detalles de un usuario
-$routes->get('api/productos/artesano/(:num)', 'ApiController::listarProductosPorArtesano/$1'); // Listar productos por artesano
-$routes->get('api/compras/cliente/(:num)', 'ApiController::listarComprasPorCliente/$1'); // Listar compras de un cliente
-$routes->get('api/compra/detalle/(:num)', 'ApiController::obtenerDetalleCompra/$1'); // Obtener detalles de una compra
-$routes->get('api/categorias', 'ApiController::listarCategorias'); // Listar categorías con la cantidad de productos
-$routes->get('api/comunidades', 'ApiController::listarComunidades'); // Listar comunidades
-$routes->post('api/registro', 'ApiController::registrarUsuario');
+$routes->post('api/login', 'AuthController::api_login');
+$routes->get('api/usuarios', 'ApiController::listarUsuarios'); 
+$routes->get('api/productos/artesano/(:num)', 'ApiController::listarProductosPorArtesano/$1');
 $routes->get('api/productos', 'ApiController::listarProductos');
-$routes->post('api/compra', 'ApiController::realizarCompra');
-$routes->get('api/compras/(:num)', 'ApiController::listarComprasUsuario/$1');
+
+$routes->get('api/sobre-nosotros', 'ApiController::obtenerSobreNosotros');
+$routes->get('api/obtenerContenido', 'ApiController::obtenerCarousel');
+
+$routes->get('api/cambiarEstadoUsuario/(:num)', 'ApiController::cambiarEstado/$1');
+
+$routes->get('api/aumentarStock/(:num)', 'ApiController::aumentarStock/$1');
+$routes->get('api/reducirStock/(:num)', 'ApiController::reducirStock/$1');
+$routes->get('api/disponibleProducto/(:num)', 'ApiController::disponibleProducto/$1');
+
+$routes->get('api/compraUsuario/(:num)', 'ApiController::compraUsuario/$1');
+$routes->get('api/envioUsuario/(:num)', 'ApiController::envioUsuario/$1');
+$routes->get('api/confirmarEntrega/(:num)', 'ApiController::confirmarEnvio/$1');

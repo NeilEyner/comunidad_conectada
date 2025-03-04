@@ -39,12 +39,31 @@ class ArtesanoController extends Controller
         $idArtesano = session()->get('ID');
     
         $productos = $tieneProductoModel
-        ->select('producto.Nombre as Nombre, tiene_producto.Precio, tiene_producto.Stock, tiene_producto.Imagen_URL, tiene_producto.Disponibilidad,tiene_producto.Descripcion')
+        ->select('tiene_producto.ID, producto.Nombre as Nombre, tiene_producto.Precio, tiene_producto.Stock, tiene_producto.Imagen_URL, tiene_producto.Disponibilidad,tiene_producto.Descripcion')
         ->join('producto', 'producto.ID = tiene_producto.ID_Producto')  
         ->where('tiene_producto.ID_Artesano', $idArtesano)
         ->findAll();
 
+
+
+
+        $artesanoId = $this->session->get('ID');
+
+        // Consulta para obtener todas las ventas del artesano
+        $builder = $this->db->table('compra c')
+            ->select('c.ID as ID_Compra, tp.Imagen_URL as imagen, c.Fecha as Fecha_Compra, 
+                     u.Nombre as Cliente, p.Nombre as Producto, dc.Cantidad, 
+                     (dc.Cantidad * tp.Precio) as Total_Venta, c.Estado as Estado_Compra')
+            ->join('detalle_compra dc', 'c.ID = dc.ID_Compra')
+            ->join('usuario u', 'c.ID_Cliente = u.ID')
+            ->join('producto p', 'dc.ID_Producto = p.ID')
+            ->join('tiene_producto tp', 'p.ID = tp.ID_Producto AND tp.ID_Artesano = dc.ID_Artesano')
+            ->where('dc.ID_Artesano', $artesanoId)
+            ->orderBy('c.Fecha', 'DESC');
+        
+        $ventas = $builder->get()->getResultArray();
         $data['productos'] = $productos;
+        $data['ventas'] = $ventas;
         $data['productos_list'] = $productoModel->findAll();
         $data['categorias'] = $categoriaModel->findAll();
 
@@ -82,16 +101,14 @@ class ArtesanoController extends Controller
         $usuarioNombre = session()->get('Nombre');
         $tipoEvento = 'SISTEMA'; 
         $location = 'LA PAZ'; 
-        $descripcion = session()->get('Nombre')."EDITO PRODUCTO";
+        $descripcion = "El usuario ".session()->get('Nombre')." EDITO PRODUCTO";
         $auditoriaEventoModel = new AuditoriaModel();
         $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
         $this->request->getUserAgent(), $location, $descripcion);
 
-
         $model = new TieneProductoModel();
         helper(['form']);
-        $producto = $model->where('ID_Artesano', $idArtesano)->where('ID_Producto', $idProducto)->first();
-
+        $producto = $model->where('ID_Artesano', $idArtesano)->where('ID', $idProducto)->first();
         if (!$producto) {
             return redirect()->back()->with('message', 'Producto no encontrado.');
         }
@@ -102,14 +119,13 @@ class ArtesanoController extends Controller
         ];
 
         $imagen = $this->request->getFile('Imagen_URL');
-
         if ($imagen && $imagen->isValid() && !$imagen->hasMoved()) {
             $nombreImagen = $imagen->getRandomName();
             $imagen->move(FCPATH . 'images/productos/', $nombreImagen);
             $imagenURL = 'images/productos/' . $nombreImagen;
         }
-
         $data = [
+            'ID_Producto' => $this->request->getPost('ID_Producto'),
             'Precio' => $this->request->getPost('Precio'),
             'Stock' => $this->request->getPost('Stock'),
             'Disponibilidad' => $this->request->getPost('Disponibilidad'),
@@ -119,9 +135,7 @@ class ArtesanoController extends Controller
         if (isset($imagenURL)) {
             $data['Imagen_URL'] = $imagenURL;
         }
-
-        $model->where('ID_Artesano', $idArtesano)->where('ID_Producto', $idProducto)->update(null, $data);
-
+        $model->where('ID_Artesano', $idArtesano)->where('ID', $idProducto)->update(null, $data);
         return redirect()->to(base_url('dashboard/artesano/arte_producto'))->with('message', 'Producto actualizado correctamente.');
     }
 
@@ -131,7 +145,7 @@ class ArtesanoController extends Controller
         $usuarioNombre = session()->get('Nombre');
         $tipoEvento = 'SISTEMA'; 
         $location = 'LA PAZ'; 
-        $descripcion = session()->get('Nombre')."AGREGO NUEVO PRODUCTO";
+        $descripcion = "El usuario ".session()->get('Nombre')." AGREGO NUEVO PRODUCTO";
         $auditoriaEventoModel = new AuditoriaModel();
         $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
         $this->request->getUserAgent(), $location, $descripcion);
@@ -174,6 +188,7 @@ class ArtesanoController extends Controller
                     'Disponibilidad' => $this->request->getPost('Disponibilidad'),
                     'Imagen_URL' => $imagenURL,
                     'Descripcion' => $this->request->getPost('Descripcion'),
+                    'Fecha_Creacion' => date('Y-m-d H:i:s')
                 ];
 
                 if ($model->insert($data)) {
@@ -189,7 +204,7 @@ class ArtesanoController extends Controller
     public function artesano_eliminar_producto($idArtesano, $idProducto)
     {
         $model = new TieneProductoModel();
-        if ($model->where('ID_Artesano', $idArtesano)->where('ID_Producto', $idProducto)->first()) {
+        if ($model->where('ID_Artesano', $idArtesano)->where('ID', $idProducto)->first()) {
             $model->where('ID_Artesano', $idArtesano)->where('ID_Producto', $idProducto)->delete();
             return redirect()->back()->with('message', 'Producto eliminado correctamente.');
         } else {
@@ -206,17 +221,17 @@ class ArtesanoController extends Controller
 
         // Consulta para obtener todas las ventas del artesano
         $builder = $this->db->table('compra c')
-            ->select('c.ID as ID_Compra, tp.Imagen_URL as imagen, c.Fecha as Fecha_Compra, 
-                     u.Nombre as Cliente, p.Nombre as Producto, dc.Cantidad, 
-                     (dc.Cantidad * tp.Precio) as Total_Venta, c.Estado as Estado_Compra')
-            ->join('detalle_compra dc', 'c.ID = dc.ID_Compra')
-            ->join('usuario u', 'c.ID_Cliente = u.ID')
-            ->join('producto p', 'dc.ID_Producto = p.ID')
-            ->join('tiene_producto tp', 'p.ID = tp.ID_Producto AND tp.ID_Artesano = dc.ID_Artesano')
-            ->where('dc.ID_Artesano', $artesanoId)
-            ->orderBy('c.Fecha', 'DESC');
-        
-        $ventas = $builder->get()->getResultArray();
+        ->select('c.ID as ID_Compra, tp.Imagen_URL as imagen, c.Fecha as Fecha_Compra, 
+                 u.Nombre as Cliente, p.Nombre as Producto, dc.Cantidad, 
+                 (dc.Cantidad * tp.Precio) as Total_Venta, c.Estado as Estado_Compra')
+        ->join('detalle_compra dc', 'c.ID = dc.ID_Compra')
+        ->join('tiene_producto tp', 'dc.ID_Producto = tp.ID')
+        ->join('producto p', 'p.ID = tp.ID_Producto')
+        ->join('usuario u', 'c.ID_Cliente = u.ID')
+        ->where('tp.ID_Artesano', $artesanoId)
+        ->orderBy('c.Fecha', 'DESC');
+    
+    $ventas = $builder->get()->getResultArray();
         
 
         $data = [
@@ -237,7 +252,7 @@ class ArtesanoController extends Controller
         $idArtesano = session()->get('ID');
 
         $productoModel = new TieneProductoModel();
-        $data['productos'] = $productoModel->getProductosPuntuadosPorArtesano($idArtesano);
+        $data['productos'] = $productoModel->getProductosConValoraciones($idArtesano);
 
         return view('dashboard/artesano/valoracion_producto', $data);
     }

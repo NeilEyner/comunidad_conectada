@@ -13,7 +13,6 @@ foreach ($contenido as $cont):
         $GLOBALS["correo"] = $cont['Contenido'];
     endif;
 endforeach;
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +21,6 @@ endforeach;
     <title> COMUNIDAD CONECTADA </title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <link rel="apple-touch-icon" href="<?php echo base_url(); ?>assets/img/apple-icon.png">
     <link rel="shortcut icon" type="image/x-icon" href="<?php echo base_url(); ?>assets/icon/Recurso 2.png">
 
@@ -30,21 +28,32 @@ endforeach;
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/templatemo.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/custom.css">
 
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
     <link rel="stylesheet" href="<?php echo base_url('assets/css/fontawesome.min.css'); ?>">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
 
     <!-- Slick -->
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/slick.min.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/slick-theme.css">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>assets/css/style.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        .carousel-indicators{
+            list-style: none;
+        }
+    </style>
+
 </head>
 
 
 <body>
-
-
     <!-- Start Top Nav -->
     <nav class="navbar navbar-expand-lg bg-dark navbar-light d-none d-lg-block" id="templatemo_nav_top">
         <div class="container text-light">
@@ -57,12 +66,6 @@ endforeach;
                     <a class="navbar-sm-brand text-light text-decoration-none"
                         href="tel:010-020-0340"><?= $telefono ?></a>
                 </div>
-                <!-- <div>
-                    <a class="text-light" href="https://fb.com/templatemo" target="_blank" rel="sponsored"><i class="fab fa-facebook-f fa-sm fa-fw me-2"></i></a>
-                    <a class="text-light" href="https://www.instagram.com/" target="_blank"><i class="fab fa-instagram fa-sm fa-fw me-2"></i></a>
-                    <a class="text-light" href="https://twitter.com/" target="_blank"><i class="fab fa-twitter fa-sm fa-fw me-2"></i></a>
-                    <a class="text-light" href="https://www.linkedin.com/" target="_blank"><i class="fab fa-linkedin fa-sm fa-fw"></i></a>
-                </div> -->
             </div>
         </div>
     </nav>
@@ -100,52 +103,115 @@ endforeach;
                     $tieneProductoModel = new TieneProductoModel();
                     if (session()->get('isLoggedIn')) {
                         if (session()->get('ID_Rol') != null) { ?>
-                            <div class="shopcart position-relative">
-                                <a class="nav-icon text-decoration-none" href="<?php echo base_url(); ?>tienda">
-                                    <i class="fa fa-fw fa-cart-arrow-down text-dark"></i>
-                                    <span
-                                        class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark"><?= sizeof($carrito) ?></span>
+                            <div class="dropdown mx-4">
+                                <a href="#" class="nav-icon text-decoration-none" id="cartDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center;">
+                                    <i class="fa fa-shopping-cart" style="font-size: 24px; color: #333;"></i>
+                                    <?php if (!empty($carrito)): ?>
+                                        <span class="badge bg-danger cart-count"
+                                            style="position: absolute; top: -8px; right: -8px; font-size: 12px;">
+                                            <?= count($carrito) ?>
+                                        </span>
+                                    <?php endif; ?>
                                 </a>
-                                <div class="shopcart_dropdown" id='carrito-m'>
-                                    <?php if ($carrito != null) { ?>
-                                        <div class="cart_droptitle">
-                                            <h4 class="text-lg"><?= sizeof($carrito) ?> Productos</h4>
+                                <div class="dropdown-menu dropdown-menu-end p-0 " aria-labelledby="cartDropdown"
+                                    style="min-width: 320px;">
+                                    <div class="card border-0">
+                                        <div
+                                            class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                                            <h6 class="m-0">Carrito de Compras</h6>
+                                            <span class="badge bg-light text-success"><?= count($carrito) ?> Productos</span>
                                         </div>
-                                        <?php foreach ($carrito as $prod):
-                                            $total = $prod['Total'];
-                                            $producto = $tieneProductoModel->ProductosDet($prod['ID_Artesano'], $prod['ID_Producto']); ?>
-                                            <div class="cartsdrop_wrap">
-                                                <a href="#" class="single_cartdrop mb-2 d-flex align-items-center"
-                                                    style="text-decoration:none">
-                                                    <span class="remove_cart"><i class="las la-times"></i></span>
-                                                    <img loading="lazy" src="<?= base_url($producto['Imagen_URL']) ?>" alt="product"
-                                                        class="cartdrop_img me-2" width="40" height="40">
-                                                    <div>
-                                                        <h5 class="mb-0"><?= $producto['Nombre'] ?></h5>
-                                                        <p class="mb-0 text-xs text-muted">x<?= $prod['Cantidad'] ?>
-                                                            <span class="ms-2"><?= $producto['Precio'] ?></span>
-                                                        </p>
-                                                    </div>
-                                                </a>
+                                        <?php if (empty($carrito)): ?>
+                                            <div class="card-body text-center">
+                                                <p class="text-muted mb-0">
+                                                    <i class="bi bi-cart-x text-success" style="font-size: 3rem;"></i>
+                                                    <br>Tu carrito está vacío
+                                                </p>
                                             </div>
-                                        <?php endforeach; ?>
-                                        <div class="total_cartdrop">
-                                            <h5 class="text-uppercase mb-0">Sub Total:</h5>
-                                            <h5 class="ms-2"><?= $total ?></h5>
-                                        </div>
-                                        <div class="d-flex mt-3">
-                                            <a href="<?= base_url('carrito') ?>" class="btn btn-success w-50 px-1">Ver Carrito</a>
-                                            <a href="<?= base_url('pagos/metodo_pago/' . $prod['ID']); ?>"
-                                                class="btn btn-secondary ms-3 w-50 px-1">Pagar</a>
-                                        </div>
-                                    <?php } else { ?>
-                                        <div class="cartsdrop_wrap">
-                                            <h5 class="text-center">No hay productos en el carrito</h5>
-                                        </div>
-                                    <?php } ?>
+                                        <?php else: ?>
+                                            <div class="card-body p-0 max-height-300 overflow-auto">
+                                                <?php
+                                                $totalCarrito = 0;
+                                                foreach ($carrito as $item):
+                                                    $subtotal = $item['Precio'] * $item['Cantidad'];
+                                                    $totalCarrito += $subtotal;
+                                                    ?>
+                                                    <div class="d-flex align-items-center p-3 border-bottom">
+                                                        <img src="<?= base_url() . $item['Imagen_URL'] ?>" alt="<?= $item['Nombre'] ?>"
+                                                            class="me-3 rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                                        <div class="flex-grow-1">
+                                                            <h6 class="mb-1"><?= $item['Nombre'] ?></h6>
+                                                            <div class="text-muted small">
+                                                                <?= $item['Cantidad'] ?> x Bs. <?= number_format($item['Precio'], 2) ?>
+                                                            </div>
+                                                        </div>
+                                                        <strong class="text-success">Bs. <?= number_format($subtotal, 2) ?></strong>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                            <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+                                                <strong>Total:</strong>
+                                                <strong class="text-success">Bs.<?= number_format($totalCarrito, 2) ?></strong>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-evenly">
+                                                    <a href="<?= base_url('ver_carrito/') . $item['ID'] ?>"
+                                                        class="btn btn-primary w-48 d-flex align-items-center justify-content-center text-white">
+                                                        <i class="fas fa-shopping-cart me-2"></i> Ver Carrito
+                                                    </a>
+                                                    <a href="<?= base_url('pagos/metodo_pago/') . $item['ID'] ?>"
+                                                        class="btn btn-success w-48 d-flex align-items-center justify-content-center text-white">
+                                                        <i class="fas fa-credit-card me-2"></i> Pagar
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
 
+                            <?php
+                            $notificacionesModel = new \App\Models\NotificacionModel();
+                            $usuarioID = session()->get('ID');
+                            $notificacionesNoLeidas = $notificacionesModel->obtenerNotificacionesNoLeidas($usuarioID);
+                            ?>
+                            <div class="dropdown">
+                                <a class="nav-icon text-decoration-none" href="#" id="notificationDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center;">
+                                    <i class="bi bi-bell" style="font-size: 24px; color: #333;"></i>
+                                    <!-- Icono de campana -->
+                                    <span class="badge bg-danger"
+                                        style="position: absolute; top: 0; right: 0; font-size: 12px;">
+                                        <?= is_array($notificacionesNoLeidas) ? count($notificacionesNoLeidas) : 0 ?>
+                                    </span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end " style="min-width: 320px;"
+                                    aria-labelledby="notificationDropdown">
+                                    <li>
+                                        <h6 class="dropdown-header">Notificaciones</h6>
+                                    </li>
+                                    <?php if (is_array($notificacionesNoLeidas) && count($notificacionesNoLeidas) > 0): ?>
+                                        <?php foreach ($notificacionesNoLeidas as $notificacion): ?>
+                                            <li class="mx-2" style="">
+                                                <!-- <a class="dropdown-item" href="<?= base_url('notificaciones/ver/' . $notificacion['ID']) ?>"> -->
+                                                <strong
+                                                    style="font-size:1.2rem !important;"></strong><?= $notificacion['Tipo'] ?></strong> - <em style="font-size:1rem;"><?= $notificacion['Fecha'] ?></em> <br>
+                                                <p class="" style="font-size:.8rem !important;">
+                                                    <?= substr($notificacion['Mensaje'], 0, 50) . (strlen($notificacion['Mensaje']) > 50 ? '...' : '') ?>
+                                                </p>
+                                                <!-- </a> -->
+                                            </li>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <li><a class="dropdown-item text-muted" href="#">No tienes notificaciones</a></li>
+                                    <?php endif; ?>
+                                    <!-- <li>
+                                        <hr class="dropdown-divider">
+                                    </li> -->
+                                    <!-- <li><a class="dropdown-item" href="<?= base_url('notificaciones') ?>">Ver todas las notificaciones</a></li> -->
+                                </ul>
+                            </div>
                             <?php
                             $ruta = '';
                             $opciones = [];
@@ -186,7 +252,7 @@ endforeach;
                             }
                             ?>
                             <!-- Dropdown para el icono de usuario -->
-                            <div class="dropdown">
+                            <div class="dropdown mx-4">
                                 <a class="nav-icon text-decoration-none" href="#" id="userDropdown" role="button"
                                     data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center;">
                                     <img src="<?= base_url() . session()->get('Imagen_URL') ?>" alt="Usuario"
@@ -198,7 +264,8 @@ endforeach;
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
 
                                     <?php foreach ($opciones as $opcion): ?>
-                                        <li><a class="dropdown-item" href="<?= $opcion['link'] ?>"><?= $opcion['text'] ?></a></li>
+                                        <li><a class="dropdown-item" href="<?= $opcion['link'] ?>"><?= $opcion['text'] ?></a>
+                                        </li>
                                     <?php endforeach; ?>
                                     <li>
                                         <hr class="dropdown-divider">
@@ -207,54 +274,7 @@ endforeach;
                                             Sesión</a></li>
                                 </ul>
                             </div>
-                            <?php
-                            // Cargar el modelo directamente en la vista
-                            $notificacionesModel = new \App\Models\NotificacionModel();
 
-                            // Obtener el ID del usuario de la sesión
-                            $usuarioID = session()->get('ID');
-
-                            // Obtener las notificaciones no leídas del usuario
-                            $notificacionesNoLeidas = $notificacionesModel->obtenerNotificacionesNoLeidas($usuarioID);
-                            ?>
-
-                            <!-- Dropdown para el icono de notificaciones -->
-                            <div class="dropdown">
-                                <a class="nav-icon text-decoration-none" href="#" id="notificationDropdown" role="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false" style="display: flex; align-items: center;">
-                                    <i class="bi bi-bell" style="font-size: 24px; color: #333;"></i> <!-- Icono de campana -->
-                                    <span class="badge bg-danger"
-                                        style="position: absolute; top: 0; right: 0; font-size: 12px;">
-                                        <?= is_array($notificacionesNoLeidas) ? count($notificacionesNoLeidas) : 0 ?>
-                                    </span> <!-- Contador de notificaciones no leídas -->
-                                </a>
-
-                                <!-- Menú desplegable -->
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
-                                    <li>
-                                        <h6 class="dropdown-header">Notificaciones</h6>
-                                    </li>
-
-                                    <!-- Mostrar las notificaciones no leídas -->
-                                    <?php if (is_array($notificacionesNoLeidas) && count($notificacionesNoLeidas) > 0): ?>
-                                        <?php foreach ($notificacionesNoLeidas as $notificacion): ?>
-                                            <li>
-                                                <!-- <a class="dropdown-item" href="<?= base_url('notificaciones/ver/' . $notificacion['ID']) ?>"> -->
-                                                <strong><?= $notificacion['Tipo'] ?></strong><br>
-                                                <?= substr($notificacion['Mensaje'], 0, 50) . (strlen($notificacion['Mensaje']) > 50 ? '...' : '') ?>
-                                                <!-- </a> -->
-                                            </li>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <li><a class="dropdown-item text-muted" href="#">No tienes notificaciones</a></li>
-                                    <?php endif; ?>
-
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <!-- <li><a class="dropdown-item" href="<?= base_url('notificaciones') ?>">Ver todas las notificaciones</a></li> -->
-                                </ul>
-                            </div>
 
                         <?php } ?>
                     <?php } else { ?>

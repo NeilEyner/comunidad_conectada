@@ -1,40 +1,80 @@
 <?php include 'header.php'; ?>
 
-<div class="product-container max-w-screen-lg mx-auto p-4">
-    <h2 class="text-xl font-semibold text-gray-800 mb-6">Productos Puntuados</h2>
+<div class="product-container max-w-screen-lg mx-auto p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-8">Productos con Valoraciones</h2>
 
-    <?php foreach ($productos as $producto): ?>
-        <div class="product-card bg-white shadow-md rounded-lg mb-6 p-6 flex flex-col items-center">
-            <!-- Imagen del producto -->
-            <img src="<?= esc(base_url() . $producto['Imagen_URL']); ?>" alt="<?= esc($producto['Descripcion']); ?>" class="w-48 h-48 object-cover rounded-md mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:grid-cols-4 gap-6">
+        <?php 
+        $productosAgrupados = [];
+        foreach ($productos as $producto) {
+            $productosAgrupados[$producto['ProductoID']] = $producto;
+        }
 
-            <!-- Nombre o descripción del producto -->
-            <div class="product-name text-lg font-semibold text-gray-900 mb-2"><?= esc($producto['Descripcion']); ?></div>
-
-            <!-- Mostrar la mejor puntuación con estrellas -->
-            <div class="rating flex items-center mb-4">
-                <?php for ($i = 1; $i <= 5; $i++): ?>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 <?= ($i <= $producto['MejorPuntuacion']) ? 'text-yellow-400' : 'text-gray-300' ?>" fill="currentColor" viewBox="0 0 24 24" stroke="currentColor">
-                        <path d="M12 17.75l5.55 3.25-1.45-6.35L22 9.25h-6.5L12 2 8.5 9.25H2l4.9 5.65-1.45 6.35z"/>
-                    </svg>
-                <?php endfor; ?>
+        foreach ($productosAgrupados as $producto): ?>
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <img src="<?= base_url().$producto['Imagen_URL']; ?>" alt="<?= $producto['ProductoNombre']; ?>" class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="text-lg font-semibold text-gray-800"><?= $producto['ProductoNombre']; ?></h3>
+                    <p class="text-gray-600 text-sm mt-2"><?= $producto['ProductoDescripcion']; ?></p>
+                    
+                    <div class="mt-4 flex items-center justify-between">
+                        <span class="text-green-600 font-bold text-lg">Bs. <?= number_format($producto['Precio'], 2); ?></span>
+                        <span class="text-gray-500 text-sm"><?= $producto['Stock'] > 0 ? 'En Stock' : 'Agotado'; ?></span>
+                    </div>
+                    
+                    <button 
+                        class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                        onclick="openModal('modal-<?= $producto['ProductoID']; ?>')">
+                        Ver Valoraciones
+                    </button>
+                </div>
             </div>
-
-            <!-- Mostrar el promedio de puntuaciones -->
-            <div class="average-rating text-sm text-gray-600 mb-4">
-                Promedio: <?= number_format(esc($producto['PromedioPuntuacion']), 2); ?>/5
+            
+            <!-- Modal -->
+            <div 
+                id="modal-<?= $producto['ProductoID']; ?>" 
+                class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center">
+                
+                <div class="bg-white rounded-lg w-11/12 max-w-lg p-6 relative">
+                    <button 
+                        class="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+                        onclick="closeModal('modal-<?= $producto['ProductoID']; ?>')">
+                        ✖
+                    </button>
+                    <h3 class="text-xl font-bold mb-4"><?= $producto['ProductoNombre']; ?> - Valoraciones</h3>
+                    
+                    <div class="space-y-4">
+                        <?php foreach ($productos as $valoracion): ?>
+                            <?php if ($valoracion['ProductoID'] == $producto['ProductoID']): ?>
+                                <div class="border-b pb-2">
+                                    <div class="text-yellow-500">
+                                        <?php for ($i = 0; $i < $valoracion['Puntuacion']; $i++): ?>
+                                            ★
+                                        <?php endfor; ?>
+                                        <?php for ($i = $valoracion['Puntuacion']; $i < 5; $i++): ?>
+                                            ☆
+                                        <?php endfor; ?>
+                                    </div>
+                                    <p class="text-gray-600 mt-2"><?= $valoracion['ValoracionComentario']; ?></p>
+                                    <p class="text-gray-400 text-xs"><?= date('d M Y', strtotime($valoracion['FechaValoracion'])); ?></p>
+                                </div>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
             </div>
-
-            <!-- Mostrar el total de puntuaciones -->
-            <div class="total-rating text-sm text-gray-600">
-                <?= esc($producto['TotalPuntuaciones']); ?> valoraciones
-            </div>
-        </div>
-    <?php endforeach; ?>
+        <?php endforeach; ?>
+    </div>
 </div>
 
-
+<script>
+    function openModal(id) {
+        document.getElementById(id).classList.remove('hidden');
+    }
+    function closeModal(id) {
+        document.getElementById(id).classList.add('hidden');
+    }
+</script>
 
 </body>
-
 </html>

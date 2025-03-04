@@ -54,9 +54,19 @@ class AdministradorController extends Controller
             return redirect()->to(base_url('login'));
         }
         $auditoriaEventoModel = new AuditoriaModel();
-        $data['eventosAuditoria'] = $auditoriaEventoModel->orderBy('Fecha', 'DESC')->findAll();
+        $data['eventosAuditoria'] = $auditoriaEventoModel->orderBy('Fecha', 'DESC') ->limit(30)->findAll();
         $model = new UsuarioModel();
         $data['usuarios'] = $model->findAll();
+
+        $productos = new TieneProductoModel();
+        $data['productos'] = $productos->findAll();
+
+        $compras = new CompraModel();
+        $data['compras'] = $compras->findAll();
+
+        $envios = new EnvioModel();
+        $data['envios'] = $envios->findAll();
+
         return view('dashboard/administrador/admin_dashboard', $data);
     }
 
@@ -82,12 +92,19 @@ class AdministradorController extends Controller
     {
         $usuarioID = session()->get('ID');
         $usuarioNombre = session()->get('Nombre');
-        $tipoEvento = 'SISTEMA'; 
-        $location = 'LA PAZ'; 
+        $tipoEvento = 'SISTEMA';
+        $location = 'LA PAZ';
         $descripcion = "ADMINISTRADOR EDITO UN USUARIO.";
         $auditoriaEventoModel = new AuditoriaModel();
-        $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
-        $this->request->getUserAgent(), $location, $descripcion);
+        $auditoriaEventoModel->registrarEvento(
+            $tipoEvento,
+            $usuarioID,
+            $usuarioNombre,
+            $this->request->getIPAddress(),
+            $this->request->getUserAgent(),
+            $location,
+            $descripcion
+        );
 
         $model = new UsuarioModel();
         helper(['form']);
@@ -133,12 +150,19 @@ class AdministradorController extends Controller
     {
         $usuarioID = session()->get('ID');
         $usuarioNombre = session()->get('Nombre');
-        $tipoEvento = 'SISTEMA'; 
-        $location = 'LA PAZ'; 
+        $tipoEvento = 'SISTEMA';
+        $location = 'LA PAZ';
         $descripcion = "ADMINISTRADOR AGREGO USUARIO.";
         $auditoriaEventoModel = new AuditoriaModel();
-        $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
-        $this->request->getUserAgent(), $location, $descripcion);
+        $auditoriaEventoModel->registrarEvento(
+            $tipoEvento,
+            $usuarioID,
+            $usuarioNombre,
+            $this->request->getIPAddress(),
+            $this->request->getUserAgent(),
+            $location,
+            $descripcion
+        );
 
         helper(['form']);
         $usuarioModel = new UsuarioModel();
@@ -190,12 +214,19 @@ class AdministradorController extends Controller
     {
         $usuarioID = session()->get('ID');
         $usuarioNombre = session()->get('Nombre');
-        $tipoEvento = 'SISTEMA'; 
-        $location = 'LA PAZ'; 
+        $tipoEvento = 'SISTEMA';
+        $location = 'LA PAZ';
         $descripcion = "ADMINISTRADOR ELIMINO USUARIO.";
         $auditoriaEventoModel = new AuditoriaModel();
-        $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
-        $this->request->getUserAgent(), $location, $descripcion);
+        $auditoriaEventoModel->registrarEvento(
+            $tipoEvento,
+            $usuarioID,
+            $usuarioNombre,
+            $this->request->getIPAddress(),
+            $this->request->getUserAgent(),
+            $location,
+            $descripcion
+        );
 
         $model = new UsuarioModel();
         $compraModel = new CompraModel();
@@ -209,9 +240,47 @@ class AdministradorController extends Controller
             return redirect()->back()->with('error', 'Usuario no encontrado.');
         }
     }
+    //ADMINISTRADOR USUARIO PRODUCTOS
+    public function admin_product_user()
+    {
+        $notificacionModel = new NotificacionModel();
+        $notificaciones = $notificacionModel->where('ID_Usuario', 1)->where('Leido', 0)->findAll();
+        $productoModel = new TieneProductoModel();
+        $sql = "
+            SELECT tp.ID, tp.ID_Artesano, tp.ID_Producto, p.Nombre AS Producto, u.Nombre AS Artesano, 
+                tp.Imagen_URL, tp.Descripcion, tp.Stock, tp.Precio, tp.Disponibilidad 
+            FROM tiene_producto tp
+            LEFT JOIN usuario u ON u.ID = tp.ID_Artesano
+            JOIN producto p ON p.ID = tp.ID_Producto
+        ";
+        $query = $productoModel->query($sql);
+        $data['productos'] = $query->getResultArray();
+        $model = new UsuarioModel();
+        $rolModel = new RolModel();
+        $comunidadModel = new ComunidadModel();
+        $data['usuarios'] = $model->findAll();
+        $data['roles'] = $rolModel->findAll();
+        $data['comunidades'] = $comunidadModel->findAll();
+        return view('dashboard/administrador/admin_producto_usuarios', $data);
+    }
+    public function disponible_producto_artesano($id)
+    {
+        $model = new TieneProductoModel();
+        $data = $model->find($id);
+        if (isset($data['Disponibilidad'])) {
+            $data['Disponibilidad'] = $data['Disponibilidad'] == 1 ? 0 : 1;
+            $model->update($id, $data);
+        }
+        return redirect()->back();
+    }
+    public function eliminar_producto_artesano($id)
+    {
+        $model = new TieneProductoModel();
+        $model->delete($id);
+        return redirect()->back();
+    }
 
     //ADMINISTRADOR COMUNIDAD
-
     public function admin_comunidad()
     {
         $model = new ComunidadModel();
@@ -384,12 +453,19 @@ class AdministradorController extends Controller
     {
         $usuarioID = session()->get('ID');
         $usuarioNombre = session()->get('Nombre');
-        $tipoEvento = 'SISTEMA'; 
-        $location = 'LA PAZ'; 
+        $tipoEvento = 'SISTEMA';
+        $location = 'LA PAZ';
         $descripcion = "ADMINISTRADOR MODIFICO CONTENIDO.";
         $auditoriaEventoModel = new AuditoriaModel();
-        $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
-        $this->request->getUserAgent(), $location, $descripcion);
+        $auditoriaEventoModel->registrarEvento(
+            $tipoEvento,
+            $usuarioID,
+            $usuarioNombre,
+            $this->request->getIPAddress(),
+            $this->request->getUserAgent(),
+            $location,
+            $descripcion
+        );
 
         helper(['form']);
         $model = new ContenidoPaginaModel();
@@ -425,12 +501,19 @@ class AdministradorController extends Controller
     {
         $usuarioID = session()->get('ID');
         $usuarioNombre = session()->get('Nombre');
-        $tipoEvento = 'SISTEMA'; 
-        $location = 'LA PAZ'; 
+        $tipoEvento = 'SISTEMA';
+        $location = 'LA PAZ';
         $descripcion = "ADMINISTRADOR MODIFICO CONTENIDO.";
         $auditoriaEventoModel = new AuditoriaModel();
-        $auditoriaEventoModel->registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $this->request->getIPAddress(), 
-        $this->request->getUserAgent(), $location, $descripcion);
+        $auditoriaEventoModel->registrarEvento(
+            $tipoEvento,
+            $usuarioID,
+            $usuarioNombre,
+            $this->request->getIPAddress(),
+            $this->request->getUserAgent(),
+            $location,
+            $descripcion
+        );
         helper(['form']);
         $model = new ContenidoPaginaModel();
         $contenido = $model->find($id);
@@ -590,7 +673,7 @@ class AdministradorController extends Controller
         $compraModel = new CompraModel();
         $detalleCompraModel = new DetalleCompraModel();
         $usuarioModel = new UsuarioModel();
-        $productoModel = new ProductoModel();
+        $productoModel = new TieneProductoModel();
 
         // Obtener la lista de todos los pagos
         $pagos = $pagoModel->findAll();
@@ -1030,14 +1113,14 @@ class AdministradorController extends Controller
                     $cantidadVendida = $detalle['Cantidad'];
                     $productoArtesano = $tieneProductoModel->where([
                         'ID_Artesano' => $idArtesano,
-                        'ID_Producto' => $idProducto
+                        'ID' => $idProducto
                     ])->first();
 
                     if ($productoArtesano) {
                         $nuevoStock = max(0, $productoArtesano['Stock'] + $cantidadVendida);
                         $tieneProductoModel->where([
                             'ID_Artesano' => $productoArtesano['ID_Artesano'],
-                            'ID_Producto' => $productoArtesano['ID_Producto']
+                            'ID' => $productoArtesano['ID_Producto']
                         ])
                             ->set('Stock', $nuevoStock)
                             ->update();

@@ -27,7 +27,7 @@ class AuditoriaModel extends Model
     // Regla de validación
     protected $validationRules = [
         'ID_Usuario'  => 'permit_empty|integer',
-        'Tipo_Evento' => 'required|in_list[LOGIN,LOGOUT,COMPRA,CAMBIO_PERFIL,SEGURIDAD,SISTEMA]',
+        'Tipo_Evento' => 'required|in_list[INICIO_SESION,CIERRE_SESION,COMPRA,CAMBIO_PERFIL,SEGURIDAD,SISTEMA]',
         'Descripcion' => 'required|string',
         'Direccion_IP'=> 'permit_empty|valid_ip',
         'Dispositivo' => 'permit_empty|string',
@@ -41,23 +41,18 @@ class AuditoriaModel extends Model
     }
     public function registrarEvento($tipoEvento, $usuarioID, $usuarioNombre, $ipAddress, $userAgent, $location = 'LA PAZ', $descripcion = null)
     {
-        // Determinar el dispositivo
         $device = $userAgent->isMobile() ? 'Móvil' : ($userAgent->isBrowser() ? 'PC' : 'Desconocido');
-        
-        // Si no se pasa una descripción, generarla automáticamente según el tipo de evento
         if (!$descripcion) {
             $descripcion = match ($tipoEvento) {
-                'LOGIN' => "El {$usuarioNombre} ha iniciado sesión.",
-                'LOGOUT' => "El {$usuarioNombre} ha cerrado sesión.",
-                'COMPRA' => "El {$usuarioNombre} ha realizado una compra.",
-                'CAMBIO_PERFIL' => "El {$usuarioNombre} ha actualizado su perfil.",
-                'SEGURIDAD' => "El {$usuarioNombre} ha realizado una acción de seguridad.",
+                'INICIO_SESION' => "El usuario {$usuarioNombre} ha iniciado sesión.",
+                'CIERRE_SESION' => "El usuario {$usuarioNombre} ha cerrado sesión.",
+                'COMPRA' => "El usuario {$usuarioNombre} ha realizado una compra.",
+                'CAMBIO_PERFIL' => "El usuario {$usuarioNombre} ha actualizado su perfil.",
+                'SEGURIDAD' => "El usuario {$usuarioNombre} ha realizado una acción de seguridad.",
                 'SISTEMA' => "El sistema ha registrado un evento.",
                 default => "Evento desconocido."
             };
         }
-
-        // Preparar los datos
         $data = [
             'ID_Usuario' => $usuarioID,
             'Tipo_Evento' => $tipoEvento,
@@ -67,7 +62,6 @@ class AuditoriaModel extends Model
             'Dispositivo' => $device,
             'Ubicacion' => $location
         ];
-
         return $this->insert($data);
     }
 }

@@ -13,6 +13,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" defer></script>
   <script src="<?= base_url() ?>assets_dash/js/charts-lines.js" defer></script>
   <script src="<?= base_url() ?>assets_dash/js/charts-pie.js" defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
